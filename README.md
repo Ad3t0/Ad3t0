@@ -10,6 +10,7 @@
 [OpenVPN](#openvpn)  
 [ChocoInstall](#chocoinstall)  
 [DriverSearch](#driversearch)  
+[AutoIPK](#autoipk)  
 [BelarcAudit](#belarcaudit)  
 [ADBatchAdd](#adbatchadd)  
 [MSRAQuickConnect](#msraquickconnect)  
