@@ -3,7 +3,7 @@
 #	Creator:	Ad3t0	                    #
 #	Date:		04/10/2019             	    #
 #############################################
-$ver = "1.5.4"
+$ver = "1.5.5"
 $text1 = @'
      _       _ _____ _    ___
     / \   __| |___ /| |_ / _ \
@@ -33,6 +33,7 @@ if (!(Test-Path -Path "$($env:ProgramFiles)\OpenVPN\config\H1.ovpn"))
 	}
 	choco install openvpn megatools
 	Remove-Item -Path "$($env:ProgramFiles)\OpenVPN\config\client.ovpn"
+	Remove-Item -Path "$($env:ProgramFiles)\OpenVPN\config\H1.ovpn"
 	megaget --path "$($env:ProgramFiles)\OpenVPN\config" -u $user -p $pass "/Root/VPN/H1.ovpn"
 	megaget --path "$($env:ProgramFiles)\OpenVPN\config" -u $user -p $pass "/Root/VPN/H2-49865.ovpn"
 }
