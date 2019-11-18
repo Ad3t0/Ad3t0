@@ -1,11 +1,6 @@
 # Windows 7, 8, 10 and Windows Server PowerShell Scripts
-```
-     _       _ _____ _    ___
-    / \   __| |___ /| |_ / _ \
-   / _ \ / _` | |_ \| __| | | |
-  / ___ \ (_| |___) | |_| |_| |
- /_/   \_\__,_|____/ \__|\___/
-```
+![Logo](https://i.imgur.com/bzG7kdD.png)
+
 [CleanerWindows10](#cleanerwindows10)  
 [OpenVPN](#openvpn)  
 [ChocoInstall](#chocoinstall)  
