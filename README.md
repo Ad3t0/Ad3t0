@@ -1,7 +1,6 @@
 # Windows 7, 8, 10 and Windows Server PowerShell Scripts
 [![](https://i.imgur.com/bzG7kdD.png)](#)
 
-[CleanerWindows10](#cleanerwindows10)  
 [OpenVPN](#openvpn)  
 [ChocoInstall](#chocoinstall)  
 [DriverSearch](#driversearch)  
@@ -13,7 +12,8 @@
 [WINRMScript](#winrmscript)  
 [ProfileMigrate](#profilemigrate)  
 [WindowsServerGlacierBackup](#windowsserverglacierbackup)  
-[WiFiQR](#wifiqr)  
+[WiFiQR](#wifiqr) 
+[CleanerWindows10](#cleanerwindows10) 
 [Notes](#notes)  
 [Server Files](#server-files)  
 ### **Paste links into PowerShell**
