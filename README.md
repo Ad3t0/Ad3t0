@@ -17,31 +17,6 @@
 [Notes](#notes)  
 [Server Files](#server-files)  
 ### **Paste links into PowerShell**
-## CleanerWindows10
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CleanerWindows10.ps1'))
-```
-Each option can be selected individually within the script
-- Basic
-  - Disable Start Menu Bing search and application suggestions
-  - Disable subscribed ads, location tracking, and advertiser ID
-  - Disable resource intensive P2P update sharing
-  - Disable Cortana, Ink Space and 3D Objects folder
-  - Disable ALL Windows Telemetry and Online Tips/Ads
-  - Disable Wi-Fi Sense (Removed in 1803)
-  - Remove/Unpin all Startmenu icons
-  - Remove the People and Taskview icons
-  - Delete all Windows Store apps (except the Calculator, Photos, StickyNotes, and the Windows Store)
-  - Install [Chocolatey](https://chocolatey.org/) and defined packages
-  - Install all available [VCRedist Visual C++](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) versions (via Chocolatey)
-- Advanced
-  - Remove OneDrive
-  - Increase wallpaper to max compression quality at no additional resource cost
-  - Enable Show File Extension in File Explorer
-  - Enable Show Hidden Files and Folders in File Explorer
-  - Enable Remote Desktop Connection
-  - Enable Wake On LAN
-  - Download [MVPS](http://winhelp2002.mvps.org/hosts.txt) hosts file for system wide ad blocking
 ## OpenVPN
 #### Private OpenVPN with pulled config
 ```powershell
@@ -107,6 +82,31 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WiFiQR.ps1'))
 ```
+## CleanerWindows10
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CleanerWindows10.ps1'))
+```
+Each option can be selected individually within the script
+- Basic
+  - Disable Start Menu Bing search and application suggestions
+  - Disable subscribed ads, location tracking, and advertiser ID
+  - Disable resource intensive P2P update sharing
+  - Disable Cortana, Ink Space and 3D Objects folder
+  - Disable ALL Windows Telemetry and Online Tips/Ads
+  - Disable Wi-Fi Sense (Removed in 1803)
+  - Remove/Unpin all Startmenu icons
+  - Remove the People and Taskview icons
+  - Delete all Windows Store apps (except the Calculator, Photos, StickyNotes, and the Windows Store)
+  - Install [Chocolatey](https://chocolatey.org/) and defined packages
+  - Install all available [VCRedist Visual C++](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) versions (via Chocolatey)
+- Advanced
+  - Remove OneDrive
+  - Increase wallpaper to max compression quality at no additional resource cost
+  - Enable Show File Extension in File Explorer
+  - Enable Show Hidden Files and Folders in File Explorer
+  - Enable Remote Desktop Connection
+  - Enable Wake On LAN
+  - Download [MVPS](http://winhelp2002.mvps.org/hosts.txt) hosts file for system wide ad blocking
 # Notes
 #### Show WLAN profiles and keys
 ```
