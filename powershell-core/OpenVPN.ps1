@@ -3,7 +3,7 @@
 #	Creator:	Ad3t0	                    #
 #	Date:		04/10/2019             	    #
 #############################################
-$ver = "1.5.6"
+$ver = "1.5.7"
 function Decrypt-String ($Encrypted,$Passphrase,$salt = "Ad3t049866",$init = "Ad3t0PASS")
 {
 	if ($Encrypted -is [string]) {
@@ -55,5 +55,13 @@ if (!(Test-Path -Path "$($env:ProgramFiles)\OpenVPN\"))
 	choco install openvpn
 }
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
-Invoke-WebRequest -Uri $decURL -UseBasicParsing | Out-File -FilePath "$($env:ProgramFiles)\OpenVPN\config\H1.ovpn" -Force
+$osVer = [environment]::OSVersion.Version
+if ($osVer.Major -eq 10)
+{
+	Invoke-WebRequest -Uri $decURL -UseBasicParsing | Out-File -FilePath "$($env:ProgramFiles)\OpenVPN\config\H1.ovpn" -Force
+}
+else
+{
+	(New-Object System.Net.WebClient).DownloadFile($decURL,"$($env:ProgramFiles)\OpenVPN\config\H1.ovpn")
+}
 . "$($env:ProgramFiles)\OpenVPN\bin\openvpn-gui.exe"
