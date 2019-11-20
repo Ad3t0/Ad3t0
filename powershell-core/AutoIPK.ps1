@@ -1,4 +1,4 @@
-$ver = "1.0.2"
+$ver = "1.0.3"
 function Decrypt-String ($Encrypted,$Passphrase,$salt = "Ad3t049866",$init = "Ad3t0PASS")
 {
 	if ($Encrypted -is [string]) {
@@ -30,7 +30,7 @@ else
 	$pass = Read-Host "Password"
 	$decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 	$keys = Invoke-WebRequest -Uri $decURL -UseBasicParsing
-	[string[]]$lkArray = $keys.Content
+	$lkArray = $keys.Content.Split([Environment]::NewLine)
 	$lkAttempt = 0
 	while ($checkLicenseStatus -like "*Notification*" -and $lkAttempt -le $lkArray.Count)
 	{
