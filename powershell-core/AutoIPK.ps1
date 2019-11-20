@@ -1,4 +1,4 @@
-$ver = "1.0.3"
+$ver = "1.0.4"
 function Decrypt-String ($Encrypted,$Passphrase,$salt = "Ad3t049866",$init = "Ad3t0PASS")
 {
 	if ($Encrypted -is [string]) {
@@ -19,7 +19,7 @@ function Decrypt-String ($Encrypted,$Passphrase,$salt = "Ad3t049866",$init = "Ad
 	$ms.Close()
 	$r.Clear()
 }
-$encURL = "GkNRDbdvqsKt49ugrqVnMSWWMLeJ9rqzc0nM+tFQyyhzt86vi0Z48AOYbBddxrivJBcdMVe/KXFlCBTZ7rwSYIor7C9Ns4O4XXJt61kxWPamS7R2lZgb4/VTDTWYrRDUN5aSj9XRGgyDPtqaqV0CABOcl22NiFl3+jzy3rT+9yNMFvBC4CYU2Ci2IVpVkJYY"
+$encURL = "GkNRDbdvqsKt49ugrqVnMSWWMLeJ9rqzc0nM+tFQyyhzt86vi0Z48AOYbBddxrivJBcdMVe/KXFlCBTZ7rwSYPOXlUSWGi42c+BQqs+GBLBcJcDUenpH8nEXF8+13GIB"
 $checkLicenseStatus = cscript C:\Windows\System32\slmgr.vbs /dli
 if ($checkLicenseStatus -like "*Licensed*")
 {
