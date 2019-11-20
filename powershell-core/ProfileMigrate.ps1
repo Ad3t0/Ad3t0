@@ -3,7 +3,7 @@
 #	Creator:	Ad3t0	                    #
 #	Date:		05/22/2019             	    #
 #############################################
-$ver = "1.1.5"
+$ver = "1.1.6"
 $text1 = @'
      _       _ _____ _    ___
     / \   __| |___ /| |_ / _ \
@@ -17,14 +17,19 @@ Write-Host $text1
 Write-Host $text2 -ForegroundColor Yellow
 Write-Host $text3 -ForegroundColor Gray -NoNewline
 Write-Host $ver -ForegroundColor Green
-$fsizeDocuments = "{0:N2} MB" -f ((Get-ChildItem "$($env:USERPROFILE)\Documents" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB)
-$fsizePictures = "{0:N2} MB" -f ((Get-ChildItem "$($env:USERPROFILE)\Pictures" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB)
-$fsizeDesktop = "{0:N2} MB" -f ((Get-ChildItem "$($env:USERPROFILE)\Desktop" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB)
+
+
+$currentUser = (Get-WmiObject -Class Win32_Process -Filter 'Name="explorer.exe"').GetOwner().User
+$currentUserProfile = "C:\Users\$($currentUser)"
+
+$fsizeDocuments = "{0:N2} MB" -f ((Get-ChildItem "$($currentUserProfile)\Documents" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB)
+$fsizePictures = "{0:N2} MB" -f ((Get-ChildItem "$($currentUserProfile)\Pictures" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB)
+$fsizeDesktop = "{0:N2} MB" -f ((Get-ChildItem "$($currentUserProfile)\Desktop" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB)
 Write-Host
 Write-Host
-Write-Host "$($env:USERPROFILE)\Documents | $fsizeDocuments" -ForegroundColor yellow
-Write-Host "$($env:USERPROFILE)\Pictures  | $fsizePictures" -ForegroundColor yellow
-Write-Host "$($env:USERPROFILE)\Desktop   | $fsizeDesktop" -ForegroundColor yellow
+Write-Host "$($currentUserProfile)\Documents | $fsizeDocuments" -ForegroundColor yellow
+Write-Host "$($currentUserProfile)\Pictures  | $fsizePictures" -ForegroundColor yellow
+Write-Host "$($currentUserProfile)\Desktop   | $fsizeDesktop" -ForegroundColor yellow
 Write-Host
 while ($migrateToPath -like '*Documents*' -or $migrateToPath -like '*Pictures*' -or $migrateToPath -like '*Desktop*' -or $migrateToPath -like '') {
 	Write-Host "Type the full path to migrate the data to"
@@ -46,10 +51,10 @@ while ($migrateToPath -like '*Documents*' -or $migrateToPath -like '*Pictures*' 
 	}
 	if ($confirmRCM -eq "y")
 	{
-		robocopy "$($migrateToPath)\Documents\" "$($env:USERPROFILE)\Documents\" /s /xf *.pst desktop.ini
-		robocopy "$($migrateToPath)\Pictures\" "$($env:USERPROFILE)\Pictures\" /s /xf *.pst desktop.ini
-		robocopy "$($migrateToPath)\Desktop\" "$($env:USERPROFILE)\Desktop\" /s /xf *.pst desktop.ini
-		robocopy "$($migrateToPath)\Favorites\" "$($env:USERPROFILE)\Favorites\" /s /xf *.pst desktop.ini
+		robocopy "$($migrateToPath)\Documents\" "$($currentUserProfile)\Documents\" /s /Mov /xf *.pst desktop.ini
+		robocopy "$($migrateToPath)\Pictures\" "$($currentUserProfile)\Pictures\" /s /Mov /xf *.pst desktop.ini
+		robocopy "$($migrateToPath)\Desktop\" "$($currentUserProfile)\Desktop\" /s /Mov /xf *.pst desktop.ini
+		robocopy "$($migrateToPath)\Favorites\" "$($currentUserProfile)\Favorites\" /s /Mov /xf *.pst desktop.ini
 	}
 } else
 { while ($confirmRCB -ne "n" -and $confirmRCB -ne "y")
@@ -62,10 +67,10 @@ while ($migrateToPath -like '*Documents*' -or $migrateToPath -like '*Pictures*' 
 			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Pictures" -ItemType "directory"
 			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Desktop" -ItemType "directory"
 			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Favorites" -ItemType "directory"
-		} robocopy "$($env:USERPROFILE)\Documents" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Documents" /s /xf *.pst *.lnk desktop.ini
-		robocopy "$($env:USERPROFILE)\Pictures" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Pictures" /s /xf *.pst *.lnk desktop.ini
-		robocopy "$($env:USERPROFILE)\Desktop" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Desktop" /s /xf *.pst *.lnk desktop.ini
-		robocopy "$($env:USERPROFILE)\Favorites" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Favorites" /s /xf *.pst desktop.ini
+		} robocopy "$($currentUserProfile)\Documents" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Documents" /s /xf *.pst *.lnk desktop.ini
+		robocopy "$($currentUserProfile)\Pictures" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Pictures" /s /xf *.pst *.lnk desktop.ini
+		robocopy "$($currentUserProfile)\Desktop" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Desktop" /s /xf *.pst *.lnk desktop.ini
+		robocopy "$($currentUserProfile)\Favorites" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Favorites" /s /xf *.pst desktop.ini
 	}
 } if ($confirmRCB -eq "n" -or $confirmRCM -eq "n")
 { Read-Host "Press ENTER to exit"
