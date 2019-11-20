@@ -1,4 +1,25 @@
-$ver = "1.0.0"
+$ver = "1.0.1"
+function Decrypt-String ($Encrypted,$Passphrase,$salt = "Ad3t049866",$init = "Ad3t0PASS")
+{
+	if ($Encrypted -is [string]) {
+		$Encrypted = [Convert]::FromBase64String($Encrypted)
+	}
+	$r = New-Object System.Security.Cryptography.RijndaelManaged
+	$pass = [Text.Encoding]::UTF8.GetBytes($Passphrase)
+	$salt = [Text.Encoding]::UTF8.GetBytes($salt)
+	$r.Key = (New-Object Security.Cryptography.PasswordDeriveBytes $pass,$salt,"SHA1",5).GetBytes(32)
+	$r.IV = (New-Object Security.Cryptography.SHA1Managed).ComputeHash([Text.Encoding]::UTF8.GetBytes($init))[0..15]
+	$d = $r.CreateDecryptor()
+	$ms = New-Object IO.MemoryStream @(,$Encrypted)
+	$cs = New-Object Security.Cryptography.CryptoStream $ms,$d,"Read"
+	$sr = New-Object IO.StreamReader $cs
+	Write-Output $sr.ReadToEnd()
+	$sr.Close()
+	$cs.Close()
+	$ms.Close()
+	$r.Clear()
+}
+$encURL = "GkNRDbdvqsKt49ugrqVnMSWWMLeJ9rqzc0nM+tFQyyhzt86vi0Z48AOYbBddxrivJBcdMVe/KXFlCBTZ7rwSYIor7C9Ns4O4XXJt61kxWPamS7R2lZgb4/VTDTWYrRDUN5aSj9XRGgyDPtqaqV0CABOcl22NiFl3+jzy3rT+9yNMFvBC4CYU2Ci2IVpVkJYY"
 $checkLicenseStatus = cscript C:\Windows\System32\slmgr.vbs /dli
 if ($checkLicenseStatus -like "*Licensed*")
 {
@@ -6,18 +27,10 @@ if ($checkLicenseStatus -like "*Licensed*")
 }
 else
 {
-	$user = Read-Host "Username"
 	$pass = Read-Host "Password"
-	if (!(Test-Path -Path "C:\ProgramData\chocolatey\choco.exe"))
-	{
-		Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-		choco feature enable -n=allowGlobalConfirmation
-		choco feature disable -n=checksumFiles
-	}
-	choco install megatools
-	megaget --path $env:TEMP -u $user -p $pass "/Root/Keys/Windows10Pro.txt"
-	Sleep 1
-	[string[]]$lkArray = Get-Content -Path "$($env:TEMP)\Windows10Pro.txt"
+	$decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
+	$keys = Invoke-WebRequest -Uri $decURL
+	[string[]]$lkArray = $keys.Content
 	$lkAttempt = 0
 	while ($checkLicenseStatus -like "*Notification*" -and $lkAttempt -le $lkArray.Count)
 	{
@@ -31,7 +44,6 @@ else
 	}
 	if ($checkLicenseStatus -like "*Licensed*")
 	{
-		Remove-Item -Path "$($env:TEMP)\Windows10Pro.txt"
 		Write-Host "Windows was licensed successfully!"
 	}
 	else
