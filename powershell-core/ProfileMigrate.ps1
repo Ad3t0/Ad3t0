@@ -3,7 +3,7 @@
 #	Creator:	Ad3t0	                    #
 #	Date:		05/22/2019             	    #
 #############################################
-$ver = "1.1.7"
+$ver = "1.1.8"
 $text1 = @'
      _       _ _____ _    ___
     / \   __| |___ /| |_ / _ \
@@ -64,27 +64,27 @@ while ($migrateToPath -like '*Documents*' -or $migrateToPath -like '*Pictures*' 
 	}
 } else
 { while ($confirmRCB -ne "n" -and $confirmRCB -ne "y")
-	{ $confirmRCB = Read-Host "Profile will be copied to $($migrateToPath)\$($env:USERNAME)_DATAPM [y/n]"
+	{ $confirmRCB = Read-Host "Profile will be copied to $($migrateToPath)\$($currentUser)_DATAPM [y/n]"
 	}
 	if ($confirmRCB -eq "y")
-	{ if (!(Test-Path -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM"))
-		{ New-Item -Path $migrateToPath -Name "$($env:USERNAME)_DATAPM" -ItemType "directory"
-			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Documents" -ItemType "directory"
-			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Pictures" -ItemType "directory"
-			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Desktop" -ItemType "directory"
-			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Favorites" -ItemType "directory"
-			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Browsers\Firefox" -ItemType "directory"
-			New-Item -Path "$($migrateToPath)\$($env:USERNAME)_DATAPM\Browsers\Google Chrome" -ItemType "directory"
-		} robocopy "$($currentUserProfile)\Documents" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Documents" /s /xf *.pst *.lnk desktop.ini
-		robocopy "$($currentUserProfile)\Pictures" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Pictures" /s /xf *.pst *.lnk desktop.ini
-		robocopy "$($currentUserProfile)\Desktop" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Desktop" /s /xf *.pst *.lnk desktop.ini
-		robocopy "$($currentUserProfile)\Favorites" "$($migrateToPath)\$($env:USERNAME)_DATAPM\Favorites" /s /xf *.pst desktop.ini
+	{ if (!(Test-Path -Path "$($migrateToPath)\$($currentUser)_DATAPM"))
+		{ New-Item -Path $migrateToPath -Name "$($currentUser)_DATAPM" -ItemType "directory"
+			New-Item -Path "$($migrateToPath)\$($currentUser)_DATAPM\Documents" -ItemType "directory"
+			New-Item -Path "$($migrateToPath)\$($currentUser)_DATAPM\Pictures" -ItemType "directory"
+			New-Item -Path "$($migrateToPath)\$($currentUser)_DATAPM\Desktop" -ItemType "directory"
+			New-Item -Path "$($migrateToPath)\$($currentUser)_DATAPM\Favorites" -ItemType "directory"
+			New-Item -Path "$($migrateToPath)\$($currentUser)_DATAPM\Browsers\Firefox" -ItemType "directory"
+			New-Item -Path "$($migrateToPath)\$($currentUser)_DATAPM\Browsers\Google Chrome" -ItemType "directory"
+		} robocopy "$($currentUserProfile)\Documents" "$($migrateToPath)\$($currentUser)_DATAPM\Documents" /s /xf *.pst *.lnk desktop.ini
+		robocopy "$($currentUserProfile)\Pictures" "$($migrateToPath)\$($currentUser)_DATAPM\Pictures" /s /xf *.pst *.lnk desktop.ini
+		robocopy "$($currentUserProfile)\Desktop" "$($migrateToPath)\$($currentUser)_DATAPM\Desktop" /s /xf *.pst *.lnk desktop.ini
+		robocopy "$($currentUserProfile)\Favorites" "$($migrateToPath)\$($currentUser)_DATAPM\Favorites" /s /xf *.pst desktop.ini
 		if (Test-Path -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk")
 		{
 			. "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Firefox.lnk"
 			Sleep 3
 			$firefoxProfile = Get-ChildItem -Path "$($currentUserProfile)\AppData\Roaming\Mozilla\Firefox\Profiles\" | Where-Object { $_.PSIsContainer } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-			Copy-Item -Path "$($currentUserProfile)\AppData\Roaming\Mozilla\Firefox\Profiles\$($firefoxProfile.Name)\places.sqlite" -Destination "$($migrateToPath)\$($env:USERNAME)_DATAPM\Browsers\Firefox\" -Force
+			Copy-Item -Path "$($currentUserProfile)\AppData\Roaming\Mozilla\Firefox\Profiles\$($firefoxProfile.Name)\places.sqlite" -Destination "$($migrateToPath)\$($currentUser)_DATAPM\Browsers\Firefox\" -Force
 		}
 	}
 }
@@ -93,4 +93,3 @@ if ($confirmRCB -eq "n" -or $confirmRCM -eq "n")
 } else
 { Write-Host "Complete! Credential Manager will open next." -ForegroundColor green
 } explorer.exe 'shell:::{1206F5F1-0569-412C-8FEC-3204630DFB70}'
-exit
