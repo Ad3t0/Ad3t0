@@ -38,7 +38,7 @@ if (Test-Path $belarcinstall)
 } choco install megatools
 Remove-Item "$($env:PUBLIC)\Desktop\Belarc Advisor.lnk" > $null 2>&1
 while (!(Test-Path $output)) {
-	Start-Sleep 10
+	Start-Start-Sleep 10
 } megamkdir "/Root/Audit/$($folderOrganize)" -u $user -p $pass
 megaput --path "/Root/Audit/$($folderOrganize)" -u $user -p $pass $output
 exit

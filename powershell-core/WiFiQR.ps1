@@ -20,7 +20,7 @@ Write-Host $ver -ForegroundColor Green
 $data = netsh wlan show interfaces | Select-String SSID
 if (!($data))
 { Write-Host "Not connected to wifi exiting..."
-	Start-Sleep -s 5
+	Start-Start-Sleep -s 5
 	exit
 } $datePattern = [regex]::new("(?<=SSID                   : ).*\S")
 $matches = $datePattern.Matches($data)

@@ -36,9 +36,9 @@ else
 	{
 		Write-Host "Windows Is Not Licensed"
 		cscript C:\Windows\System32\slmgr.vbs /ipk $lkArray[$lkAttempt]
-		Sleep 2
+		Start-Sleep 2
 		cscript C:\Windows\System32\slmgr.vbs /ato
-		Sleep 2
+		Start-Sleep 2
 		$lkAttempt = $lkAttempt += 1
 		$checkLicenseStatus = cscript C:\Windows\System32\slmgr.vbs /dli
 	}

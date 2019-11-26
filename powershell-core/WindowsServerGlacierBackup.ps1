@@ -54,7 +54,7 @@ Backup Start Time: $($startTimeBackup)
 "@
 Send-MailMessage -From $SMTPEmail -To $AlertEmail -Subject "Backup Started: $($env:USERDOMAIN)" -Body $mailBodyStart -SmtpServer "smtp.gmail.com" -Port "587" -UseSsl -Credential $cred -DeliveryNotificationOption OnSuccess
 Start-WBBackup -Policy $Policy
-Sleep 5
+Start-Sleep 5
 $backupName = "$($BackupPath)\WindowsImageBackup$($backupDate)"
 Rename-Item -Path "$($BackupPath)\WindowsImageBackup" -NewName $backupName
 $endTimeBackupServer = Get-Date
@@ -64,12 +64,12 @@ Windows Backup End Time: $($endTimeBackupServer)
 Backup Size: $($backupSize)
 "@
 Send-MailMessage -From $SMTPEmail -To $AlertEmail -Subject "Windows Backup Ended: $($env:USERDOMAIN)" -Body $mailBodyEndServer -SmtpServer "smtp.gmail.com" -Port "587" -UseSsl -Credential $cred -DeliveryNotificationOption OnSuccess
-Sleep 5
+Start-Sleep 5
 . "C:\Program Files\FastGlacier\glacier-con.exe" sync $env:USERDOMAIN $backupName us-west-2 $env:USERDOMAIN/ ncds
 $endTimeBackupGlacier = Get-Date
 $mailBodyEndGlacier = @"
 Glacier Backup End Time: $($endTimeBackupGlacier)
 "@
 Stop-Transcript
-Sleep 5
+Start-Sleep 5
 Send-MailMessage -From $SMTPEmail -To $AlertEmail -Subject "Glacier Backup Ended: $($env:USERDOMAIN)" -Body $mailBodyEndGlacier -Attachments "$($env:ProgramData)\powershell-bin\$($env:USERDOMAIN)_WSGBLOG_$($backupDate)" -SmtpServer "smtp.gmail.com" -Port "587" -UseSsl -Credential $cred -DeliveryNotificationOption OnSuccess
