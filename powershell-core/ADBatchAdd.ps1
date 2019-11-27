@@ -9,11 +9,11 @@ $colItems = Get-WmiObject -Class "Win32_Processor" -Namespace "root/CIMV2"
 $currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
 $productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
 $systemmodel = wmic computersystem get model /VALUE
-$systemmodel = $systemmodel -replace ('Model=','')
+$systemmodel = $systemmodel -replace ('Model=', '')
 $currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
 $productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
-function header
-{ $text1 = @'
+function header {
+ $text1 = @'
      _       _ _____ _    ___
     / \   __| |___ /| |_ / _ \
    / _ \ / _` | |_ \| __| | | |
@@ -47,11 +47,9 @@ Write-Host "John Snow" -ForegroundColor yellow
 Write-Host "Elon Musk" -ForegroundColor yellow
 Write-Host "Jason Bourne" -ForegroundColor yellow
 Write-Host
-while ($initialsetting -ne "1" -and $initialsetting -ne "2")
-{ if (([string]::IsNullOrEmpty($initialsetting)) -ne $true)
-	{
-		if ($initialsetting -ne "1" -and $initialsetting -ne "2")
-		{
+while ($initialsetting -ne "1" -and $initialsetting -ne "2") {
+ if (([string]::IsNullOrEmpty($initialsetting)) -ne $true) {
+		if ($initialsetting -ne "1" -and $initialsetting -ne "2") {
 			Write-Warning "Invalid option"
 		}
 	}
@@ -75,8 +73,8 @@ Write-Host "Selected file containing users is:"
 Write-Host
 Write-Host $modPath -ForegroundColor yellow
 Write-Host
-while ($initialPassConfirm -ne "y")
-{ $initialPass = Read-Host "Enter initial default password for all users"
+while ($initialPassConfirm -ne "y") {
+ $initialPass = Read-Host "Enter initial default password for all users"
 	Write-Host "Initial default password will be:"
 	Write-Host
 	Write-Host $initialPass -ForegroundColor yellow
@@ -91,12 +89,13 @@ Write-Host
 Read-Host "The script will now run press ENTER to continue"
 New-ADOrganizationalUnit -Name "Employees" | Out-Null
 $domainName = $env:USERDNSDOMAIN.Split(".")
-if ($initialsetting -eq "2")
-{ Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-Item -Path ("C:\Shares\Users\" + ($given + "." + $sur).ToLower()) -ItemType "directory" }
+if ($initialsetting -eq "2") {
+ Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-Item -Path ("C:\Shares\Users\" + ($given + "." + $sur).ToLower()) -ItemType "directory" }
 	Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-ADUser -Path ("ou=Employees,dc=" + $domainName[0] + ",dc=" + $domainName[1]) -GivenName $given -Surname $sur -Name ($given + " " + $sur) -UserPrincipalName (($given + "." + $sur + "@" + $env:USERDNSDOMAIN)).ToLower() -SamAccountName ($given + "." + $sur).ToLower() -AccountPassword (ConvertTo-SecureString -AsPlainText $initialPass -Force) -Enabled $true -ChangePasswordAtLogon $false -HomeDrive "Z:" -HomeDirectory ("\\$($env:COMPUTERNAME)\" + ($given + "." + $sur).ToLower() + "$") -ScriptPath "drives.bat" -Verbose }
 	Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-SmbShare -Name (($given + "." + $sur).ToLower() + "$") -Path ("C:\Shares\Users\" + ($given + "." + $sur).ToLower()) -ChangeAccess ((($given + "." + $sur).ToLower() + "@" + $env:USERDNSDOMAIN)) }
-} else
-{ Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-Item -Path ("C:\Shares\Users\" + ($given).ToLower()) -ItemType "directory" }
+}
+else {
+ Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-Item -Path ("C:\Shares\Users\" + ($given).ToLower()) -ItemType "directory" }
 	Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-ADUser -Path ("ou=Employees,dc=" + $domainName[0] + ",dc=" + $domainName[1]) -GivenName $given -Surname $sur -Name ($given + " " + $sur) -UserPrincipalName (($given + "@" + $env:USERDNSDOMAIN)).ToLower() -SamAccountName ($given).ToLower() -AccountPassword (ConvertTo-SecureString -AsPlainText $initialPass -Force) -Enabled $true -ChangePasswordAtLogon $false -HomeDrive "Z:" -HomeDirectory ("\\$($env:COMPUTERNAME)\" + ($given).ToLower() + "$") -ScriptPath "drives.bat" -Verbose }
 	Get-Content $modPath | ForEach-Object { $Split = $_.Split(" "); $given = $Split[0]; $sur = $Split[1]; New-SmbShare -Name (($given).ToLower() + "$") -Path ("C:\Shares\Users\" + ($given).ToLower()) -ChangeAccess ((($given).ToLower() + "@" + $env:USERDNSDOMAIN)) }
 }

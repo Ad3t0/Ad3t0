@@ -4,16 +4,16 @@
 #	Date:		10/20/2018             	 #
 ##########################################
 $ver = "2.1.9"
-if ((Get-WmiObject win32_operatingsystem).Name -notlike "*Windows 10*")
-{ Write-Warning "Operating system is not Windows 10..."
+if ((Get-WmiObject win32_operatingsystem).Name -notlike "*Windows 10*") {
+ Write-Warning "Operating system is not Windows 10..."
 	Read-Host "The script will now exit..."
 	exit
 } $systemmodel = wmic computersystem get model /VALUE
-$systemmodel = $systemmodel -replace ('Model=','')
+$systemmodel = $systemmodel -replace ('Model=', '')
 $currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
 $productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
-function header
-{ $text1 = @'
+function header {
+ $text1 = @'
      _       _ _____ _    ___
     / \   __| |___ /| |_ / _ \
    / _ \ / _` | |_ \| __| | | |
@@ -41,15 +41,13 @@ function header
 } header
 New-Item -Path $env:TEMP -Name "powershell-bin" -ItemType "directory" -Force > $null 2>&1
 Set-Location "$($env:TEMP)\powershell-bin"
-if (!(Test-Path -Path "$($env:TEMP)\powershell-bin\chocolist.txt"))
-{ (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/bin/chocolist.txt') | Out-File "$($env:TEMP)\powershell-bin\chocolist.txt" -Force
-} while ($initialsetting -ne "1" -and $initialsetting -ne "2")
-{ Clear-Host
+if (!(Test-Path -Path "$($env:TEMP)\powershell-bin\chocolist.txt")) {
+ (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/bin/chocolist.txt') | Out-File "$($env:TEMP)\powershell-bin\chocolist.txt" -Force
+} while ($initialsetting -ne "1" -and $initialsetting -ne "2") {
+ Clear-Host
 	header
-	if (([string]::IsNullOrEmpty($initialsetting)) -ne $true)
-	{
-		if ($initialsetting -ne "1" -and $initialsetting -ne "2")
-		{
+	if (([string]::IsNullOrEmpty($initialsetting)) -ne $true) {
+		if ($initialsetting -ne "1" -and $initialsetting -ne "2") {
 			Write-Warning "Invalid option"
 		}
 	}
@@ -59,47 +57,39 @@ if (!(Test-Path -Path "$($env:TEMP)\powershell-bin\chocolist.txt"))
 	Write-Host " 2 - Advanced"
 	Write-Host
 	$initialsetting = Read-Host -Prompt "Input option"
-} while ($confirmationpowersch -ne "n" -and $confirmationpowersch -ne "y")
-{ $confirmationpowersch = Read-Host "Set PowerScheme to maximum performance? [y/n]"
-} while ($confirmationstartmenu -ne "n" -and $confirmationstartmenu -ne "y")
-{ $confirmationstartmenu = Read-Host "Unpin all StartMenu icons? [y/n]"
-	while ($confirmationappremoval -ne "n" -and $confirmationappremoval -ne "y")
-	{
+} while ($confirmationpowersch -ne "n" -and $confirmationpowersch -ne "y") {
+ $confirmationpowersch = Read-Host "Set PowerScheme to maximum performance? [y/n]"
+} while ($confirmationstartmenu -ne "n" -and $confirmationstartmenu -ne "y") {
+ $confirmationstartmenu = Read-Host "Unpin all StartMenu icons? [y/n]"
+	while ($confirmationappremoval -ne "n" -and $confirmationappremoval -ne "y") {
 		$confirmationappremoval = Read-Host "Remove all Windows Store apps except the Calculator, Photos, StickyNotes, and the Windows Store? [y/n]"
 	}
-} while ($confirmationchocoinstall -ne "n" -and $confirmationchocoinstall -ne "y")
-{ $confirmationchocoinstall = Read-Host "Install Chocolatey and choose packages? [y/n]"
-} if ($initialsetting -eq "2")
-{ while ($confirmationonedrive -ne "n" -and $confirmationonedrive -ne "y")
-	{
+} while ($confirmationchocoinstall -ne "n" -and $confirmationchocoinstall -ne "y") {
+ $confirmationchocoinstall = Read-Host "Install Chocolatey and choose packages? [y/n]"
+} if ($initialsetting -eq "2") {
+ while ($confirmationonedrive -ne "n" -and $confirmationonedrive -ne "y") {
 		$confirmationonedrive = Read-Host "Remove all traces of OneDrive? [y/n]"
 	}
-	while ($confirmationwallpaperq -ne "n" -and $confirmationwallpaperq -ne "y")
-	{
+	while ($confirmationwallpaperq -ne "n" -and $confirmationwallpaperq -ne "y") {
 		$confirmationwallpaperq = Read-Host "Increase desktop wallpaper compression to max quality? [y/n]"
 	}
-	while ($confirmationshowfileex -ne "n" -and $confirmationshowfileex -ne "y")
-	{
+	while ($confirmationshowfileex -ne "n" -and $confirmationshowfileex -ne "y") {
 		$confirmationshowfileex = Read-Host "Show file extension in File Explorer? [y/n]"
 	}
-	while ($confirmationshowhiddenfiles -ne "n" -and $confirmationshowhiddenfiles -ne "y")
-	{
+	while ($confirmationshowhiddenfiles -ne "n" -and $confirmationshowhiddenfiles -ne "y") {
 		$confirmationshowhiddenfiles = Read-Host "Show hidden files in File Explorer? [y/n]"
 	}
-	while ($confirmationrdp -ne "n" -and $confirmationrdp -ne "y")
-	{
+	while ($confirmationrdp -ne "n" -and $confirmationrdp -ne "y") {
 		$confirmationrdp = Read-Host "Enable Allow Remote Desktop Connections? [y/n]"
 	}
-	while ($confirmationwol -ne "n" -and $confirmationwol -ne "y")
-	{
+	while ($confirmationwol -ne "n" -and $confirmationwol -ne "y") {
 		$confirmationwol = Read-Host "Enable Allow Wake On LAN? [y/n]"
 	}
-	while ($confirmationhostsadb -ne "n" -and $confirmationhostsadb -ne "y")
-	{
+	while ($confirmationhostsadb -ne "n" -and $confirmationhostsadb -ne "y") {
 		$confirmationhostsadb = Read-Host "Download MVPS hosts for system wide ad blocking? [y/n]"
 	}
-} if ($confirmationchocoinstall -eq "y")
-{ Write-Host
+} if ($confirmationchocoinstall -eq "y") {
+ Write-Host
 	Write-Host "A .txt file containing the Chocolatey packages to be installed will now open"
 	Write-Host "edit, save and close the file separating each package name with a semicolon"
 	Write-Host
@@ -112,8 +102,8 @@ Write-Host "Maximum PowerScheme: [$($confirmationpowersch)]"
 Write-Host "Unpin All StartMenu Icons: [$($confirmationstartmenu)]"
 Write-Host "App Removal: [$($confirmationappremoval)]"
 Write-Host "Choco install: [$($confirmationchocoinstall)]"
-if ($initialsetting -eq "2")
-{ Write-Host "OneDrive Removal: [$($confirmationonedrive)]"
+if ($initialsetting -eq "2") {
+ Write-Host "OneDrive Removal: [$($confirmationonedrive)]"
 	Write-Host "Wallpaper Max Quality: [$($confirmationwallpaperq)]"
 	Write-Host "Show File Extensions: [$($confirmationshowfileex)]"
 	Write-Host "Show Hidden Files: [$($confirmationshowhiddenfiles)]"
@@ -123,31 +113,31 @@ if ($initialsetting -eq "2")
 } Write-Host
 Write-Host "Windows 10 Setup Script will now run"
 Write-Host
-while ($confirmationfull -ne "n" -and $confirmationfull -ne "y")
-{ $confirmationfull = Read-Host "Continue? [y/n]"
-} if ($confirmationfull -ne "y")
-{ Clear-Host
+while ($confirmationfull -ne "n" -and $confirmationfull -ne "y") {
+ $confirmationfull = Read-Host "Continue? [y/n]"
+} if ($confirmationfull -ne "y") {
+ Clear-Host
 	exit
 } # Disable Windows Store automatic install service
 Write-Host "Disabling automatic app reinstall services..." -ForegroundColor yellow
 Stop-Service -Name "InstallService"
 Set-Service -Name InstallService -StartupType disabled
-if ($confirmationpcdiscover -eq "y")
-{ Start-Service -Name "FDResPub"
+if ($confirmationpcdiscover -eq "y") {
+ Start-Service -Name "FDResPub"
 	Set-Service -Name FDResPub -StartupType Automatic
 } # Change Windows PowerScheme to maximum performance
-if ($confirmationpowersch -eq "y")
-{ $currScheme = powercfg /LIST | Select-String "High performance"
+if ($confirmationpowersch -eq "y") {
+ $currScheme = powercfg /LIST | Select-String "High performance"
 	$currScheme = $currScheme -split (" ")
 	$currScheme[3]
 	powercfg -SetActive $currScheme[3]
 } # Chocolatey install
-if ($confirmationchocoinstall -eq "y")
-{ Write-Host "Installing Chocolatey, specified packages, and all VCRedist Visual C++ versions..." -ForegroundColor yellow
+if ($confirmationchocoinstall -eq "y") {
+ Write-Host "Installing Chocolatey, specified packages, and all VCRedist Visual C++ versions..." -ForegroundColor yellow
 	Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature disable -n=checksumFiles
-	$chocotobeinstalled = $chocolist.Replace(' ',';').Replace(';;',';')
+	$chocotobeinstalled = $chocolist.Replace(' ', ';').Replace(';;', ';')
 	choco install $chocotobeinstalled
 } # Registry changes
 Write-Host
@@ -169,12 +159,14 @@ if ([System.Environment]::OSVersion.Version.Build -eq 10240) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 1
-} elseif ([System.Environment]::OSVersion.Version.Build -le 14393) {
+}
+elseif ([System.Environment]::OSVersion.Version.Build -le 14393) {
 	if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization")) {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -Type DWord -Value 1
-} else {
+}
+else {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -ErrorAction SilentlyContinue
 } Write-Host "Disabling Windows Update P2P optimization..." -ForegroundColor yellow
 if ([System.Environment]::OSVersion.Version.Build -eq 10240) {
@@ -182,7 +174,8 @@ if ([System.Environment]::OSVersion.Version.Build -eq 10240) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 0
-} else {
+}
+else {
 	if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization")) {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" | Out-Null
 	}
@@ -252,7 +245,7 @@ if (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAcces
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value 0
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 0
 Write-Host "Disabling Background application access..." -ForegroundColor yellow
-Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Exclude "Microsoft.Windows.Cortana*","Microsoft.Windows.ShellExperienceHost*" | ForEach-Object {
+Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Exclude "Microsoft.Windows.Cortana*", "Microsoft.Windows.ShellExperienceHost*" | ForEach-Object {
 	Set-ItemProperty -Path $_.PSPath -Name "Disabled" -Type DWord -Value 1
 	Set-ItemProperty -Path $_.PSPath -Name "DisabledByUser" -Type DWord -Value 1
 } Write-Host "Disabling Application suggestions..." -ForegroundColor yellow
@@ -322,61 +315,60 @@ if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter"
 Write-Host "Disabling 3D Objects folder in File Explorer..." -ForegroundColor yellow
 Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
 Remove-Item -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
-if ($initialsetting -eq "3")
-{ Write-Host
+if ($initialsetting -eq "3") {
+ Write-Host
 	Write-Host " Full Advanced Settings" -ForegroundColor yellow
 	Write-Host " ----------------------------------------" -ForegroundColor cyan
-} if ($confirmationwallpaperq -eq "y")
-{ Write-Host "Disabling wallpaper quality compression..." -ForegroundColor yellow
+} if ($confirmationwallpaperq -eq "y") {
+ Write-Host "Disabling wallpaper quality compression..." -ForegroundColor yellow
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "JPEGImportQuality" -Type DWord -Value 100
-} if ($confirmationshowfileex -eq "y")
-{ Write-Host "Enabling show file extensions..." -ForegroundColor yellow
+} if ($confirmationshowfileex -eq "y") {
+ Write-Host "Enabling show file extensions..." -ForegroundColor yellow
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Type DWord -Value 0
-} if ($confirmationshowhiddenfiles -eq "y")
-{ Write-Host "Enabling show hidden files..." -ForegroundColor yellow
+} if ($confirmationshowhiddenfiles -eq "y") {
+ Write-Host "Enabling show hidden files..." -ForegroundColor yellow
 	Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name Hidden -Value 1
-} if ($confirmationrdp -eq "y")
-{ Write-Host "Enabling Allow Remote Desktop Connection..." -ForegroundColor yellow
-	(Get-WmiObject Win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices).SetAllowTsConnections(1,1) | Out-Null
+} if ($confirmationrdp -eq "y") {
+ Write-Host "Enabling Allow Remote Desktop Connection..." -ForegroundColor yellow
+	(Get-WmiObject Win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices).SetAllowTsConnections(1, 1) | Out-Null
 	(Get-WmiObject -Class "Win32_TSGeneralSetting" -Namespace root\cimv2\TerminalServices -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(0) | Out-Null
 	Get-NetFirewallRule -DisplayName "Remote Desktop*" | Set-NetFirewallRule -Enabled true
-} if ($confirmationwol -eq "y")
-{ Write-Host "Enabling Allow Wake On LAN" -ForegroundColor yellow
-	$Adapters = gwmi MSPower_DeviceWakeEnable -Namespace 'root\wmi'
+} if ($confirmationwol -eq "y") {
+ Write-Host "Enabling Allow Wake On LAN" -ForegroundColor yellow
+	$Adapters = Get-WmiObject MSPower_DeviceWakeEnable -Namespace 'root\wmi'
 	if ($Adapters.count -gt 0) {
 		foreach ($Adapter in $Adapters) { $Adapter.enable = "$True" }
-	} else { $Adapters.enable = "$True" }
-	$Adapters = gwmi MSNdis_DeviceWakeOnMagicPacketOnly -Namespace 'root\wmi'
+	}
+ else { $Adapters.enable = "$True" }
+	$Adapters = Get-WmiObject MSNdis_DeviceWakeOnMagicPacketOnly -Namespace 'root\wmi'
 	if ($Adapters.count -gt 0) {
 		foreach ($Adapter in $Adapters) { $Adapter.enablewakeonmagicpacketonly = "$True" }
-	} else { $Adapters.enablewakeonmagicpacketonly = "$True" }
+	}
+ else { $Adapters.enablewakeonmagicpacketonly = "$True" }
 } # Remove all Windows store apps except WindowsStore, Calculator Photos and StickyNotes
-if ($confirmationappremoval -eq "y")
-{ Write-Host "Removing all Windows store apps except the Windows Store, Calculator, SitckyNotes, and Photos..." -ForegroundColor yellow
+if ($confirmationappremoval -eq "y") {
+ Write-Host "Removing all Windows store apps except the Windows Store, Calculator, SitckyNotes, and Photos..." -ForegroundColor yellow
 	Get-AppxPackage -AllUsers | Where-Object { $_.Name -notlike "*Microsoft.WindowsStore*" } | Where-Object { $_.Name -notlike "*Microsoft.WindowsCalculator*" } | Where-Object { $_.Name -notlike "*Microsoft.Windows.Photos*" } | Where-Object { $_.Name -notlike "*.NET*" } | Where-Object { $_.Name -notlike "*.VCLibs*" } | Where-Object { $_.Name -notlike "*Sticky*" } | Remove-AppxPackage -ErrorAction 'silentlycontinue'
 	Get-AppxProvisionedPackage -Online | Where-Object { $_.packagename -notlike "*Microsoft.WindowsStore*" } | Where-Object { $_.packagename -notlike "*Microsoft.WindowsCalculator*" } | Where-Object { $_.packagename -notlike "*Microsoft.Windows.Photos*" } | Where-Object { $_.Name -notlike "*.NET*" } | Where-Object { $_.Name -notlike "*.VCLibs*" } | Where-Object { $_.Name -notlike "*Sticky*" } | Remove-AppxProvisionedPackage -Online | Out-Null -ErrorAction 'silentlycontinue'
 } # Pinapp function
-if ($confirmationstartmenu = "y")
-{ Write-Host "Unpinning all StartMenu apps..." -ForegroundColor yellow
-	function Pin-App
-	{ param(
+if ($confirmationstartmenu = "y") {
+ Write-Host "Unpinning all StartMenu apps..." -ForegroundColor yellow
+	function Pin-App {
+		param(
 			[string]$appname,
 			[switch]$unpin
 		)
-		try
-		{
+		try {
 			if ($unpin.IsPresent) {
-				((New-Object -Com Shell.Application).Namespace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | Where-Object { $_.Name -eq $appname }).Verbs() | Where-Object { $_.Name.Replace('&','') -match 'Von "Start" l?sen|Unpin from Start' } | ForEach-Object { $_.DoIt() }
+				((New-Object -Com Shell.Application).Namespace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | Where-Object { $_.Name -eq $appname }).Verbs() | Where-Object { $_.Name.Replace('&', '') -match 'Von "Start" l?sen|Unpin from Start' } | ForEach-Object { $_.DoIt() }
 				return "App '$appname' unpinned from Start"
 			}
-			else
-			{
-				((New-Object -Com Shell.Application).Namespace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | Where-Object { $_.Name -eq $appname }).Verbs() | Where-Object { $_.Name.Replace('&','') -match 'An "Start" anheften|Pin to Start' } | ForEach-Object { $_.DoIt() }
+			else {
+				((New-Object -Com Shell.Application).Namespace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | Where-Object { $_.Name -eq $appname }).Verbs() | Where-Object { $_.Name.Replace('&', '') -match 'An "Start" anheften|Pin to Start' } | ForEach-Object { $_.DoIt() }
 				return "App '$appname' pinned to Start"
 			}
 		}
-		catch
-		{
+		catch {
 			Write-Host
 		}
 	}
@@ -387,8 +379,8 @@ Write-Host "Turning off all Windows telemetry and ads..." -ForegroundColor yello
 (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/hahndorf/Set-Privacy/master/Set-Privacy.ps1') | Out-File .\set-privacy.ps1 -Force
 .\set-privacy.ps1 -Strong -admin
 # Remove OneDrive
-if ($confirmationonedrive -eq "y")
-{ Write-Host "Disabling and removing OneDrive..." -ForegroundColor yellow
+if ($confirmationonedrive -eq "y") {
+ Write-Host "Disabling and removing OneDrive..." -ForegroundColor yellow
 	taskkill.exe /F /IM "OneDrive.exe"
 	Write-Host "Remove OneDrive..."
 	if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
@@ -400,9 +392,9 @@ if ($confirmationonedrive -eq "y")
 	Write-Host "Disable OneDrive via Group Policies..."
 	Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1 -ErrorAction 'silentlycontinue'
 	Write-Host "Removing OneDrive leftovers..."
-	rm -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
-	rm -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
-	rm -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
+	Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
+	Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
+	Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
 	Write-Host "Removing OneDrive from explorer sidebar..."
 	New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
 	mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
@@ -413,13 +405,13 @@ if ($confirmationonedrive -eq "y")
 	Write-Host "Removing OneDrive run option for new users..."
 	reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
 } # Download MVPS hosts file and backup current hosts file
-if ($confirmationonedrive -eq "y")
-{ Write-Host "Backing up hosts file to $($env:SystemRoot)\System32\drivers\etc\hosts.bak" -ForegroundColor yellow
+if ($confirmationonedrive -eq "y") {
+ Write-Host "Backing up hosts file to $($env:SystemRoot)\System32\drivers\etc\hosts.bak" -ForegroundColor yellow
 	Copy-Item "$($env:SystemRoot)\System32\drivers\etc\hosts" -Destination "$($env:SystemRoot)\System32\drivers\etc\hosts.bak"
 	(New-Object Net.WebClient).DownloadString('http://winhelp2002.mvps.org/hosts.txt') | Out-File "$($env:SystemRoot)\System32\drivers\etc\hosts" -Force
 } # Finalize
-while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y")
-{ $confirmationreboot = Read-Host "Reboot is recommended reboot this PC now? [y/n]"
-} if ($confirmationreboot -eq "y")
-{ Restart-Computer
+while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
+ $confirmationreboot = Read-Host "Reboot is recommended reboot this PC now? [y/n]"
+} if ($confirmationreboot -eq "y") {
+ Restart-Computer
 } exit

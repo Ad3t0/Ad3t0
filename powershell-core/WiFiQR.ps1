@@ -18,14 +18,14 @@ Write-Host $text2 -ForegroundColor Yellow
 Write-Host $text3 -ForegroundColor Gray -NoNewline
 Write-Host $ver -ForegroundColor Green
 $data = netsh wlan show interfaces | Select-String SSID
-if (!($data))
-{ Write-Host "Not connected to wifi exiting..."
-	Start-Start-Sleep -s 5
-	exit
+if (!($data)) {
+     Write-Host "Not connected to wifi exiting..."
+     Start-Start-Sleep -s 5
+     exit
 } $datePattern = [regex]::new("(?<=SSID                   : ).*\S")
 $matches = $datePattern.Matches($data)
 $wifiprofile = $matches.Value
-$wifiprofile = $wifiprofile.Substring(0,$wifiprofile.IndexOf(' '))
+$wifiprofile = $wifiprofile.Substring(0, $wifiprofile.IndexOf(' '))
 $data2 = netsh wlan show profile $wifiprofile key=clear
 $datePattern2 = [regex]::new("(?<=Key Content            : ).*\S")
 $matches2 = $datePattern2.Matches($data2)
@@ -39,4 +39,4 @@ Write-Host $wifiprofile
 Write-Host "KEY: " -ForegroundColor Yellow -NoNewline
 Write-Host $wifikey
 Write-Host
-start $URL
+Start-Process $URL

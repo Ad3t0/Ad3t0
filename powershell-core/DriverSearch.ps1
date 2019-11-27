@@ -18,9 +18,9 @@ Write-Host $text2 -ForegroundColor Yellow
 Write-Host $text3 -ForegroundColor Gray -NoNewline
 Write-Host $ver -ForegroundColor Green
 $systemmodel = wmic computersystem get model /VALUE
-$systemmodel = $systemmodel -replace ('Model=','')
+$systemmodel = $systemmodel -replace ('Model=', '')
 $systemmodel = $systemmodel + "drivers"
 $systemmodel = [uri]::EscapeDataString($systemmodel)
-$systemmodel = $systemmodel -replace ('%20%20%20%20%20%20%20','')
+$systemmodel = $systemmodel -replace ('%20%20%20%20%20%20%20', '')
 $URL = "https://www.google.com/search?q=$($systemmodel)"
-start $URL
+Start-Process $URL
