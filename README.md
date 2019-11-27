@@ -108,10 +108,6 @@ Each option can be selected individually within the script
   - Enable Wake On LAN
   - Download [MVPS](http://winhelp2002.mvps.org/hosts.txt) hosts file for system wide ad blocking
 # Notes
-#### Show WLAN profiles and keys
-```
-netsh wlan show profile * key=clear
-```
 #### Transfer all FSMO Roles
 ```
 Move-ADDirectoryServerOperationMasterRole "DC1" –OperationMasterRole 0,1,2,3,4
@@ -128,15 +124,6 @@ netdom resetpwd /server:PDC.domain.com /userd:Domain\domain_admin /passwordd:*
 ```
 taskkill /IM firefox.exe /F
 ```
-#### Install License Key
-##### Windows 10
-```
-changepk.exe /ProductKey #####-#####-#####-#####-#####
-```
-##### Windows Server
-```
-slmgr.vbs /ipk #####-#####-#####-#####-#####
-```
 #### Set time server to time.nist.gov
 ```
 net stop w32time
@@ -144,6 +131,11 @@ w32tm /config /syncfromflags:manual /manualpeerlist:time.nist.gov
 w32tm /config /reliable:yes
 net start w32time
 w32tm /query /configuration | Select-String NtpServer:
+```
+#### VS Code Notes
+```
+Auto Format: Shift + Alt + F
+Command Palette: Ctrl + Shift + P
 ```
 #### Shared Software
 https://mega.nz/#F!ZaRSwCDS!P43lje-ebk6JW_TB2Mhyvw
