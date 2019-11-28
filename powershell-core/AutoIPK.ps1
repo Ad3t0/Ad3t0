@@ -1,4 +1,3 @@
-$ver = "1.0.4"
 function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = "Ad3t0PASS") {
 	if ($Encrypted -is [string]) {
 		$Encrypted = [Convert]::FromBase64String($Encrypted)
@@ -18,30 +17,7 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$ms.Close()
 	$r.Clear()
 }
-$encURL = "GkNRDbdvqsKt49ugrqVnMSWWMLeJ9rqzc0nM+tFQyyhzt86vi0Z48AOYbBddxrivJBcdMVe/KXFlCBTZ7rwSYPOXlUSWGi42c+BQqs+GBLBcJcDUenpH8nEXF8+13GIB"
-$checkLicenseStatus = cscript C:\Windows\System32\slmgr.vbs /dli
-if ($checkLicenseStatus -like "*Licensed*") {
-	Write-Host "Windows is already licensed exiting..."
-}
-else {
-	$pass = Read-Host "Password"
-	$decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
-	$keys = Invoke-WebRequest -Uri $decURL -UseBasicParsing
-	$lkArray = $keys.Content.Split([Environment]::NewLine)
-	$lkAttempt = 0
-	while ($checkLicenseStatus -like "*Notification*" -and $lkAttempt -le $lkArray.Count) {
-		Write-Host "Windows Is Not Licensed"
-		cscript C:\Windows\System32\slmgr.vbs /ipk $lkArray[$lkAttempt]
-		Start-Sleep 2
-		cscript C:\Windows\System32\slmgr.vbs /ato
-		Start-Sleep 2
-		$lkAttempt = $lkAttempt += 1
-		$checkLicenseStatus = cscript C:\Windows\System32\slmgr.vbs /dli
-	}
-	if ($checkLicenseStatus -like "*Licensed*") {
-		Write-Host "Windows was licensed successfully!"
-	}
-	else {
-		Write-Host "Windows licensing failed"
-	}
-}
+$encURL = "O62M8Rzf7woutcr9IyqXtEVBP3Qug3lHFaggYj0YktDjEOutVAFj+9Ome5yy4HPOs6nTORTQ1hoH5WqHYOnx7/im99IdxanB2SrZX6JlS2asFWWZFrI+SM1o3hc9tsLPivEhg5FxJuN76++2JdmfJlk7ud9kVOJXamaZKTO5qXZMPB6vsMUj6pN9UKgJlcc0"
+$pass = Read-Host "Password"
+$decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString($decURL))
