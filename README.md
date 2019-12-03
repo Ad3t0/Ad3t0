@@ -132,24 +132,26 @@ w32tm /config /reliable:yes
 net start w32time
 w32tm /query /configuration | Select-String NtpServer:
 ```
-#### VS Code Notes
-```
-Auto Format: Shift + Alt + F
-Command Palette: Ctrl + Shift + P
-```
-#### Windows Server ISO
-Windows Server 2012 R2
 
-http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO
+#### Windows Server ISOs
 
-Windows Server 2016
+------------
 
-https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO
+| OS  | Download Link|
+| ------------ | ------------ |
+| Windows Server 2012 R2  |  http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO |
+| Windows Server 2016  |  https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO |
+| Windows Server 2019 | https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso |
 
-Windows Server 2019
 
-https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso
+------------
+
+
 #### Shared Software
 https://mega.nz/#F!ZaRSwCDS!P43lje-ebk6JW_TB2Mhyvw
+
+------------
+
+
 #### Server Files
 https://mega.nz/#F!MLoQkSiC!963pGQ2axa63DW-1Lv4UQA
