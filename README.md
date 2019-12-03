@@ -139,12 +139,15 @@ Command Palette: Ctrl + Shift + P
 ```
 #### Windows Server ISO
 Windows Server 2012 R2
+
 http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO
 
 Windows Server 2016
-https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVER_EVAL_x64FRE_en-us.iso
+
+https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO
 
 Windows Server 2019
+
 https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso
 #### Shared Software
 https://mega.nz/#F!ZaRSwCDS!P43lje-ebk6JW_TB2Mhyvw
