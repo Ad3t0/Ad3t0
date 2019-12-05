@@ -5,17 +5,18 @@
 [ChocoInstall](#chocoinstall)  
 [DriverSearch](#driversearch)  
 [AutoIPK](#autoipk)  
+[WinSatFormal](#winsatformal)  
 [BelarcAudit](#belarcaudit)  
 [ADBatchAdd](#adbatchadd)  
 [MSRAQuickConnect](#msraquickconnect)  
 [WINRMgpupdate](#winrmgpupdate)  
 [WINRMScript](#winrmscript)  
 [ProfileMigrate](#profilemigrate)  
-[WindowsServerGlacierBackup](#windowsserverglacierbackup)  
-[WiFiQR](#wifiqr) 
-[CleanerWindows10](#cleanerwindows10) 
+[WiFiQR](#wifiqr)  
+[CleanerWindows10](#cleanerwindows10)  
 [Notes](#notes)  
 [Server Files](#server-files)  
+
 ### **Paste links into PowerShell**
 ## OpenVPN
 #### Private OpenVPN with pulled config
@@ -36,6 +37,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 #### Download product key list and attempt to license
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoIPK.ps1'))
+```
+## WinSatFormal
+#### Run a Windows PC Benchmark WinSat
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WinSatFormal.ps1'))
 ```
 ## BelarcAudit
 #### Run a Windows PC Audit using BelarcAdvisor
@@ -71,11 +77,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 #### Profile migration tool
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ProfileMigrate.ps1'))
-```
-## WindowsServerGlacierBackup
-#### Creates a Windows Server Manual Backup
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WindowsServerGlacierBackup.ps1'))
 ```
 ## WiFiQR
 #### Create a iOS camera readable Wi-Fi connect QR code using information from the currently connected Wi-Fi network
