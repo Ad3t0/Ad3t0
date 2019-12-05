@@ -120,13 +120,6 @@ Move-ADDirectoryServerOperationMasterRole "DC1" –OperationMasterRole 0,1,2,3,4
 ```
 netdom resetpwd /server:PDC.domain.com /userd:Domain\domain_admin /passwordd:*
 ```
-#### Windows Score Index
-```
-Get-CimInstance Win32_WinSat
-```
-```
-winsat formal
-```
 #### Set time server to time.nist.gov
 ```
 net stop w32time
