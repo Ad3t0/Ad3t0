@@ -6,6 +6,7 @@
 [DriverSearch](#driversearch)  
 [AutoIPK](#autoipk)  
 [WinSatFormal](#winsatformal)  
+[CredShow](#credshow)  
 [BelarcAudit](#belarcaudit)  
 [ADBatchAdd](#adbatchadd)  
 [MSRAQuickConnect](#msraquickconnect)  
