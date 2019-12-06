@@ -7,7 +7,7 @@
 [AutoIPK](#autoipk)  
 [WinSatFormal](#winsatformal)  
 [CredShow](#credshow)  
-[BelarcAudit](#belarcaudit)  
+[GPOImport](#gpoimport)  
 [ADBatchAdd](#adbatchadd)  
 [MSRAQuickConnect](#msraquickconnect)  
 [WINRMgpupdate](#winrmgpupdate)  
@@ -49,10 +49,10 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CredShow.ps1'))
 ```
-## BelarcAudit
-#### Run a Windows PC Audit using BelarcAdvisor
+## GPOImport
+#### GPO Import script
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/BelarcAudit.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/GPOImport.ps1'))
 ```
 ## ADBatchAdd
 #### Batch add Active Directory users into a new Organizational Unit named Employees and create private home directories from a text file formatted like
