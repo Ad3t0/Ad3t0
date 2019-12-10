@@ -141,9 +141,3 @@ w32tm /query /configuration | Select-String NtpServer:
 | Windows Server 2016  | http://download.microsoft.com/download/6/9/5/6957BB28-1FAD-4E62-B161-F873196130BD/14393.0.161119-1705.RS1_REFRESH_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO |
 | Windows Server 2019 | https://software-download.microsoft.com/download/pr/17763.107.101029-1455.rs5_release_svc_refresh_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO |
 
-
-------------
-
-
-#### All ISOs
-https://virtualmedia.online.net/
