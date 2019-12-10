@@ -142,9 +142,9 @@ w32tm /query /configuration | Select-String NtpServer:
 
 | OS  | Download Link|
 | ------------ | ------------ |
-| Windows Server 2012 R2  |  http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO |
-| Windows Server 2016  |  https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO |
-| Windows Server 2019 | https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso |
+| Windows Server 2012 R2  | http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO |
+| Windows Server 2016  | http://download.microsoft.com/download/6/9/5/6957BB28-1FAD-4E62-B161-F873196130BD/14393.0.161119-1705.RS1_REFRESH_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO |
+| Windows Server 2019 | https://software-download.microsoft.com/download/pr/17763.107.101029-1455.rs5_release_svc_refresh_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO |
 
 
 ------------
@@ -152,9 +152,3 @@ w32tm /query /configuration | Select-String NtpServer:
 
 #### Shared Software
 https://mega.nz/#F!ZaRSwCDS!P43lje-ebk6JW_TB2Mhyvw
-
-------------
-
-
-#### Server Files
-https://mega.nz/#F!MLoQkSiC!963pGQ2axa63DW-1Lv4UQA
