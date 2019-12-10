@@ -145,5 +145,5 @@ w32tm /query /configuration | Select-String NtpServer:
 ------------
 
 
-#### Shared Software
-https://mega.nz/#F!ZaRSwCDS!P43lje-ebk6JW_TB2Mhyvw
+#### All ISOs
+https://virtualmedia.online.net/
