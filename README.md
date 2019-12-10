@@ -16,7 +16,7 @@
 [WiFiQR](#wifiqr)  
 [CleanerWindows10](#cleanerwindows10)  
 [Notes](#notes)  
-[Server Files](#server-files)  
+[Windows Server ISOs](#windows-server-isos)  
 
 ### **Paste links into PowerShell**
 ## OpenVPN
