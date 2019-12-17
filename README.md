@@ -89,6 +89,14 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WiFiQR.ps1'))
 ```
+
+
+## PTChromeFix
+#### Sets Chrome compatability to Windows 8 for all users
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/PTChromeFix.ps1'))
+```
+
 ## CleanerWindows10
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CleanerWindows10.ps1'))
@@ -134,11 +142,6 @@ w32tm /config /syncfromflags:manual /manualpeerlist:time.nist.gov
 w32tm /config /reliable:yes
 net start w32time
 w32tm /query /configuration | Select-String NtpServer:
-```
-
-#### PTChromeFix
-```
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -Value "~ WIN8RTM"
 ```
 
 #### Windows Server ISOs
