@@ -17,9 +17,9 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$ms.Close()
 	$r.Clear()
 }
-$encURL = "G41VwvESBO+Z8ATsCgJsO/vaPBMEyYDXSIPoQwkpUzvIa/JrfFdQO/H96tiXbQFLAS+h68u9AqYCBF1kBMh7yza8Y927KolwM2120f9hQIZZbq8PoVXHKXsyOFbEO+JUuXXc9tYxsIfj6d3RBZDRgicLUmFB5Ab3aYXVVSK06HwjSI9pNLxPQucIqHozXkQq7JYNEXKExjcJvlVqjdeYzw=="
+$encURL = 'G41VwvESBO+Z8ATsCgJsO/vaPBMEyYDXSIPoQwkpUzvIa/JrfFdQO/H96tiXbQFLAS+h68u9AqYCBF1kBMh7yza8Y927KolwM2120f9hQIZZbq8PoVXHKXsyOFbEO+JUuXXc9tYxsIfj6d3RBZDRgicLUmFB5Ab3aYXVVSK06HwjSI9pNLxPQucIqHozXkQq7JYNEXKExjcJvlVqjdeYzw=='
 $pass = Read-Host "Password"
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Script = Invoke-RestMethod $decURL -Headers @{”Accept” = “application/vnd.github.v3.raw” }
+$Script = Invoke-RestMethod "$($decURL)" -Headers @{"Accept" = "application/vnd.github.v3.raw" }
 Invoke-Expression $Script
