@@ -136,6 +136,11 @@ net start w32time
 w32tm /query /configuration | Select-String NtpServer:
 ```
 
+#### PTChromeFix
+```
+New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -Value "~ WIN8RTM"
+```
+
 #### Windows Server ISOs
 
 ------------
