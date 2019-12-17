@@ -14,6 +14,7 @@
 [WINRMScript](#winrmscript)  
 [ProfileMigrate](#profilemigrate)  
 [WiFiQR](#wifiqr)  
+[PTChromeFix](#ptchromefix)  
 [CleanerWindows10](#cleanerwindows10)  
 [Notes](#notes)  
 [Windows Server ISOs](#windows-server-isos)  
@@ -89,14 +90,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WiFiQR.ps1'))
 ```
-
-
 ## PTChromeFix
 #### Sets Chrome compatability to Windows 8 for all users
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/PTChromeFix.ps1'))
 ```
-
 ## CleanerWindows10
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CleanerWindows10.ps1'))
