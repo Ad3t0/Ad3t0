@@ -1,11 +1,11 @@
 # Windows 7, 8, 10 and Windows Server PowerShell Scripts
 [![](https://i.imgur.com/bzG7kdD.png)](#)
-
 [OpenVPN](#openvpn)  
 [ChocoInstall](#chocoinstall)  
 [DriverSearch](#driversearch)  
 [AutoIPK](#autoipk)  
 [WinSatFormal](#winsatformal)  
+[GCloudADA](#gcloudada)  
 [CredShow](#credshow)  
 [GPOImport](#gpoimport)  
 [ADBatchAdd](#adbatchadd)  
@@ -18,7 +18,6 @@
 [CleanerWindows10](#cleanerwindows10)  
 [Notes](#notes)  
 [Windows Server ISOs](#windows-server-isos)  
-
 ### **Paste links into PowerShell**
 ## OpenVPN
 #### Private OpenVPN with pulled config
@@ -34,6 +33,16 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 #### Google search with system model for drivers
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DriverSearch.ps1'))
+```
+## PFMG
+#### Profile Migration Utility
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/PFMG/master/PFMG.ps1'))
+```
+## PSS3B
+#### Configures AWS and creates scheduled tasks for a weekly AWS S3 backup
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/PSS3B/master/PSS3B.ps1'))
 ```
 ## AutoIPK
 #### Download product key list and attempt to license
@@ -141,14 +150,10 @@ w32tm /config /reliable:yes
 net start w32time
 w32tm /query /configuration | Select-String NtpServer:
 ```
-
 #### Windows Server ISOs
-
 ------------
-
 | OS  | Download Link|
 | ------------ | ------------ |
 | Windows Server 2012 R2  | http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO |
 | Windows Server 2016  | http://download.microsoft.com/download/6/9/5/6957BB28-1FAD-4E62-B161-F873196130BD/14393.0.161119-1705.RS1_REFRESH_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO |
 | Windows Server 2019 | https://software-download.microsoft.com/download/pr/17763.107.101029-1455.rs5_release_svc_refresh_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO |
-
