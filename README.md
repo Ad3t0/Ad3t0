@@ -15,7 +15,6 @@
 [MSRAQuickConnect](#msraquickconnect)  
 [WINRMgpupdate](#winrmgpupdate)  
 [WINRMScript](#winrmscript)  
-[ProfileMigrate](#profilemigrate)  
 [WiFiQR](#wifiqr)  
 [CleanerWindows10](#cleanerwindows10)  
 [Notes](#notes)  
