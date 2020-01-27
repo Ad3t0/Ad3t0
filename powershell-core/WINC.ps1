@@ -17,7 +17,7 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$ms.Close()
 	$r.Clear()
 }
-$encURL = 'G41VwvESBO+Z8ATsCgJsO/vaPBMEyYDXSIPoQwkpUzvIa/JrfFdQO/H96tiXbQFLAS+h68u9AqYCBF1kBMh7yza8Y927KolwM2120f9hQIbHG+fg5A0VYc3gQCusbAZI29rKdjuCZOi5oa3L6tFITX47hfHM9LLXRVc+mv21KL4TGAYw3/EMc8fhypzz34Uq58eFfsOkDzgAsXSqvFONfw=='
+$encURL = 'x6kxt3P2xDXHXDBdbGUCroGC6g3is8SL6Mlxn4GTL9SXuOj68dtSrNzvD5MtrJPaCAWbMRQB+UNJzAnxNd2CYLQMpgp/2xzpiGGCeWzrWSYm5hYgPWOymNf89JZ5WLnLXljEJ8UCVhAkRhPeqBl2CnSHc6MrAi4WPbRSSxXLnEDSFlHnIUPjcM0XaWKxYhbc8w8Van8Wgx6pdnsKWI+Fbg=='
 $pass = Read-Host "Password"
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
