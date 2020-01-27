@@ -7,6 +7,7 @@
 [PFMG](#pfmg)  
 [PSS3B](#pss3b)  
 [AutoIPK](#autoipk)  
+[WINC](#winc)  
 [WinSatFormal](#winsatformal)  
 [GCloudADA](#gcloudada)  
 [CredShow](#credshow)  
@@ -42,13 +43,18 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```
 ## PSS3B
 #### Configures AWS and creates scheduled tasks for a weekly AWS S3 backup
-```powershell
+```powershelld
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/PSS3B/master/PSS3B.ps1'))
 ```
 ## AutoIPK
 #### Download product key list and attempt to license
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoIPK.ps1'))
+```
+## WINC
+#### WINC
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WINC.ps1'))
 ```
 ## WinSatFormal
 #### Run a Windows PC Benchmark WinSat
