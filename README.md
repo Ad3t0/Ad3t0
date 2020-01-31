@@ -8,6 +8,7 @@
 [PSS3B](#pss3b)  
 [AutoIPK](#autoipk)  
 [WINC](#winc)  
+[DG](#dg)
 [WinSatFormal](#winsatformal)  
 [GCloudADA](#gcloudada)  
 [CredShow](#credshow)  
@@ -55,6 +56,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 #### WINC
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WINC.ps1'))
+```
+## DG
+#### DG
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DG.ps1'))
 ```
 ## WinSatFormal
 #### Run a Windows PC Benchmark WinSat
