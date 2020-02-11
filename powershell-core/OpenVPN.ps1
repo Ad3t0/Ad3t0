@@ -43,15 +43,12 @@ Write-Host $text1
 Write-Host $text2 -ForegroundColor Yellow
 Write-Host $text3 -ForegroundColor Gray -NoNewline
 Write-Host $ver -ForegroundColor Green
-
 if ([System.Environment]::OSVersion.Version.Major -ge 6.2) {
-	if (!(Test-Path -Path "C:\Program Files\OpenVPN\bin\openvpn.exe") {
+	if (!(Test-Path -Path "C:\Program Files\OpenVPN\bin\openvpn.exe")) {
 		$url = "https://swupdate.openvpn.org/community/releases/openvpn-install-2.4.8-I602-Win10.exe"
 		$output = "$($env:TEMP)\openvpn-install-2.4.8-I602-Win10.exe"
 		Invoke-WebRequest -Uri $url -OutFile $output
 	}
-
-	
 }
 else {
 	if (!(Test-Path -Path "C:\ProgramData\chocolatey\choco.exe")) {
@@ -62,10 +59,7 @@ else {
 	if (!(Test-Path -Path "C:\Program Files\OpenVPN\bin\openvpn.exe")) {
 		choco install openvpn
 	}
-
 }
-
-
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 Invoke-WebRequest -Uri $decURL -UseBasicParsing
 $webClient = New-Object System.Net.WebClient
