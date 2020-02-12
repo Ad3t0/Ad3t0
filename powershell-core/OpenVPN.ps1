@@ -3,7 +3,7 @@
 #	Creator:	Ad3t0	                    #
 #	Date:		04/10/2019             	    #
 #############################################
-$ver = "1.5.8"
+$ver = "1.5.9"
 function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = "Ad3t0PASS") {
 	if ($Encrypted -is [string]) {
 		$Encrypted = [Convert]::FromBase64String($Encrypted)
@@ -48,6 +48,7 @@ if ([System.Environment]::OSVersion.Version.Major -ge 6.2) {
 		$url = "https://swupdate.openvpn.org/community/releases/openvpn-install-2.4.8-I602-Win10.exe"
 		$output = "$($env:TEMP)\openvpn-install-2.4.8-I602-Win10.exe"
 		Invoke-WebRequest -Uri $url -OutFile $output
+		."$($env:TEMP)\openvpn-install-2.4.8-I602-Win10.exe" /S /SELECT_SHORTCUTS=0
 	}
 }
 else {
