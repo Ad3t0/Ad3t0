@@ -2,6 +2,7 @@
 [![](https://i.imgur.com/bzG7kdD.png)](#)
 
 [OpenVPN](#openvpn)  
+[OpenVPN_InstallOnly](#openvpn_installonly)  
 [ChocoInstall](#chocoinstall)  
 [DriverSearch](#driversearch)  
 [PFMG](#pfmg)  
@@ -26,6 +27,11 @@
 #### Private OpenVPN with pulled config
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN.ps1'))
+```
+## OpenVPN_InstallOnly
+#### Private OpenVPN with pulled config
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_InstallOnly.ps1'))
 ```
 ## ChocoInstall
 #### Installs [Chocolatey](https://chocolatey.org/)
