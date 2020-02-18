@@ -1,8 +1,8 @@
 # Windows 7, 8, 10 and Windows Server PowerShell Scripts
 [![](https://i.imgur.com/bzG7kdD.png)](#)
 
-[OpenVPN](#openvpn)  
-[OpenVPN_InstallOnly](#openvpn_installonly)  
+[OpenVPN_Single](#openvpn_single)  
+[OpenVPN_Multi](#openvpn_multi)  
 [ChocoInstall](#chocoinstall)  
 [DriverSearch](#driversearch)  
 [PFMG](#pfmg)  
@@ -23,15 +23,15 @@
 [Notes](#notes)  
 [Windows Server ISOs](#windows-server-isos)  
 ### **Paste links into PowerShell**
-## OpenVPN
+## OpenVPN_Single
 #### Private OpenVPN with pulled config
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_Single.ps1'))
 ```
-## OpenVPN_InstallOnly
+## OpenVPN_Multi
 #### Private OpenVPN with pulled config
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_InstallOnly.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_Multi.ps1'))
 ```
 ## ChocoInstall
 #### Installs [Chocolatey](https://chocolatey.org/)
