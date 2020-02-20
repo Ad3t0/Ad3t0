@@ -17,7 +17,7 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$ms.Close()
 	$r.Clear()
 }
-$encURL = 'x6kxt3P2xDXHXDBdbGUCroGC6g3is8SL6Mlxn4GTL9SXuOj68dtSrNzvD5MtrJPaCAWbMRQB+UNJzAnxNd2CYLQMpgp/2xzpiGGCeWzrWSZ1rBV1TUYtWje29tTqRobmjpQKeSP7hybZJmajWkX0OtWnLB3+0lV29HSjK+OZ6b+Oiiz5M3uZbIajKW7PAw+2KbCEzJrAOsAr/b6vjlqYYg=='
+$encURL = 'G41VwvESBO+Z8ATsCgJsO/vaPBMEyYDXSIPoQwkpUzvIa/JrfFdQO/H96tiXbQFLAS+h68u9AqYCBF1kBMh7yza8Y927KolwM2120f9hQIYOBDtjOlmvh61+jVVMST+HkW8Aervauri5p/cuecxSYD+1kDVd+5IOSXnOfCpo/te90rhlt//i4AQRRKaCwVh/3nR4xTuTm2oJuk+m49x3tA=='
 $pass = Read-Host -AsSecureString "Password"
 $pass = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pass))
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
