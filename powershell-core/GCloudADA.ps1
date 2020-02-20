@@ -18,7 +18,8 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$r.Clear()
 }
 $encURL = 'G41VwvESBO+Z8ATsCgJsO/vaPBMEyYDXSIPoQwkpUzvIa/JrfFdQO/H96tiXbQFLAS+h68u9AqYCBF1kBMh7yza8Y927KolwM2120f9hQIbwVgUNEMFqq+fFF+RA/Ql2dMA8hpv5H2qUWA++yRfuHZ08azZy9zQPVO4qoo6YmoZ24R9nTQDY+EWj6UqzFR40zfXNrUfciYgnqMk52LLiOnMoI04MO4HgJluge7zmcJA='
-$pass = Read-Host "Password"
+$pass = Read-Host -AsSecureString "Password"
+$pass = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pass))
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $Script = Invoke-RestMethod "$($decURL)" -Headers @{"Accept" = "application/vnd.github.v3.raw" }
