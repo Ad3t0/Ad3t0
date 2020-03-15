@@ -1,22 +1,3 @@
-#############################################
-#	Title:      WiFiQR					    #
-#	Creator:	Ad3t0	                    #
-#	Date:		11/06/2018             	    #
-#############################################
-$ver = "1.2.0"
-$text1 = @'
-     _       _ _____ _    ___
-    / \   __| |___ /| |_ / _ \
-   / _ \ / _` | |_ \| __| | | |
-  / ___ \ (_| |___) | |_| |_| |
- /_/   \_\__,_|____/ \__|\___/
-'@
-$text2 = '       WiFiQR'
-$text3 = "      Version: "
-Write-Host $text1
-Write-Host $text2 -ForegroundColor Yellow
-Write-Host $text3 -ForegroundColor Gray -NoNewline
-Write-Host $ver -ForegroundColor Green
 $data = netsh wlan show interfaces | Select-String SSID
 if (!($data)) {
      Write-Host "Not connected to wifi exiting..."
