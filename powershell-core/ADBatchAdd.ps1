@@ -1,11 +1,4 @@
-######################################################
-#	Title:      ADBatchAdd	       					 #
-#	Creator:	Ad3t0	                             #
-#	Date:		12/12/2018             	             #
-######################################################
 $ver = "1.1.5"
-$strComputer = "."
-$colItems = Get-WmiObject -Class "Win32_Processor" -Namespace "root/CIMV2"
 $currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
 $productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
 $systemmodel = wmic computersystem get model /VALUE
@@ -13,16 +6,8 @@ $systemmodel = $systemmodel -replace ('Model=', '')
 $currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
 $productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
 function header {
- $text1 = @'
-     _       _ _____ _    ___
-    / \   __| |___ /| |_ / _ \
-   / _ \ / _` | |_ \| __| | | |
-  / ___ \ (_| |___) | |_| |_| |
- /_/   \_\__,_|____/ \__|\___/
-'@
 	$text2 = ' ADBatchAdd'
 	$text3 = "        Version: "
-	Write-Host $text1
 	Write-Host $text2 -ForegroundColor Yellow
 	Write-Host $text3 -ForegroundColor Gray -NoNewline
 	Write-Host $ver -ForegroundColor Green

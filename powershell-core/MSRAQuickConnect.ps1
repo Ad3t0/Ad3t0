@@ -1,8 +1,3 @@
-#############################################
-#	Title:      MSRAQuickConnect 		    #
-#	Creator:	Ad3t0	                    #
-#	Date:		09/10/2019             	    #
-#############################################
 $ver = "1.1.9"
 if (!(Test-Path "C:\Windows\System32\msra.exe")) {
 	Write-Warning "Microsoft Remote Assistant is not installed. Exiting..."

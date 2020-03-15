@@ -1,8 +1,3 @@
-##########################################
-#	Title:      CleanWindows10			 #
-#	Creator:	Ad3t0	                 #
-#	Date:		10/20/2018             	 #
-##########################################
 $ver = "2.1.9"
 if ((Get-WmiObject win32_operatingsystem).Name -notlike "*Windows 10*") {
  Write-Warning "Operating system is not Windows 10..."
@@ -13,18 +8,6 @@ $systemmodel = $systemmodel -replace ('Model=', '')
 $currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
 $productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
 function header {
- $text1 = @'
-     _       _ _____ _    ___
-    / \   __| |___ /| |_ / _ \
-   / _ \ / _` | |_ \| __| | | |
-  / ___ \ (_| |___) | |_| |_| |
- /_/   \_\__,_|____/ \__|\___/
-'@
-	$text2 = '    CleanWindows10'
-	$text3 = "        Version: "
-	Write-Host $text1
-	Write-Host $text2 -ForegroundColor Yellow
-	Write-Host $text3 -ForegroundColor Gray -NoNewline
 	Write-Host $ver -ForegroundColor Green
 	Write-Host $text
 	Write-Host " System Model: " -ForegroundColor yellow -NoNewline
