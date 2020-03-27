@@ -1,33 +1,28 @@
 # Windows 7, 8, 10 and Windows Server PowerShell Scripts
 [![](https://i.imgur.com/bzG7kdD.png)](#)
 
-[OpenVPN_Single](#openvpn_single)  
-[OpenVPN_Multi](#openvpn_multi)  
-[ChocoInstall](#chocoinstall)  
-[DriverSearch](#driversearch)  
-[PFMG](#pfmg)  
-[PSS3B](#pss3b)  
-[AutoIPK](#autoipk)  
-[WINC](#winc)  
-[DG](#dg)  
-[WinSatFormal](#winsatformal)  
-[GCloudADA](#gcloudada)  
-[CredShow](#credshow)  
-[GPOImport](#gpoimport)  
-[ADBatchAdd](#adbatchadd)  
-[MSRAQuickConnect](#msraquickconnect)  
-[WINRMgpupdate](#winrmgpupdate)  
-[WINRMScript](#winrmscript)  
-[WiFiQR](#wifiqr)  
-[CleanerWindows10](#cleanerwindows10)  
-[Notes](#notes)  
-[Windows Server ISOs](#windows-server-isos)  
+[OpenVPN_Single](#openvpn_single)
+[OpenVPN_Multi](#openvpn_multi)
+[ChocoInstall](#chocoinstall)
+[DriverSearch](#driversearch)
+[PFMG](#pfmg)
+[PSS3B](#pss3b)
+[AutoIPK](#autoipk)
+[WINC](#winc)
+[DG](#dg)
+[WinSatFormal](#winsatformal)
+[GCloudADA](#gcloudada)
+[CredShow](#credshow)
+[GPOImport](#gpoimport)
+[ADBatchAdd](#adbatchadd)
+[MSRAQuickConnect](#msraquickconnect)
+[WINRMgpupdate](#winrmgpupdate)
+[WINRMScript](#winrmscript)
+[WiFiQR](#wifiqr)
+[CleanerWindows10](#cleanerwindows10)
+[Notes](#notes)
+[Windows Server ISOs](#windows-server-isos)
 ### **Paste links into PowerShell**
-## OpenVPN_Single
-#### Private OpenVPN with pulled config
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_Single.ps1'))
-```
 ## OpenVPN_Multi
 #### Private OpenVPN with pulled config
 ```powershell
