@@ -59,8 +59,6 @@ Get-ScheduledTask Proxy | Disable-ScheduledTask
 Get-ScheduledTask ProgramDataUpdater | Disable-ScheduledTask
 Get-ScheduledTask QueueReporting | Disable-ScheduledTask
 Get-ScheduledTask Microsoft Compatibility Appraiser | Disable-ScheduledTask
-
-
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo"
 New-Item -Path "HKCU:\Software\Policies\Microsoft\Windows\CloudContent"
 New-Item -Path "HKCU:\Software\Microsoft\Siuf\Rules"
