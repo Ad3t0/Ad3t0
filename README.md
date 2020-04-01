@@ -4,7 +4,7 @@
 [OpenVPN_Multi](#openvpn_multi)
 [ChocoInstall](#chocoinstall)
 [DriverSearch](#driversearch)
-[DriverSearch](#driversearch)
+[ADStatusCheck](#adstatuscheck)
 [PFMG](#pfmg)
 [PSS3B](#pss3b)
 [AutoIPK](#autoipk)
