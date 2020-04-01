@@ -4,6 +4,7 @@
 [OpenVPN_Multi](#openvpn_multi)
 [ChocoInstall](#chocoinstall)
 [DriverSearch](#driversearch)
+[DriverSearch](#driversearch)
 [PFMG](#pfmg)
 [PSS3B](#pss3b)
 [AutoIPK](#autoipk)
@@ -37,6 +38,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 #### Google search with system model for drivers
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DriverSearch.ps1'))
+```
+## ADStatusCheck
+#### ADStatusCheck
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ADStatusCheck.ps1'))
 ```
 ## PFMG
 #### Profile Migration Utility
