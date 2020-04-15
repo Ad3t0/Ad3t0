@@ -1,22 +1,22 @@
-$ver = "3.0.1"
+$ver = "3.0.2"
 $ErrorActionPreference = "SilentlyContinue"
 $systemmodel = wmic computersystem get model /VALUE
 $systemmodel = $systemmodel -replace ('Model=', '')
 $currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
 $productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
-Write-Output $ver -ForegroundColor Green
-Write-Output $text
-Write-Output " System Model: " -ForegroundColor yellow -NoNewline
-Write-Output $systemmodel -ForegroundColor white
-Write-Output " Operating System: " -ForegroundColor yellow -NoNewline
-Write-Output $productname.ProductName $currentversion.ReleaseId -ForegroundColor white
-Write-Output " PC Name: " -ForegroundColor yellow -NoNewline
-Write-Output $env:COMPUTERNAME -ForegroundColor white
-Write-Output " Username: " -ForegroundColor yellow -NoNewline
-Write-Output $env:USERNAME -ForegroundColor white
-Write-Output " Domain: " -ForegroundColor yellow -NoNewline
-Write-Output $env:USERDNSDOMAIN -ForegroundColor white
-Write-Output
+Write-Host $ver -ForegroundColor Green
+Write-Host $text
+Write-Host " System Model: " -ForegroundColor yellow -NoNewline
+Write-Host $systemmodel -ForegroundColor white
+Write-Host " Operating System: " -ForegroundColor yellow -NoNewline
+Write-Host $productname.ProductName $currentversion.ReleaseId -ForegroundColor white
+Write-Host " PC Name: " -ForegroundColor yellow -NoNewline
+Write-Host $env:COMPUTERNAME -ForegroundColor white
+Write-Host " Username: " -ForegroundColor yellow -NoNewline
+Write-Host $env:USERNAME -ForegroundColor white
+Write-Host " Domain: " -ForegroundColor yellow -NoNewline
+Write-Host $env:USERDNSDOMAIN -ForegroundColor white
+Write-Host
 while ($confirmationpowersch -ne "n" -and $confirmationpowersch -ne "y") {
  $confirmationpowersch = Read-Host "Set PowerScheme to maximum performance? [y/n]"
 }
@@ -32,14 +32,14 @@ if ($confirmationchocoinstall -eq "y") {
 while ($confirmationonedrive -ne "n" -and $confirmationonedrive -ne "y") {
 	$confirmationonedrive = Read-Host "Remove all traces of OneDrive? BE CAREFUL [y/n]"
 }
-Write-Output
-Write-Output "Maximum PowerScheme: [$($confirmationpowersch)]"
-Write-Output "App Removal: [$($confirmationappremoval)]"
-Write-Output "Choco install: [$($confirmationchocoinstall)]"
-Write-Output "OneDrive Removal: [$($confirmationonedrive)]"
-Write-Output
-Write-Output "Windows 10 De-Bloat Script will now run"
-Write-Output
+Write-Host
+Write-Host "Maximum PowerScheme: [$($confirmationpowersch)]"
+Write-Host "App Removal: [$($confirmationappremoval)]"
+Write-Host "Choco install: [$($confirmationchocoinstall)]"
+Write-Host "OneDrive Removal: [$($confirmationonedrive)]"
+Write-Host
+Write-Host "Windows 10 De-Bloat Script will now run"
+Write-Host
 while ($confirmationfull -ne "n" -and $confirmationfull -ne "y") {
 	$confirmationfull = Read-Host "Continue? [y/n]"
 } if ($confirmationfull -ne "y") {
@@ -54,7 +54,7 @@ if ($confirmationpowersch -eq "y") {
 }
 # Chocolatey install
 if ($confirmationchocoinstall -eq "y") {
-	Write-Output "Installing Chocolatey, specified packages" -ForegroundColor yellow
+	Write-Host "Installing Chocolatey, specified packages" -ForegroundColor yellow
 	Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature disable -n=checksumFiles
@@ -80,9 +80,9 @@ $services = @(
 	"ndu"
 )
 foreach ($service in $services) {
-	Write-Output "Stopping $service"
+	Write-Host "Stopping $service"
 	Stop-Service -Name $service
-	Write-Output "Disabling $service"
+	Write-Host "Disabling $service"
 	Get-Service -Name $service | Set-Service -StartupType Disabled
 }
 $Keys = @(
@@ -108,7 +108,7 @@ $Keys = @(
 	"HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
 )
 ForEach ($Key in $Keys) {
-	Write-Output "Removing $Key from registry"
+	Write-Host "Removing $Key from registry"
 	Remove-Item $Key -Recurse
 }
 Get-ScheduledTask XblGameSaveTaskLogon | Disable-ScheduledTask
@@ -192,35 +192,35 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Phishing
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Type DWord -Value 0
 # Remove all Windows store apps except WindowsStore, Calculator Photos and StickyNotes
 if ($confirmationappremoval -eq "y") {
-	Write-Output "Removing all Windows store apps except the Windows Store, Calculator, SitckyNotes, and Photos..." -ForegroundColor yellow
+	Write-Host "Removing all Windows store apps except the Windows Store, Calculator, SitckyNotes, and Photos..." -ForegroundColor yellow
 	Get-AppxPackage -AllUsers | Where-Object { $_.Name -notlike "*Microsoft.WindowsStore*" } | Where-Object { $_.Name -notlike "*Microsoft.WindowsCalculator*" } | Where-Object { $_.Name -notlike "*Microsoft.Windows.Photos*" } | Where-Object { $_.Name -notlike "*.NET*" } | Where-Object { $_.Name -notlike "*.VCLibs*" } | Where-Object { $_.Name -notlike "*Sticky*" } | Remove-AppxPackage -ErrorAction 'silentlycontinue'
 	Get-AppxProvisionedPackage -Online | Where-Object { $_.packagename -notlike "*Microsoft.WindowsStore*" } | Where-Object { $_.packagename -notlike "*Microsoft.WindowsCalculator*" } | Where-Object { $_.packagename -notlike "*Microsoft.Windows.Photos*" } | Where-Object { $_.Name -notlike "*.NET*" } | Where-Object { $_.Name -notlike "*.VCLibs*" } | Where-Object { $_.Name -notlike "*Sticky*" } | Remove-AppxProvisionedPackage -Online | Out-Null -ErrorAction 'silentlycontinue'
 }
 # Remove OneDrive
 if ($confirmationonedrive -eq "y") {
-	Write-Output "Disabling and removing OneDrive..." -ForegroundColor yellow
+	Write-Host "Disabling and removing OneDrive..." -ForegroundColor yellow
 	taskkill.exe /F /IM "OneDrive.exe"
-	Write-Output "Remove OneDrive..."
+	Write-Host "Remove OneDrive..."
 	if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
 		& "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
 	}
 	if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
 		& "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
 	}
-	Write-Output "Disable OneDrive via Group Policies..."
+	Write-Host "Disable OneDrive via Group Policies..."
 	Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1 -ErrorAction 'silentlycontinue'
-	Write-Output "Removing OneDrive leftovers..."
+	Write-Host "Removing OneDrive leftovers..."
 	Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
 	Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
 	Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "C:\OneDriveTemp"
-	Write-Output "Removing OneDrive from explorer sidebar..."
+	Write-Host "Removing OneDrive from explorer sidebar..."
 	New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
 	mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
 	Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
 	mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
 	Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
 	Remove-PSDrive "HKCR"
-	Write-Output "Removing OneDrive run option for new users..."
+	Write-Host "Removing OneDrive run option for new users..."
 	reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
 }
 taskkill /f /im explorer.exe
