@@ -1,4 +1,4 @@
-$ver = "3.0.2"
+$ver = "3.0.3"
 $ErrorActionPreference = "SilentlyContinue"
 $systemmodel = wmic computersystem get model /VALUE
 $systemmodel = $systemmodel -replace ('Model=', '')
@@ -77,7 +77,6 @@ $services = @(
 	"XblAuthManager"
 	"XblGameSave"
 	"XboxNetApiSvc"
-	"ndu"
 )
 foreach ($service in $services) {
 	Write-Host "Stopping $service"
