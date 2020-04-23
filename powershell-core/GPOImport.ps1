@@ -17,10 +17,15 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$ms.Close()
 	$r.Clear()
 }
-$encURL = 'G41VwvESBO+Z8ATsCgJsO/vaPBMEyYDXSIPoQwkpUzvIa/JrfFdQO/H96tiXbQFLAS+h68u9AqYCBF1kBMh7yza8Y927KolwM2120f9hQIZZbq8PoVXHKXsyOFbEO+JUuXXc9tYxsIfj6d3RBZDRgicLUmFB5Ab3aYXVVSK06HwjSI9pNLxPQucIqHozXkQq7JYNEXKExjcJvlVqjdeYzw=='
+$encT = "b3Mi+G5kF+2ujmxedqiYxzKvvgQROtYwm+WAHUFrK67PHTILwrLyr0lqUZHifadw"
+$encURL = "SekvfcmJCzw8G3sKq+9z5qj4icmfGYQWmhReBCmHEiTx7QPsD3woZSGKAycsd7gMnwul0dSujQ7xgTO/nHMazl1ouSKzkgWfbxHnDc8CrMd9z1owFY9RZ7cHqQzWM0n3"
 $pass = Read-Host -AsSecureString "Password"
 $pass = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pass))
+$decT = Decrypt-String -Encrypted $encT -Passphrase $pass
 $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Script = Invoke-RestMethod "$($decURL)" -Headers @{"Accept" = "application/vnd.github.v3.raw" }
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("Authorization", "token $($decT)")
+$headers.Add("Accept", "application/vnd.github.v3.raw")
+$Script = Invoke-RestMethod "$($decURL)GPOImport.ps1" -Headers $headers
 Invoke-Expression $Script
