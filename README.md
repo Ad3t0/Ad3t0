@@ -175,6 +175,10 @@ New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlag
 $value1 = '~ WIN7RTM'
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name 'C:\Program Files (x86)\Adobe\Acrobat DC\Acrobat\AcroRd32.exe' -Value $value1
 ```
+#### Check Uptime
+```
+wmic path Win32_OperatingSystem get LastBootUpTime
+```
 #### Windows Server ISOs
 ------------
 | OS  | Download Link|
