@@ -181,8 +181,13 @@ $value1 = '~ WIN7RTM'
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name 'C:\Program Files (x86)\Adobe\Acrobat DC\Acrobat\AcroRd32.exe' -Value $value1
 ```
 #### UniFi AP Downgrade
+AP-AC-Pro/Lite
 ```
 nohup mca-cli-op upgrade https://dl.ui.com/unifi/firmware/U7PG2/4.0.66.10832/BZ.qca956x.v4.0.66.10832.191023.1949.bin
+```
+nano-HD
+```
+nohup mca-cli-op upgrade https://dl.ui.com/unifi/firmware/U7NHD/4.0.66.10832/BZ.mt7621.v4.0.66.10832.191023.1949.bin
 ```
 #### Check Uptime
 ```
