@@ -14,12 +14,10 @@ $getMac = Get-WmiObject Win32_NetworkAdapter -Filter 'NetConnectionStatus=2'
 $lastOfMac = $getMac.MACAddress -split ":"
 $lastOfMac = "$($lastOfMac[4])$($lastOfMac[5])"
 $pcName = "$($DOMAINShort)-$($hwInfo)-$($lastOfMac)"
+Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
 while ($rebootConfirm -ne "n" -and $rebootConfirm -ne "y") {
 	$rebootConfirm = Read-Host "Reboot now? [y/n]"
 }
 if ($rebootConfirm -eq "y") {
-	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator" -Restart
-}
-else {
-	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
+	Restart-Computer
 }
