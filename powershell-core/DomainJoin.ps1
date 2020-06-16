@@ -1,4 +1,5 @@
 $DOMAIN = Read-Host "Enter domain name"
+$DOMAIN = $DOMAIN.Replace(".", "")
 if ($DOMAIN.length -gt 4) {
 	$DOMAIN = $DOMAIN.Substring(0, 4)
 }
@@ -13,4 +14,4 @@ $getMac = Get-WmiObject Win32_NetworkAdapter -Filter 'NetConnectionStatus=2'
 $lastOfMac = $getMac.MACAddress -split ":"
 $lastOfMac = "$($lastOfMac[4])$($lastOfMac[5])"
 $pcName = "$($DOMAIN)-$($hwInfo)-$($lastOfMac)"
-Add-Computer -ComputerName $pcName -DomainName $DOMAIN -Credential "Administrator"
+Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
