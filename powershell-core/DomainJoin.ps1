@@ -1,5 +1,9 @@
 $DOMAIN = Read-Host "Enter domain name"
-$DOMAINShort = $DOMAIN.Replace(".", "")
+$DOMAINShort = $DOMAIN
+if ($DOMAIN -like "*.*") {
+	$DOMAINSplit = $DOMAIN.Split(".")
+	$DOMAINShort = $DOMAINSplit[0]
+}
 if ($DOMAINShort.length -gt 4) {
 	$DOMAINShort = $DOMAINShort.Substring(0, 4)
 }
