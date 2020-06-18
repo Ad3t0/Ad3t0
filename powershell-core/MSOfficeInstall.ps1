@@ -27,5 +27,5 @@ $decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "token $($decT)")
 $headers.Add("Accept", "application/vnd.github.v3.raw")
-$Script = Invoke-RestMethod "$($decURL)OfficeInstall.ps1" -Headers $headers
+$Script = Invoke-RestMethod "$($decURL)msOfficeInstall.ps1" -Headers $headers
 Invoke-Expression $Script
