@@ -16,7 +16,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ## BasicApps
 #### Installs all VCRedist packages, DirectX, .Net 4.8, Firefox, Google Chrome, Adobereader
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/GPOImport.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/BasicApps.ps1'))
 ```
 ## OfficeInstall
 #### Install MS Office
@@ -161,27 +161,6 @@ nohup mca-cli-op upgrade https://dl.ui.com/unifi/firmware/U7NHD/4.0.66.10832/BZ.
 #### Check Uptime
 ```
 wmic path Win32_OperatingSystem get LastBootUpTime
-```
-#### Webroot Removal
-```
-$taskName = "webrootRemoval"
-$taskExists = Get-ScheduledTask | Where-Object { $_.TaskName -like $taskName }
-if (!($taskExists)) {
-    $webrootRemovalFile = @'
-sc.exe delete WRSVC
-Remove-Item -Path "C:\ProgramData\WRData" -Force
-Remove-Item -Path "C:\Program Files (x86)\Webroot" -Force
-'@
-    New-Item "C:\ProgramData\webrootRemoval.ps1" -Force
-    Set-Content "C:\ProgramData\webrootRemoval.ps1" $webrootRemovalFile
-    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument " -NoLogo -WindowStyle hidden -file C:\ProgramData\webrootRemoval.ps1"
-    $Trigger = New-ScheduledTaskTrigger -AtStartup
-    $Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 0 -AllowStartIfOnBatteries
-    $principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount
-    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings -Principal $principal
-    Register-ScheduledTask -TaskName 'webrootRemoval' -InputObject $Task
-}
-
 ```
 #### Windows Server ISOs
 ------------
