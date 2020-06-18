@@ -1,27 +1,6 @@
 # Windows 7, 8, 10 and Windows Server PowerShell Scripts
 [![](https://i.imgur.com/bzG7kdD.png)](#)
 
-[OpenVPN_Multi](#openvpn_multi)
-[ChocoInstall](#chocoinstall)
-[DriverSearch](#driversearch)
-[ADStatusCheck](#adstatuscheck)
-[PFMG](#pfmg)
-[PSS3B](#pss3b)
-[AutoIPK](#autoipk)
-[WINC](#winc)
-[DG](#dg)
-[WinSatFormal](#winsatformal)
-[GCloudADA](#gcloudada)
-[CredShow](#credshow)
-[GPOImport](#gpoimport)
-[ADBatchAdd](#adbatchadd)
-[MSRAQuickConnect](#msraquickconnect)
-[WINRMgpupdate](#winrmgpupdate)
-[WINRMScript](#winrmscript)
-[WiFiQR](#wifiqr)
-[CleanerWindows10](#cleanerwindows10)
-[Notes](#notes)
-[Windows Server ISOs](#windows-server-isos)
 
 ### **Paste links into PowerShell**
 ## OpenVPN_Multi
@@ -33,6 +12,11 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 #### Installs [Chocolatey](https://chocolatey.org/)
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ChocoInstall.ps1'))
+```
+## BasicApps
+#### Installs all VCRedist packages, DirectX, .Net 4.8, Firefox, Google Chrome, Adobereader
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/GPOImport.ps1'))
 ```
 ## DriverSearch
 #### Google search with system model for drivers
@@ -64,10 +48,10 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/PortScan.ps1'))
 ```
-## AutoIPK
-#### Download product key list and attempt to license
+## OfficeInstall
+#### Install MS Office
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoIPK.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OfficeInstall.ps1'))
 ```
 ## WINC
 #### WINC
@@ -84,11 +68,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WinSatFormal.ps1'))
 ```
-## GCloudADA
-#### GCloud setup
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/GCloudADA.ps1'))
-```
+
 ## CredShow
 #### Displays saved Windows credentials
 ```powershell
@@ -98,21 +78,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 #### GPO Import script
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/GPOImport.ps1'))
-```
-## ADBatchAdd
-#### Batch add Active Directory users into a new Organizational Unit named Employees and create private home directories from a text file formatted like
-```
-John Snow
-Elon Musk
-Jason Bourne
-```
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ADBatchAdd.ps1'))
-```
-## MSRAQuickConnect
-#### Microsoft Remote Assistant Quick Connect
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/MSRAQuickConnect.ps1'))
 ```
 ## WINRMgpupdate
 #### Remote domain wide GPUpdate
