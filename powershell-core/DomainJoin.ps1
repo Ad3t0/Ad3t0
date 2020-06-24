@@ -19,6 +19,9 @@ $lastOfMac = $getMac.MACAddress -split ":"
 $lastOfMac = "$($lastOfMac[4])$($lastOfMac[5])"
 $pcName = "$($DOMAINShort)-$($hwInfo)-$($lastOfMac)"
 Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
+""
+Write-Host "Device has been renamed to $($pcName) and joined to $($DOMAIN)"
+""
 while ($rebootConfirm -ne "n" -and $rebootConfirm -ne "y") {
 	$rebootConfirm = Read-Host "Reboot now? [y/n]"
 }
