@@ -1,3 +1,5 @@
+Clear-Host
+""
 $DOMAIN = Read-Host "Enter domain name"
 $DOMAINShort = $DOMAIN
 if ($DOMAIN -like "*.*") {
@@ -18,10 +20,17 @@ $getMac = Get-WmiObject Win32_NetworkAdapter -Filter 'NetConnectionStatus=2'
 $lastOfMac = $getMac.MACAddress -split ":"
 $lastOfMac = "$($lastOfMac[4])$($lastOfMac[5])"
 $pcName = "$($DOMAINShort)-$($hwInfo)-$($lastOfMac)"
-Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
-""
-Write-Host "Device has been renamed to $($pcName) and joined to $($DOMAIN)"
-""
+$domainJoinSuccess = $False
+while ($domainJoinSuccess -eq $False) {
+	$error.Clear()
+	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
+	if (!($error)) {
+		$domainJoinSuccess = $true
+		""
+		Write-Host "Device has been renamed to $($pcName) and joined to $($DOMAIN)" -ForegroundColor Green
+		""
+	}
+}
 while ($rebootConfirm -ne "n" -and $rebootConfirm -ne "y") {
 	$rebootConfirm = Read-Host "Reboot now? [y/n]"
 }
