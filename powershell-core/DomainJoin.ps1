@@ -100,7 +100,7 @@ while ($domainJoinSuccess -eq $False) {
 	else {
 		$domainJoinSuccess = $true
 		""
-		Write-Host "Device has been renamed to $($pcName) and joined to $($DOMAIN)" -ForegroundColor Green
+		Write-Host "Device has been named $($pcName) and joined to $($DOMAIN)" -ForegroundColor Green
 		""
 	}
 }
