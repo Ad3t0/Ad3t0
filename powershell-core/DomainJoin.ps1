@@ -40,7 +40,8 @@ while ($domainPingSuccess -eq $False) {
 			$setManualDNSConfirm = Read-Host "Set DNS server for $($DOMAIN) manually? [y/n]"
 		}
 		if ($setManualDNSConfirm -eq "y") {
-			while ($retryDNSpingConfirm -ne "n" -and $retryDNSpingConfirm -ne "y" -and $dnsContactSuccess -ne $True) {
+			while ($retryDNSpingConfirm -ne "n" -and $dnsContactSuccess -ne $True) {
+				""
 				$dnsServer = Read-Host "Enter DNS server"
 				$error.Clear()
 				Test-Connection $dnsServer -Count 1
