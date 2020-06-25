@@ -1,7 +1,7 @@
 Clear-Host
 if ($env:USERDNSDOMAIN) {
 	""
-	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN). Write-Warning "EXIT"ing..."
+	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN). Write-Warning Exiting..."
 	""
 	Start-Sleep 3
 	Write-Warning "EXIT"
@@ -70,7 +70,7 @@ while ($domainPingSuccess -eq $False) {
 			Test-Connection $DOMAIN -Count 1
 			if ($error) {
 				""
-				Write-Warning "After manually setting DNS servers domain $($DOMAIN) still could not be reached. Write-Warning "EXIT"ing..."
+				Write-Warning "After manually setting DNS servers domain $($DOMAIN) still could not be reached. Write-Warning Exiting..."
 				""
 				Write-Warning "EXIT"
 			}
@@ -85,7 +85,12 @@ while ($domainPingSuccess -eq $False) {
 }
 while ($domainJoinSuccess -eq $False) {
 	$error.Clear()
-	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
+	if ($env:COMPUTERNAME -eq $pcName) {
+		Add-Computer -DomainName $DOMAIN -Credential "Administrator"
+	}
+	else {
+		Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
+	}
 	Start-Sleep 2
 	if ($error) {
 		""
