@@ -1,4 +1,11 @@
 Clear-Host
+if ($env:USERDNSDOMAIN) {
+	""
+	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN). Exiting..."
+	""
+	Start-Sleep 3
+	Exit
+}
 ""
 $DOMAIN = Read-Host "Enter domain name"
 $DOMAINShort = $DOMAIN
@@ -21,11 +28,14 @@ $lastOfMac = $getMac.MACAddress -split ":"
 $lastOfMac = "$($lastOfMac[4])$($lastOfMac[5])"
 $pcName = "$($DOMAINShort)-$($hwInfo)-$($lastOfMac)"
 $domainJoinSuccess = $False
+$domainPingSuccess = $False
 while ($domainPingSuccess -eq $False) {
 	$error.Clear()
 	Test-Connection $DOMAIN -Count 1
 	if ($error) {
+		""
 		Write-Warning "Domain $($DOMAIN) could not be reached."
+		""
 		while ($setManualDNSConfirm -ne "n" -and $setManualDNSConfirm -ne "y") {
 			$setManualDNSConfirm = Read-Host "Set DNS server for $($DOMAIN) manually? [y/n]"
 		}
@@ -35,7 +45,9 @@ while ($domainPingSuccess -eq $False) {
 				$error.Clear()
 				Test-Connection $dnsServer -Count 1
 				if ($error) {
+					""
 					Write-Warning "Specified DNS server $($dnsServer) could not be reached."
+					""
 					$retryDNSpingConfirm = Read-Host "Try again? [y/n]"
 					if ($retryDNSpingConfirm -eq "n") {
 						Exit
@@ -56,7 +68,9 @@ while ($domainPingSuccess -eq $False) {
 			$error.Clear()
 			Test-Connection $DOMAIN -Count 1
 			if ($error) {
+				""
 				Write-Warning "After manually setting DNS servers domain $($DOMAIN) still could not be reached. Exiting..."
+				""
 				Exit
 			}
 		}
@@ -71,8 +85,11 @@ while ($domainPingSuccess -eq $False) {
 while ($domainJoinSuccess -eq $False) {
 	$error.Clear()
 	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
+	Start-Sleep 2
 	if ($error) {
+		""
 		Write-Warning "Domain join failed. Incorrect administrator credentails or the domain $($DOMAIN) could not be reached."
+		""
 	}
 	else {
 		$domainJoinSuccess = $true
