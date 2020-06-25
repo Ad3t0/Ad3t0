@@ -1,10 +1,10 @@
 Clear-Host
 if ($env:USERDNSDOMAIN) {
 	""
-	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN). Exiting..."
+	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN). Write-Warning "EXIT"ing..."
 	""
 	Start-Sleep 3
-	Exit
+	Write-Warning "EXIT"
 }
 ""
 $DOMAIN = Read-Host "Enter domain name"
@@ -51,7 +51,7 @@ while ($domainPingSuccess -eq $False) {
 					""
 					$retryDNSpingConfirm = Read-Host "Try again? [y/n]"
 					if ($retryDNSpingConfirm -eq "n") {
-						Exit
+						Write-Warning "EXIT"
 					}
 				}
 				else {
@@ -59,7 +59,7 @@ while ($domainPingSuccess -eq $False) {
 				}
 			}
 			if ($setManualDNSConfirm -eq "n") {
-				Exit
+				Write-Warning "EXIT"
 			}
 			$ipV4 = Test-Connection -ComputerName $env:COMPUTERNAME -Count 1
 			$netAdapters = Get-WmiObject win32_networkadapterconfiguration -Filter 'ipenabled = "true"'
@@ -70,13 +70,13 @@ while ($domainPingSuccess -eq $False) {
 			Test-Connection $DOMAIN -Count 1
 			if ($error) {
 				""
-				Write-Warning "After manually setting DNS servers domain $($DOMAIN) still could not be reached. Exiting..."
+				Write-Warning "After manually setting DNS servers domain $($DOMAIN) still could not be reached. Write-Warning "EXIT"ing..."
 				""
-				Exit
+				Write-Warning "EXIT"
 			}
 		}
 		else {
-			Exit
+			Write-Warning "EXIT"
 		}
 	}
 	else {
