@@ -3,7 +3,6 @@ if ($env:USERDNSDOMAIN) {
 	""
 	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN). Exiting..."
 	""
-	Start-Sleep 3
 	Return
 }
 ""
