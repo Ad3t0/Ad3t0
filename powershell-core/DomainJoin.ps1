@@ -93,7 +93,7 @@ while ($domainJoinSuccess -eq $False) {
 	Start-Sleep 2
 	if ($error) {
 		""
-		Write-Warning "Domain join failed. Incorrect administrator credentails or the domain $($DOMAIN) could not be reached."
+		Write-Warning "Domain join failed. Incorrect administrator credentials or the domain $($DOMAIN) could not be reached."
 		""
 	}
 	else {
