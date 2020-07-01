@@ -17,12 +17,15 @@ function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = 
 	$ms.Close()
 	$r.Clear()
 }
+$error.Clear()
 $encT = "Hb1CgFxz0pTkt/TT+yltibW1UbsRdvMWLLA+IbrcMlv/reOb5NY5MoBg1mBkMjC2"
 $encURL = "n0Vjuw9cTlCvJToeEtOM63imqi8ORuC3atEV6NatngC3S0HwEoaGuyazquulITtAeXKD196Tr792FSgHTTTRTuhjc8Q52+NY0ylWkp2NcHKu6mdyTfVOcNrQ7bmKgpfu"
-$pass = Read-Host -AsSecureString "Password"
-$pass = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pass))
-$decT = Decrypt-String -Encrypted $encT -Passphrase $pass
-$decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
+while (!($decT)) {
+	$pass = Read-Host -AsSecureString "Password"
+	$pass = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pass))
+	$decT = Decrypt-String -Encrypted $encT -Passphrase $pass
+	$decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
+}
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "token $($decT)")
