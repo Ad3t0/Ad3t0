@@ -1,4 +1,8 @@
-$ver = "3.0.3"
+if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"))) {
+    Write-Warning "Powershell is not running as Administrator. Exiting..."
+    Start-Sleep 3
+    Return
+}
 $ErrorActionPreference = "SilentlyContinue"
 $systemmodel = wmic computersystem get model /VALUE
 $systemmodel = $systemmodel -replace ('Model=', '')

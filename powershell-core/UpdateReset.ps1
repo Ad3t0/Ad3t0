@@ -1,3 +1,8 @@
+if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"))) {
+    Write-Warning "Powershell is not running as Administrator. Exiting..."
+    Start-Sleep 3
+    Return
+}
 $arch = Get-WMIObject -Class Win32_Processor -ComputerName LocalHost | Select-Object AddressWidth
 Write-Host "1. Stopping Windows Update Services..."
 ""
