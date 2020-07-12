@@ -3,6 +3,14 @@ if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups 
     Start-Sleep 3
     Return
 }
+$PSVer = $PSVersionTable
+if ($PSVer.PSVersion.Major -lt 5) {
+    Write-Warning "Powershell version is $($PSVer.PSVersion.Major). Version 5.1 is needed please update using the following web page. Exiting..."
+    Start-Sleep 3
+    $URL = "https://www.microsoft.com/en-us/download/details.aspx?id=54616"
+    Start-Process $URL
+    Return
+}
 $ErrorActionPreference = "SilentlyContinue"
 $systemmodel = wmic computersystem get model /VALUE
 $systemmodel = $systemmodel -replace ('Model=', '')
