@@ -1,17 +1,17 @@
 Clear-Host
 Clear-Host
 if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"))) {
-    Write-Warning "Powershell is not running as Administrator. Exiting..."
-    Start-Sleep 3
-    Return
+	Write-Warning "Powershell is not running as Administrator. Exiting..."
+	Start-Sleep 3
+	Return
 }
 $PSVer = $PSVersionTable
 if ($PSVer.PSVersion.Major -lt 5) {
-    Write-Warning "Powershell version is $($PSVer.PSVersion.Major). Version 5.1 is needed please update using the following web page. Exiting..."
-    Start-Sleep 3
-    $URL = "https://www.microsoft.com/en-us/download/details.aspx?id=54616"
-    Start-Process $URL
-    Return
+	Write-Warning "Powershell version is $($PSVer.PSVersion.Major). Version 5.1 is needed please update using the following web page. Exiting..."
+	Start-Sleep 3
+	$URL = "https://www.microsoft.com/en-us/download/details.aspx?id=54616"
+	Start-Process $URL
+	Return
 }
 if ($env:USERDNSDOMAIN) {
 	""
@@ -21,25 +21,31 @@ if ($env:USERDNSDOMAIN) {
 }
 ""
 $DOMAIN = Read-Host "Enter domain name"
-$DOMAINShort = $DOMAIN
-if ($DOMAIN -like "*.*") {
-	$DOMAINSplit = $DOMAIN.Split(".")
-	$DOMAINShort = $DOMAINSplit[0]
+$osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
+if ($osInfo.ProductType -eq 1) {
+	$DOMAINShort = $DOMAIN
+	if ($DOMAIN -like "*.*") {
+		$DOMAINSplit = $DOMAIN.Split(".")
+		$DOMAINShort = $DOMAINSplit[0]
+	}
+	if ($DOMAINShort.length -gt 4) {
+		$DOMAINShort = $DOMAINShort.Substring(0, 4)
+	}
+	$DOMAINShort = $DOMAINShort.ToUpper()
+	$hwInfo = Get-CimInstance -ClassName Win32_ComputerSystem
+	$hwInfo = $hwInfo.Manufacturer
+	if ($hwInfo.length -gt 4) {
+		$hwInfo = $hwInfo.Substring(0, 4)
+	}
+	$hwInfo = $hwInfo.ToUpper()
+	$getMac = Get-WmiObject Win32_NetworkAdapter -Filter 'NetConnectionStatus=2'
+	$lastOfMac = $getMac.MACAddress -split ":"
+	$lastOfMac = "$($lastOfMac[4])$($lastOfMac[5])"
+	$pcName = "$($DOMAINShort)-$($hwInfo)-$($lastOfMac)"
 }
-if ($DOMAINShort.length -gt 4) {
-	$DOMAINShort = $DOMAINShort.Substring(0, 4)
+else {
+	$pcName = Read-Host "This device is a server. Please manually enter the computer name"
 }
-$DOMAINShort = $DOMAINShort.ToUpper()
-$hwInfo = Get-CimInstance -ClassName Win32_ComputerSystem
-$hwInfo = $hwInfo.Manufacturer
-if ($hwInfo.length -gt 4) {
-	$hwInfo = $hwInfo.Substring(0, 4)
-}
-$hwInfo = $hwInfo.ToUpper()
-$getMac = Get-WmiObject Win32_NetworkAdapter -Filter 'NetConnectionStatus=2'
-$lastOfMac = $getMac.MACAddress -split ":"
-$lastOfMac = "$($lastOfMac[4])$($lastOfMac[5])"
-$pcName = "$($DOMAINShort)-$($hwInfo)-$($lastOfMac)"
 $domainJoinSuccess = $False
 $domainPingSuccess = $False
 while ($domainPingSuccess -eq $False) {
