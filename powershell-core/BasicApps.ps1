@@ -9,7 +9,6 @@ if (!(Test-Path -Path "C:\ProgramData\chocolatey\choco.exe")) {
 	choco feature enable -n=allowGlobalConfirmation
 	choco feature disable -n=checksumFiles
 }
-
 $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
 if ($osInfo.ProductType -ne 1) {
 	choco install firefox vcredist-all dotnetfx directx notepadplusplus windirstat setdefaultbrowser
