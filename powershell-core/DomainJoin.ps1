@@ -44,7 +44,9 @@ if ($osInfo.ProductType -eq 1) {
 	$pcName = "$($DOMAINShort)-$($hwInfo)-$($lastOfMac)"
 }
 else {
+	""
 	$pcName = Read-Host "This device is a server. Please manually enter the computer name"
+	""
 }
 $domainJoinSuccess = $False
 $domainPingSuccess = $False
