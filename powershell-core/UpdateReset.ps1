@@ -23,8 +23,8 @@ Rename-Item $env:systemroot\System32\Catroot2 catroot2.bak -ErrorAction Silently
 Write-Host "4. Removing old Windows Update log..."
 Remove-Item $env:systemroot\WindowsUpdate.log -ErrorAction SilentlyContinue
 Write-Host "5. Resetting the Windows Update Services to defualt settings..."
-"sc.exe sdset bits D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
-"sc.exe sdset wuauserv D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
+sc.exe sdset bits "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
+sc.exe sdset wuauserv "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
 Set-Location $env:systemroot\system32
 Write-Host "6. Registering some DLLs..."
 regsvr32.exe /s atl.dll
@@ -64,9 +64,9 @@ regsvr32.exe /s wucltux.dll
 regsvr32.exe /s muweb.dll
 regsvr32.exe /s wuwebv.dll
 Write-Host "7) Removing WSUS client settings..."
-REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v AccountDomainSid /f
-REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v PingID /f
-REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v SusClientId /f
+Remove-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate -Name AccountDomainSid -ErrorAction SilentlyContinue
+Remove-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate -Name PingID -ErrorAction SilentlyContinue
+Remove-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate -Name SusClientId -ErrorAction SilentlyContinue
 Remove-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -Name UseWUServer -ErrorAction SilentlyContinue
 Remove-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -Name WUServer -ErrorAction SilentlyContinue
 Remove-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -Name DisableWindowsUpdateAccess -ErrorAction SilentlyContinue
