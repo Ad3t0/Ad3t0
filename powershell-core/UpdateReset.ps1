@@ -67,7 +67,15 @@ Write-Host "7) Removing WSUS client settings..."
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v AccountDomainSid /f
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v PingID /f
 REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" /v SusClientId /f
-Remove-Item HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -Recurse
+Remove-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -Name UseWUServer -ErrorAction SilentlyContinue
+Remove-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -Name WUServer -ErrorAction SilentlyContinue
+Remove-ItemProperty HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -Name DisableWindowsUpdateAccess -ErrorAction SilentlyContinue
+Remove-ItemProperty "HKLM:\SYSTEM\Internet Communication Management\Internet Communication" -Name DisableWindowsUpdateAccess -ErrorAction SilentlyContinue
+Remove-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\WindowsUpdate -Name DisableWindowsUpdateAccess -ErrorAction SilentlyContinue
+New-Item -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -ErrorAction SilentlyContinue
+New-Item -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -ErrorAction SilentlyContinue
+New-ItemProperty -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -Name NoAutoRebootWithLoggedOnUsers -Value 1 -ErrorAction SilentlyContinue
+New-ItemProperty -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -Name NoAutoUpdate -Value 1 -ErrorAction SilentlyContinue
 Write-Host "8) Resetting the WinSock..."
 netsh winsock reset
 netsh winhttp reset proxy
