@@ -106,12 +106,10 @@ while ($domainPingSuccess -eq $False) {
 }
 while ($domainJoinSuccess -eq $False) {
 	$error.Clear()
-	if ($env:COMPUTERNAME -eq $pcName) {
-		Add-Computer -DomainName $DOMAIN -Credential "Administrator"
-	}
-	else {
-		Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
-	}
+	""
+	Write-Host "Computer name will be $($pcName)"
+	""
+	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
 	Start-Sleep 2
 	if ($error) {
 		""
