@@ -19,6 +19,37 @@ if ($env:USERDNSDOMAIN) {
 	""
 	Return
 }
+function Remove-StringSpecialCharacter {
+	[CmdletBinding()]
+	param
+	(
+		[Parameter(ValueFromPipeline)]
+		[ValidateNotNullOrEmpty()]
+		[Alias('Text')]
+		[System.String[]]$String,
+		[Alias("Keep")]
+		[String[]]$SpecialCharacterToKeep
+	)
+	PROCESS {
+		IF ($PSBoundParameters["SpecialCharacterToKeep"]) {
+			$Regex = "[^\p{L}\p{Nd}"
+			Foreach ($Character in $SpecialCharacterToKeep) {
+				IF ($Character -eq "-") {
+					$Regex += "-"
+				}
+				else {
+					$Regex += [Regex]::Escape($Character)
+				}
+			}
+			$Regex += "]+"
+		}
+		ELSE { $Regex = "[^\p{L}\p{Nd}]+" }
+		FOREACH ($Str in $string) {
+			Write-Verbose -Message "Original String: $Str"
+			$Str -replace $regex, ""
+		}
+	}
+}
 ""
 $DOMAIN = Read-Host "Enter domain name"
 $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
@@ -35,6 +66,11 @@ if ($osInfo.ProductType -eq 1) {
 	$hwInfo = Get-CimInstance -ClassName Win32_ComputerSystem
 	$hwInfo = $hwInfo.Manufacturer
 	if ($hwInfo.length -gt 4) {
+		$hwInfo = $hwInfo.Substring(0, 4)
+	}
+	$hwInfo = Remove-StringSpecialCharacter -String $hwInfo
+	while ($hwInfo.length -lt 2) {
+		$hwInfo = Read-Host "Manufacturer name is not listed on this device. Please manually enter a name longer than two characters. Example would be Intel"
 		$hwInfo = $hwInfo.Substring(0, 4)
 	}
 	$hwInfo = $hwInfo.ToUpper()
@@ -107,13 +143,13 @@ while ($domainPingSuccess -eq $False) {
 while ($domainJoinSuccess -eq $False) {
 	$error.Clear()
 	""
-	Write-Host "Computer name will be $($pcName)"
+	Write-Host "Computer name will be $($pcName)" -ForegroundColor Yellow
 	""
 	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
 	Start-Sleep 2
 	if ($error) {
 		""
-		Write-Warning "Domain join failed. Incorrect administrator credentials or the domain $($DOMAIN) could not be reached."
+		Write-Warning "Domain join failed. Incorrect Administrator credentials or the domain $($DOMAIN) could not be reached."
 		""
 	}
 	else {
