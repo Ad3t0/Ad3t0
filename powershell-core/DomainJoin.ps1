@@ -70,7 +70,11 @@ if ($osInfo.ProductType -eq 1) {
 	}
 	$hwInfo = Remove-StringSpecialCharacter -String $hwInfo
 	while ($hwInfo.length -lt 2) {
-		$hwInfo = Read-Host "Manufacturer name is not listed on this device. Please manually enter a name longer than two characters. Example would be Intel"
+		""
+		Write-Warning "Manufacturer name is not listed on this device"
+		Write-Warning "Please manually enter a name longer than two characters. An example would be 'Intel'"
+		""
+		$hwInfo = Read-Host "Manufacturer name"
 		$hwInfo = $hwInfo.Substring(0, 4)
 	}
 	$hwInfo = $hwInfo.ToUpper()
