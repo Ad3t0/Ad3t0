@@ -39,7 +39,7 @@ while ($confirmationchocoinstall -ne "n" -and $confirmationchocoinstall -ne "y")
  $confirmationchocoinstall = Read-Host "Install Chocolatey and choose packages? [y/n]"
 }
 if ($confirmationchocoinstall -eq "y") {
-	Read-Host "Specify Chocolatey packages to install separeted by spaces"
+	$chocolist = Read-Host "Specify Chocolatey packages to install separeted by spaces"
 }
 while ($confirmationonedrive -ne "n" -and $confirmationonedrive -ne "y") {
 	$confirmationonedrive = Read-Host "Remove all traces of OneDrive? BE CAREFUL [y/n]"
