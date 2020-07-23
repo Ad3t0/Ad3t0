@@ -1,15 +1,15 @@
 if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"))) {
-    Write-Warning "Powershell is not running as Administrator. Exiting..."
-    Start-Sleep 3
-    Return
+	Write-Warning "Powershell is not running as Administrator. Exiting..."
+	Start-Sleep 3
+	Return
 }
 $PSVer = $PSVersionTable
 if ($PSVer.PSVersion.Major -lt 5) {
-    Write-Warning "Powershell version is $($PSVer.PSVersion.Major). Version 5.1 is needed please update using the following web page. Exiting..."
-    Start-Sleep 3
-    $URL = "https://www.microsoft.com/en-us/download/details.aspx?id=54616"
-    Start-Process $URL
-    Return
+	Write-Warning "Powershell version is $($PSVer.PSVersion.Major). Version 5.1 is needed please update using the following web page. Exiting..."
+	Start-Sleep 3
+	$URL = "https://www.microsoft.com/en-us/download/details.aspx?id=54616"
+	Start-Process $URL
+	Return
 }
 $ErrorActionPreference = "SilentlyContinue"
 $systemmodel = wmic computersystem get model /VALUE
@@ -122,6 +122,10 @@ ForEach ($Key in $Keys) {
 	Write-Host "Removing $Key from registry"
 	Remove-Item $Key -Recurse
 }
+$appsToRemove = @("Microsoft Edge", "Microsoft Store", "Mail")
+foreach ($app in $appsToRemove) {
+	((New-Object -Com Shell.Application).Namespace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | Where-Object { $_.Name -eq $app }).Verbs() | Where-Object { $_.Name.Replace('&', '') -match 'Unpin from taskbar' } | ForEach-Object { $_.DoIt(); $exec = $true } > $null 2>&1
+}
 Get-ScheduledTask XblGameSaveTaskLogon | Disable-ScheduledTask
 Get-ScheduledTask XblGameSaveTask | Disable-ScheduledTask
 Get-ScheduledTask Consolidator | Disable-ScheduledTask
@@ -158,6 +162,7 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputPersonalization" -Name "Re
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type DWord -Value 1
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type DWord -Value 0
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Type DWord -Value 0
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowCortanaButton​" -Type DWord -Value 0
 Set-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Type DWord -Value 1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Name "DisabledByGroupPolicy" -Type DWord -Value 1
 Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Windows\CloudContent" -Name "DisableTailoredExperiencesWithDiagnosticData" -Type DWord -Value 1
