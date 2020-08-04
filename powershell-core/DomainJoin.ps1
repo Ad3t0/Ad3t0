@@ -149,11 +149,12 @@ while ($domainJoinSuccess -eq $False) {
 	""
 	Write-Host "Computer name will be $($pcName)" -ForegroundColor Yellow
 	""
+	Start-Sleep 2
 	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
 	Start-Sleep 2
 	if ($error) {
 		""
-		Write-Warning "Domain join failed. Incorrect Administrator credentials or the domain $($DOMAIN) could not be reached."
+		Write-Warning "Domain join failed. Likely beacuse of incorrect Administrator credentials or the domain $($DOMAIN) could not be reached."
 		""
 	}
 	else {
