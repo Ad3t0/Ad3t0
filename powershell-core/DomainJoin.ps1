@@ -75,7 +75,9 @@ if ($osInfo.ProductType -eq 1) {
 		Write-Warning "Please manually enter a name longer than two characters. An example would be 'Intel'"
 		""
 		$hwInfo = Read-Host "Manufacturer name"
-		$hwInfo = $hwInfo.Substring(0, 4)
+		if ($hwInfo.length -gt 4) {
+			$hwInfo = $hwInfo.Substring(0, 4)
+		}
 	}
 	$hwInfo = $hwInfo.ToUpper()
 	$getMac = Get-WmiObject Win32_NetworkAdapter -Filter 'NetConnectionStatus=2'
