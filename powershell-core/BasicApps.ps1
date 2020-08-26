@@ -15,5 +15,5 @@ if ($osInfo.ProductType -ne 1) {
 	SetDefaultBrowser.exe HKLM "Firefox-308046B0AF4A39CB"
 }
 else {
-	choco install firefox googlechrome powershell vcredist-all dotnet3.5 dotnetfx directx adobereader
+	choco install firefox googlechrome powershell vcredist-all dotnet3.5 dotnetfx directx adobereader geekuninstaller
 }
