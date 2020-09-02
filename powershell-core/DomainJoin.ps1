@@ -171,7 +171,7 @@ if ($renameConfirm -ne "y") {
 	}
 }
 else {
-	Rename-Computer -NewName $pcName -Credential "Administrator"
+	Rename-Computer -NewName $pcName -DomainCredential "Administrator"
 }
 while ($rebootConfirm -ne "n" -and $rebootConfirm -ne "y") {
 	$rebootConfirm = Read-Host "Reboot now? [y/n]"
