@@ -89,7 +89,7 @@ if ($env:USERDNSDOMAIN) {
 	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN)"
 	""
 	while ($renameConfirm -ne "n" -and $renameConfirm -ne "y") {
-		$renameConfirm = Read-Host "Rename PC to $($pcName)? [y/n]"
+		$renameConfirm = Read-Host "Rename PC from $($env:COMPUTERNAME) to $($pcName)? [y/n]"
 	}
 }
 if ($renameConfirm -ne "y") {
@@ -171,7 +171,7 @@ if ($renameConfirm -ne "y") {
 	}
 }
 else {
-	Rename-Computer -NewName $pcName
+	Rename-Computer -NewName $pcName -Credential "Administrator"
 }
 while ($rebootConfirm -ne "n" -and $rebootConfirm -ne "y") {
 	$rebootConfirm = Read-Host "Reboot now? [y/n]"
