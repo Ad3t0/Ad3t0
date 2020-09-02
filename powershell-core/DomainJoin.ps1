@@ -13,12 +13,6 @@ if ($PSVer.PSVersion.Major -lt 5) {
 	Start-Process $URL
 	Return
 }
-if ($env:USERDNSDOMAIN) {
-	""
-	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN). Exiting..."
-	""
-	Return
-}
 function Remove-StringSpecialCharacter {
 	[CmdletBinding()]
 	param
@@ -90,81 +84,94 @@ else {
 	$pcName = Read-Host "This device is a server. Please manually enter the computer name"
 	""
 }
-$domainJoinSuccess = $False
-$domainPingSuccess = $False
-while ($domainPingSuccess -eq $False) {
-	$error.Clear()
-	Test-Connection $DOMAIN -Count 1
-	if ($error) {
-		""
-		Write-Warning "Domain $($DOMAIN) could not be reached."
-		""
-		while ($setManualDNSConfirm -ne "n" -and $setManualDNSConfirm -ne "y") {
-			$setManualDNSConfirm = Read-Host "Set DNS server for $($DOMAIN) manually? [y/n]"
-		}
-		if ($setManualDNSConfirm -eq "y") {
-			while ($retryDNSpingConfirm -ne "n" -and $dnsContactSuccess -ne $True) {
-				""
-				$dnsServer = Read-Host "Enter DNS server"
-				$error.Clear()
-				Test-Connection $dnsServer -Count 1
-				if ($error) {
+if ($env:USERDNSDOMAIN) {
+	""
+	Write-Warning "This device is already joined to $($env:USERDNSDOMAIN)"
+	""
+	while ($renameConfirm -ne "n" -and $renameConfirm -ne "y") {
+		$renameConfirm = Read-Host "Rename PC to $($pcName)? [y/n]"
+	}
+}
+if ($renameConfirm -ne "y") {
+	$domainJoinSuccess = $False
+	$domainPingSuccess = $False
+	while ($domainPingSuccess -eq $False) {
+		$error.Clear()
+		Test-Connection $DOMAIN -Count 1
+		if ($error) {
+			""
+			Write-Warning "Domain $($DOMAIN) could not be reached."
+			""
+			while ($setManualDNSConfirm -ne "n" -and $setManualDNSConfirm -ne "y") {
+				$setManualDNSConfirm = Read-Host "Set DNS server for $($DOMAIN) manually? [y/n]"
+			}
+			if ($setManualDNSConfirm -eq "y") {
+				while ($retryDNSpingConfirm -ne "n" -and $dnsContactSuccess -ne $True) {
 					""
-					Write-Warning "Specified DNS server $($dnsServer) could not be reached."
-					""
-					$retryDNSpingConfirm = Read-Host "Try again? [y/n]"
-					if ($retryDNSpingConfirm -eq "n") {
-						Return
+					$dnsServer = Read-Host "Enter DNS server"
+					$error.Clear()
+					Test-Connection $dnsServer -Count 1
+					if ($error) {
+						""
+						Write-Warning "Specified DNS server $($dnsServer) could not be reached."
+						""
+						$retryDNSpingConfirm = Read-Host "Try again? [y/n]"
+						if ($retryDNSpingConfirm -eq "n") {
+							Return
+						}
+					}
+					else {
+						$dnsContactSuccess = $True
 					}
 				}
-				else {
-					$dnsContactSuccess = $True
+				if ($setManualDNSConfirm -eq "n") {
+					Return
+				}
+				$ipV4 = Test-Connection -ComputerName $env:COMPUTERNAME -Count 1
+				$netAdapters = Get-WmiObject win32_networkadapterconfiguration -Filter 'ipenabled = "true"'
+				$primaryAdapter1 = $netAdapters | Where-Object { $_.IPAddress -eq $ipV4.IPV4Address.IPAddressToString }
+				$primaryAdapter2 = Get-NetAdapter | Where-Object { $_.InterfaceDescription -eq $primaryAdapter1.Description }
+				Set-DnsClientServerAddress -InterfaceIndex $primaryAdapter2.ifIndex -ServerAddresses ($dnsServer)
+				$error.Clear()
+				Test-Connection $DOMAIN -Count 1
+				if ($error) {
+					""
+					Write-Warning "After manually setting DNS servers domain $($DOMAIN) still could not be reached. Exiting..."
+					""
+					Return
 				}
 			}
-			if ($setManualDNSConfirm -eq "n") {
-				Return
-			}
-			$ipV4 = Test-Connection -ComputerName $env:COMPUTERNAME -Count 1
-			$netAdapters = Get-WmiObject win32_networkadapterconfiguration -Filter 'ipenabled = "true"'
-			$primaryAdapter1 = $netAdapters | Where-Object { $_.IPAddress -eq $ipV4.IPV4Address.IPAddressToString }
-			$primaryAdapter2 = Get-NetAdapter | Where-Object { $_.InterfaceDescription -eq $primaryAdapter1.Description }
-			Set-DnsClientServerAddress -InterfaceIndex $primaryAdapter2.ifIndex -ServerAddresses ($dnsServer)
-			$error.Clear()
-			Test-Connection $DOMAIN -Count 1
-			if ($error) {
-				""
-				Write-Warning "After manually setting DNS servers domain $($DOMAIN) still could not be reached. Exiting..."
-				""
+			else {
 				Return
 			}
 		}
 		else {
-			Return
+			$domainPingSuccess = $true
 		}
 	}
-	else {
-		$domainPingSuccess = $true
+	while ($domainJoinSuccess -eq $False) {
+		$error.Clear()
+		""
+		Write-Host "Computer name will be $($pcName)" -ForegroundColor Yellow
+		""
+		Start-Sleep 2
+		Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
+		Start-Sleep 2
+		if ($error) {
+			""
+			Write-Warning "Domain join failed. Likely beacuse of incorrect Administrator credentials or the domain $($DOMAIN) could not be reached."
+			""
+		}
+		else {
+			$domainJoinSuccess = $true
+			""
+			Write-Host "Device has been named $($pcName) and joined to $($DOMAIN)" -ForegroundColor Green
+			""
+		}
 	}
 }
-while ($domainJoinSuccess -eq $False) {
-	$error.Clear()
-	""
-	Write-Host "Computer name will be $($pcName)" -ForegroundColor Yellow
-	""
-	Start-Sleep 2
-	Add-Computer -NewName $pcName -DomainName $DOMAIN -Credential "Administrator"
-	Start-Sleep 2
-	if ($error) {
-		""
-		Write-Warning "Domain join failed. Likely beacuse of incorrect Administrator credentials or the domain $($DOMAIN) could not be reached."
-		""
-	}
-	else {
-		$domainJoinSuccess = $true
-		""
-		Write-Host "Device has been named $($pcName) and joined to $($DOMAIN)" -ForegroundColor Green
-		""
-	}
+else {
+	Rename-Computer -NewName $pcName
 }
 while ($rebootConfirm -ne "n" -and $rebootConfirm -ne "y") {
 	$rebootConfirm = Read-Host "Reboot now? [y/n]"
