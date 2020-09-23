@@ -1,47 +1,103 @@
-if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"))) {
-    Write-Warning "Powershell is not running as Administrator. Exiting..."
-    Start-Sleep 3
-    Return
-}
-$PSVer = $PSVersionTable
-if ($PSVer.PSVersion.Major -lt 5) {
-    Write-Warning "Powershell version is $($PSVer.PSVersion.Major). Version 5.1 is needed please update using the following web page. Exiting..."
-    Start-Sleep 3
-    $URL = "https://www.microsoft.com/en-us/download/details.aspx?id=54616"
-    Start-Process $URL
-    Return
-}
-function Decrypt-String ($Encrypted, $Passphrase, $salt = "Ad3t049866", $init = "Ad3t0PASS") {
-	if ($Encrypted -is [string]) {
-		$Encrypted = [Convert]::FromBase64String($Encrypted)
+Function Hide-PowerShellWindow() {
+	[CmdletBinding()]
+	param (
+	  [IntPtr]$Handle = $(Get-Process -id $PID).MainWindowHandle
+	)
+	$WindowDisplay = @"
+	using System;
+	using System.Runtime.InteropServices;
+	namespace Window
+	{
+		public class Display
+		{
+			[DllImport("user32.dll")]
+			private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+			public static bool Hide(IntPtr hWnd)
+			{
+				return ShowWindowAsync(hWnd, 0);
+			}
+		}
 	}
-	$r = New-Object System.Security.Cryptography.RijndaelManaged
-	$pass = [Text.Encoding]::UTF8.GetBytes($Passphrase)
-	$salt = [Text.Encoding]::UTF8.GetBytes($salt)
-	$r.Key = (New-Object Security.Cryptography.PasswordDeriveBytes $pass, $salt, "SHA1", 5).GetBytes(32)
-	$r.IV = (New-Object Security.Cryptography.SHA1Managed).ComputeHash([Text.Encoding]::UTF8.GetBytes($init))[0..15]
-	$d = $r.CreateDecryptor()
-	$ms = New-Object IO.MemoryStream @(, $Encrypted)
-	$cs = New-Object Security.Cryptography.CryptoStream $ms, $d, "Read"
-	$sr = New-Object IO.StreamReader $cs
-	Write-Output $sr.ReadToEnd()
-	$sr.Close()
-	$cs.Close()
-	$ms.Close()
-	$r.Clear()
-}
-$error.Clear()
-$encT = "Hb1CgFxz0pTkt/TT+yltibW1UbsRdvMWLLA+IbrcMlv/reOb5NY5MoBg1mBkMjC2"
-$encURL = "n0Vjuw9cTlCvJToeEtOM63imqi8ORuC3atEV6NatngC3S0HwEoaGuyazquulITtAeXKD196Tr792FSgHTTTRTuhjc8Q52+NY0ylWkp2NcHKu6mdyTfVOcNrQ7bmKgpfu"
-while (!($decT)) {
-	$pass = Read-Host -AsSecureString "Password"
-	$pass = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($pass))
-	$decT = Decrypt-String -Encrypted $encT -Passphrase $pass
-	$decURL = Decrypt-String -Encrypted $encURL -Passphrase $pass
-}
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization", "token $($decT)")
-$headers.Add("Accept", "application/vnd.github.v3.raw")
-$Script = Invoke-RestMethod "$($decURL)msOfficeInstall.ps1" -Headers $headers
-Invoke-Expression $Script
+"@
+	Try {
+	  Add-Type -TypeDefinition $WindowDisplay
+	  [Window.Display]::Hide($Handle)
+	}
+	Catch {
+	}
+  }
+  $url = "https://www.7-zip.org/a/7z1900-x64.exe"
+  $output = "$($env:TEMP)\7z1900-x64.exe"
+  Invoke-WebRequest -Uri $url -OutFile $output
+  ."$($env:TEMP)\7z1900-x64.exe" /S
+  $url = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_12827-20268.exe"
+  $output = "$($env:TEMP)\officedeploymenttool_12827-20268.exe"
+  Invoke-WebRequest -Uri $url -OutFile $output
+  7z x "$($env:TEMP)\officedeploymenttool_12827-20268.exe" -oofficeInstall
+  $configurationO365BusinessRetail = @'
+  <Configuration>
+	<Add OfficeClientEdition="64" Channel="Current">
+	  <Product ID="O365BusinessRetail">
+		<Language ID="en-us" />
+	  </Product>
+	</Add>
+  </Configuration>
+'@
+  New-Item "$($env:TEMP)\officeInstall\configuration-O365BusinessRetail-x64.xml" -Force -ErrorAction SilentlyContinue
+  Set-Content "$($env:TEMP)\officeInstall\configuration-O365BusinessRetail-x64.xml" $configurationO365BusinessRetail -ErrorAction SilentlyContinue
+  $configurationO365ProPlusRetail = @'
+  <Configuration>
+	<Add OfficeClientEdition="64" Channel="Current">
+	  <Product ID="O365ProPlusRetail">
+		<Language ID="en-us" />
+	  </Product>
+	</Add>
+  </Configuration>
+'@
+  New-Item "$($env:TEMP)\officeInstall\configuration-O365ProPlusRetail-x64.xml" -Force -ErrorAction SilentlyContinue
+  Set-Content "$($env:TEMP)\officeInstall\configuration-O365ProPlusRetail-x64.xml" $configurationO365ProPlusRetail -ErrorAction SilentlyContinue
+  $configurationProjectProRetail = @'
+  <Configuration>
+	<Add OfficeClientEdition="64" Channel="Current">
+	  <Product ID="ProjectProRetail">
+		<Language ID="en-us" />
+	  </Product>
+	</Add>
+  </Configuration>
+'@
+  New-Item "$($env:TEMP)\officeInstall\configuration-ProjectProRetail-x64.xml" -Force -ErrorAction SilentlyContinue
+  Set-Content "$($env:TEMP)\officeInstall\configuration-ProjectProRetail-x64.xml" $configurationProjectProRetail -ErrorAction SilentlyContinue
+  $configurationVisioProRetail = @'
+  <Configuration>
+	<Add OfficeClientEdition="64" Channel="Current">
+	  <Product ID="VisioProRetail">
+		<Language ID="en-us" />
+	  </Product>
+	</Add>
+  </Configuration>
+'@
+  New-Item "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" -Force -ErrorAction SilentlyContinue
+  Set-Content "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" $configurationVisioProRetail -ErrorAction SilentlyContinue
+  Clear-Host
+  ""
+  Write-Host "1 - O365 Business Retail"
+  Write-Host "2 - O365 ProPlus Retail"
+  Write-Host "3 - Project Pro Retail"
+  Write-Host "4 - Visio Pro Retail"
+  ""
+  while ($confirmVersion -ne "1" -and $confirmVersion -ne "2" -and $confirmVersion -ne "3" -and $confirmVersion -ne "4") {
+	$confirmVersion = Read-Host "Select Office edition to install. [1/2/3/4]"
+  }
+  [Void]$(Hide-PowerShellWindow)
+  if ($confirmVersion -eq "1") {
+	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-O365BusinessRetail-x64.xml"
+  }
+  if ($confirmVersion -eq "2") {
+	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-O365ProPlusRetail-x64.xml"
+  }
+  if ($confirmVersion -eq "3") {
+	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-ProjectProRetail-x64.xml"
+  }
+  if ($confirmVersion -eq "4") {
+	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml"
+  }

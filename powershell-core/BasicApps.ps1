@@ -11,9 +11,9 @@ if (!(Test-Path -Path "C:\ProgramData\chocolatey\choco.exe")) {
 }
 $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
 if ($osInfo.ProductType -ne 1) {
-	choco install firefox vcredist-all powershell dotnetfx directx notepadplusplus windirstat setdefaultbrowser
+	choco install firefox vcredist-all powershell dotnetfx directx notepadplusplus windirstat 7zip setdefaultbrowser
 	SetDefaultBrowser.exe HKLM "Firefox-308046B0AF4A39CB"
 }
 else {
-	choco install firefox googlechrome powershell vcredist-all dotnet3.5 dotnetfx directx adobereader geekuninstaller
+	choco install firefox googlechrome powershell vcredist-all dotnet3.5 dotnetfx directx 7zip adobereader geekuninstaller
 }
