@@ -34,7 +34,7 @@ Function Hide-PowerShellWindow() {
   $url = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_12827-20268.exe"
   $output = "$($env:TEMP)\officedeploymenttool_12827-20268.exe"
   Invoke-WebRequest -Uri $url -OutFile $output
-  7z x "$($env:TEMP)\officedeploymenttool_12827-20268.exe" -oofficeInstall
+  ."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\officedeploymenttool_12827-20268.exe" -oofficeInstall
   $configurationO365BusinessRetail = @'
   <Configuration>
 	<Add OfficeClientEdition="64" Channel="Current">
