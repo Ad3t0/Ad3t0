@@ -25,3 +25,5 @@ Invoke-WebRequest -Uri $url -OutFile $output
 ."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\autoupdate.zip" -o"C:\Program Files\RDP Wrapper"
 ."C:\Program Files\RDP Wrapper\RDPWInst.exe" -i -o
 cmd /c "C:\Program Files\RDP Wrapper\autoupdate.bat"
+Stop-Service wuauserv
+Set-Service wuauserv -StartupType Disabled
