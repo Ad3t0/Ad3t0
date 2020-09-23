@@ -26,7 +26,7 @@ Function Hide-PowerShellWindow() {
 	Catch {
 	}
 }
-if (!Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
+if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 	$url = "https://www.7-zip.org/a/7z1900-x64.exe"
 	$output = "$($env:TEMP)\7z1900-x64.exe"
 	Invoke-WebRequest -Uri $url -OutFile $output
