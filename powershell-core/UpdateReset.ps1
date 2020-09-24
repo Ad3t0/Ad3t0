@@ -4,29 +4,46 @@ if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups 
     Return
 }
 $arch = Get-WMIObject -Class Win32_Processor -ComputerName LocalHost | Select-Object AddressWidth
-Write-Host "1. Stopping Windows Update Services..."
+""
+Write-Host "Stopping Windows Update Services..." -ForegroundColor Yellow
 ""
 Stop-Service -Name BITS
-Write-Host "BITS Service Stopped"
-Stop-Service -Name wuauserv
-Write-Host "wuauserv Service Stopped"
-Stop-Service -Name appidsvc
-Write-Host "appidsvc Service Stopped"
-Stop-Service -Name cryptsvc
-Write-Host "cryptsvc Service Stopped"
 ""
-Write-Host "2. Removing QMGR Data file..."
+Write-Host "BITS Service Stopped" -ForegroundColor Yellow
+""
+Stop-Service -Name wuauserv
+""
+Write-Host "wuauserv Service Stopped" -ForegroundColor Yellow
+""
+Stop-Service -Name appidsvc
+""
+Write-Host "appidsvc Service Stopped" -ForegroundColor Yellow
+""
+Stop-Service -Name cryptsvc
+""
+Write-Host "cryptsvc Service Stopped" -ForegroundColor Yellow
+""
+Write-Host "Removing QMGR Data file..." -ForegroundColor Yellow
+""
 Remove-Item "$env:allusersprofile\Application Data\Microsoft\Network\Downloader\qmgr*.dat" -ErrorAction SilentlyContinue
-Write-Host "3. Renaming the Software Distribution and CatRoot Folder..."
+""
+Write-Host "Renaming the Software Distribution and CatRoot Folder..." -ForegroundColor Yellow
+""
 Rename-Item $env:systemroot\SoftwareDistribution SoftwareDistribution.bak -ErrorAction SilentlyContinue
 Rename-Item $env:systemroot\System32\Catroot2 catroot2.bak -ErrorAction SilentlyContinue
-Write-Host "4. Removing old Windows Update log..."
+""
+Write-Host "Removing old Windows Update log..." -ForegroundColor Yellow
+""
 Remove-Item $env:systemroot\WindowsUpdate.log -ErrorAction SilentlyContinue
-Write-Host "5. Resetting the Windows Update Services to defualt settings..."
+""
+Write-Host "Resetting the Windows Update Services to defualt settings..." -ForegroundColor Yellow
+""
 sc.exe sdset bits "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
 sc.exe sdset wuauserv "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)"
 Set-Location $env:systemroot\system32
-Write-Host "6. Registering some DLLs..."
+""
+Write-Host "Registering some DLLs..." -ForegroundColor Yellow
+""
 regsvr32.exe /s atl.dll
 regsvr32.exe /s urlmon.dll
 regsvr32.exe /s mshtml.dll
@@ -63,7 +80,9 @@ regsvr32.exe /s qmgrprxy.dll
 regsvr32.exe /s wucltux.dll
 regsvr32.exe /s muweb.dll
 regsvr32.exe /s wuwebv.dll
-Write-Host "7) Removing WSUS client settings..."
+""
+Write-Host "Removing WSUS client settings..." -ForegroundColor Yellow
+""
 Remove-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate -Name AccountDomainSid -ErrorAction SilentlyContinue
 Remove-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate -Name PingID -ErrorAction SilentlyContinue
 Remove-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate -Name SusClientId -ErrorAction SilentlyContinue
@@ -76,25 +95,38 @@ New-Item -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -ErrorAct
 New-Item -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -ErrorAction SilentlyContinue
 New-ItemProperty -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -Name NoAutoRebootWithLoggedOnUsers -Value 1 -ErrorAction SilentlyContinue
 New-ItemProperty -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate\AU -Name NoAutoUpdate -Value 1 -ErrorAction SilentlyContinue
-Write-Host "8) Resetting the WinSock..."
+""
+Write-Host "Resetting the WinSock..." -ForegroundColor Yellow
+""
 netsh winsock reset
 netsh winhttp reset proxy
-Write-Host "9) Delete all BITS jobs..."
+""
+Write-Host "Delete all BITS jobs..." -ForegroundColor Yellow
+""
 Get-BitsTransfer | Remove-BitsTransfer
-Write-Host "10) Attempting to install the Windows Update Agent..."
+""
+Write-Host "Attempting to install the Windows Update Agent..." -ForegroundColor Yellow
+""
 if ($arch -eq 64) {
     wusa Windows8-RT-KB2937636-x64 /quiet
 }
 else {
     wusa Windows8-RT-KB2937636-x86 /quiet
 }
-Write-Host "11) Starting Windows Update Services..."
+""
+Write-Host "Starting Windows Update Services..." -ForegroundColor Yellow
+""
+sc.exe config wuauserv start= delayed-auto
+sc.exe config BITS start= delayed-auto
 Start-Service -Name BITS
 Start-Service -Name wuauserv
 Start-Service -Name appidsvc
 Start-Service -Name cryptsvc
-Write-Host "12) Forcing discovery..."
+""
+Write-Host "Forcing discovery..." -ForegroundColor Yellow
+""
 wuauclt /resetauthorization /detectnow
+""
 Write-Host "Process complete. Please reboot your computer." -ForegroundColor Green
 ""
 while ($rebootConfirm -ne "n" -and $rebootConfirm -ne "y") {
