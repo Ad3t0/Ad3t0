@@ -5,7 +5,7 @@ if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups 
 }
 if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
     ""
-    Write-Host "Downloading and installing 7zip..."
+    Write-Host "Downloading and installing 7zip..." -ForegroundColor Green
     ""
     $url = "https://www.7-zip.org/a/7z1900-x64.exe"
     $output = "$($env:TEMP)\7z1900-x64.exe"
@@ -14,7 +14,7 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
     Wait-Process -Name 7z1900-x64
 }
 ""
-Write-Host "Adding Windows Defender exclusions..."
+Write-Host "Adding Windows Defender exclusions..." -ForegroundColor Green
 ""
 Add-MpPreference -ExclusionPath "$($env:TEMP)\RDPWrap-v1.6.2.zip"
 Add-MpPreference -ExclusionPath "$($env:TEMP)\autoupdate.zip"
@@ -23,31 +23,31 @@ Add-MpPreference -ExclusionPath "C:\Program Files\RDP Wrapper\rdpwrap.dll"
 Add-MpPreference -ExclusionProcess rdpwrap.dll
 Start-Sleep 2
 ""
-Write-Host "Downloading RDPWrap-v1.6.2.zip..."
+Write-Host "Downloading RDPWrap-v1.6.2.zip..." -ForegroundColor Green
 ""
 $url = "https://github.com/stascorp/rdpwrap/releases/download/v1.6.2/RDPWrap-v1.6.2.zip"
 $output = "$($env:TEMP)\RDPWrap-v1.6.2.zip"
 Invoke-WebRequest -Uri $url -OutFile $output
 ""
-Write-Host "Downloading autoupdate.zip..."
+Write-Host "Downloading autoupdate.zip..." -ForegroundColor Green
 ""
 $url = "https://github.com/asmtron/rdpwrap/raw/master/autoupdate.zip"
 $output = "$($env:TEMP)\autoupdate.zip"
 Invoke-WebRequest -Uri $url -OutFile $output
 ""
-Write-Host "Extracting RDPWrap-v1.6.2.zip..."
+Write-Host "Extracting RDPWrap-v1.6.2.zip..." -ForegroundColor Green
 ""
 ."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\RDPWrap-v1.6.2.zip" -o"C:\Program Files\RDP Wrapper"
 ""
-Write-Host "Extracting autoupdate.zip..."
+Write-Host "Extracting autoupdate.zip..." -ForegroundColor Green
 ""
 ."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\autoupdate.zip" -o"C:\Program Files\RDP Wrapper"
 ""
-Write-Host "Installing RDPWrapper..."
+Write-Host "Installing RDPWrapper..." -ForegroundColor Green
 ""
 ."C:\Program Files\RDP Wrapper\RDPWInst.exe" -i -o
 ""
-Write-Host "Updating RDPWrapper..."
+Write-Host "Updating RDPWrapper..." -ForegroundColor Green
 ""
 cmd /c "C:\Program Files\RDP Wrapper\autoupdate.bat"
 while ($disableUpdatesConfirm -ne "n" -and $disableUpdatesConfirm -ne "y") {
@@ -55,14 +55,14 @@ while ($disableUpdatesConfirm -ne "n" -and $disableUpdatesConfirm -ne "y") {
 }
 if ($disableUpdatesConfirm -eq "y") {
     ""
-    Write-Host "Stopping Windows Update Service..."
+    Write-Host "Stopping Windows Update Service..." -ForegroundColor Green
     ""
     Stop-Service wuauserv
     ""
-    Write-Host "Disabling Windows Update Service..."
+    Write-Host "Disabling Windows Update Service..." -ForegroundColor Green
     ""
     Set-Service wuauserv -StartupType Disabled
 }
 ""
-Write-Host "RDPWrapper Install Complete..."
+Write-Host "RDPWrapper Install Complete..." -ForegroundColor Green
 ""
