@@ -64,5 +64,5 @@ if ($disableUpdatesConfirm -eq "y") {
     Set-Service wuauserv -StartupType Disabled
 }
 ""
-Write-Host "RDPWrapper Install Complete..." -ForegroundColor Green
+Write-Host "RDPWrapper Install Complete!" -ForegroundColor Green
 ""
