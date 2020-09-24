@@ -37,11 +37,11 @@ Invoke-WebRequest -Uri $url -OutFile $output
 ""
 Write-Host "Extracting RDPWrap-v1.6.2.zip..." -ForegroundColor Green
 ""
-."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\RDPWrap-v1.6.2.zip" -o"C:\Program Files\RDP Wrapper"
+."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\RDPWrap-v1.6.2.zip" -o"C:\Program Files\RDP Wrapper" -aoa
 ""
 Write-Host "Extracting autoupdate.zip..." -ForegroundColor Green
 ""
-."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\autoupdate.zip" -o"C:\Program Files\RDP Wrapper"
+."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\autoupdate.zip" -o"C:\Program Files\RDP Wrapper" -aoa
 ""
 Write-Host "Installing RDPWrapper..." -ForegroundColor Green
 ""
