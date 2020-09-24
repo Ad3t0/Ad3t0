@@ -23,6 +23,7 @@ Stop-Service -Name cryptsvc
 ""
 Write-Host "cryptsvc Service Stopped" -ForegroundColor Yellow
 ""
+""
 Write-Host "Removing QMGR Data file..." -ForegroundColor Yellow
 ""
 Remove-Item "$env:allusersprofile\Application Data\Microsoft\Network\Downloader\qmgr*.dat" -ErrorAction SilentlyContinue
