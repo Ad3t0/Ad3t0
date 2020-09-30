@@ -117,19 +117,17 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CleanerWindows10.ps1'))
 ```
-Each option can be selected individually within the script
-- Basic
-  - Disable Start Menu Bing search and application suggestions
-  - Disable subscribed ads, location tracking, and advertiser ID
-  - Disable resource intensive P2P update sharing
-  - Disable Cortana, Ink Space and 3D Objects folder
-  - Disable ALL Windows Telemetry and Online Tips/Ads
-  - Disable Wi-Fi Sense (Removed in 1803)
-  - Remove/Unpin all Startmenu icons
-  - Remove the People and Taskview icons
-  - Delete all Windows Store apps (except the Calculator, Photos, StickyNotes, and the Windows Store)
-  - Install [Chocolatey](https://chocolatey.org/) and defined packages
-  - Remove OneDrive
+- Disable Start Menu Bing search and application suggestions
+- Disable subscribed ads, location tracking, and advertiser ID
+- Disable resource intensive P2P update sharing
+- Disable Cortana, Ink Space and 3D Objects folder
+- Disable ALL Windows Telemetry and Online Tips/Ads
+- Disable Wi-Fi Sense (Removed in 1803)
+- Remove/Unpin all Startmenu icons
+- Remove the People and Taskview icons
+- Delete all Windows Store apps (except the Calculator, Photos, StickyNotes, and the Windows Store)
+- Install [Chocolatey](https://chocolatey.org/) and defined packages
+- Remove OneDrive
 # Notes
 #### Transfer all FSMO Roles
 ```
