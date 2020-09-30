@@ -129,15 +129,7 @@ Each option can be selected individually within the script
   - Remove the People and Taskview icons
   - Delete all Windows Store apps (except the Calculator, Photos, StickyNotes, and the Windows Store)
   - Install [Chocolatey](https://chocolatey.org/) and defined packages
-  - Install all available [VCRedist Visual C++](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) versions (via Chocolatey)
-- Advanced
   - Remove OneDrive
-  - Increase wallpaper to max compression quality at no additional resource cost
-  - Enable Show File Extension in File Explorer
-  - Enable Show Hidden Files and Folders in File Explorer
-  - Enable Remote Desktop Connection
-  - Enable Wake On LAN
-  - Download [MVPS](http://winhelp2002.mvps.org/hosts.txt) hosts file for system wide ad blocking
 # Notes
 #### Transfer all FSMO Roles
 ```
