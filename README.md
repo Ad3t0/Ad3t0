@@ -148,12 +148,6 @@ w32tm /config /reliable:yes
 net start w32time
 w32tm /query /configuration | Select-String NtpServer:
 ```
-#### Adobe Fix
-```
-New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Force
-$value1 = '~ WIN7RTM'
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name 'C:\Program Files (x86)\Adobe\Acrobat DC\Acrobat\AcroRd32.exe' -Value $value1
-```
 #### UniFi AP Downgrade
 AP-AC-Pro/Lite
 ```
