@@ -36,7 +36,7 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 $url = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_12827-20268.exe"
 $output = "$($env:TEMP)\officedeploymenttool_12827-20268.exe"
 Invoke-WebRequest -Uri $url -OutFile $output
-."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\officedeploymenttool_12827-20268.exe" -o"$($env:TEMP)\officeInstall"
+."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\officedeploymenttool_12827-20268.exe" -o"$($env:TEMP)\officeInstall" -aoa
 $configurationO365BusinessRetail = @'
   <Configuration>
 	<Add OfficeClientEdition="64" Channel="Current">
