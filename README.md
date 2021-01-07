@@ -14,7 +14,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ChocoInstall.ps1'))
 ```
 ## BasicApps
-#### Installs all VCRedist packages, DirectX, .Net 4.8, Firefox, Google Chrome, Adobereader, 7zip
+#### Installs all VCRedist packages, DirectX, .Net 4.8, Google Chrome, Adobereader, 7zip
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/BasicApps.ps1'))
 ```

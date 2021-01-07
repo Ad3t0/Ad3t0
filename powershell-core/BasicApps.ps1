@@ -14,5 +14,5 @@ if ($osInfo.ProductType -ne 1) {
 	choco install powershell googlechrome vcredist-all dotnetfx directx notepadplusplus windirstat 7zip geekuninstaller
 }
 else {
-	choco install powershell googlechrome vcredist-all dotnetfx directx dotnet3.5 7zip adobereader geekuninstaller
+	choco install powershell googlechrome vcredist-all dotnetfx directx dotnet3.5 javaruntime 7zip adobereader geekuninstaller
 }
