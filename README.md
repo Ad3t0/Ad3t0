@@ -163,7 +163,6 @@ wmic path Win32_OperatingSystem get LastBootUpTime
 ```
 #### Mac Setup
 ```
-sudo su
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install --cask google-chrome ringcentral ringcentral-meetings appcleaner adobe-acrobat-reader adobe-creative-cloud microsoft-office
 dscl . create /Users/admin IsHidden 1
