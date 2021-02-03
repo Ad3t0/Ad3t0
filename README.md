@@ -161,10 +161,12 @@ nohup mca-cli-op upgrade https://dl.ui.com/unifi/firmware/U7NHD/4.0.66.10832/BZ.
 ```
 wmic path Win32_OperatingSystem get LastBootUpTime
 ```
-#### Mac Packages
+#### Mac Setup
 ```
+sudo su
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install --cask google-chrome ringcentral ringcentral-meetings appcleaner adobe-acrobat-reader adobe-creative-cloud microsoft-office
+dscl . create /Users/admin IsHidden 1
 ```
 #### Windows Server ISOs
 ------------
