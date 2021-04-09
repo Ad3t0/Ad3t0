@@ -33,10 +33,10 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/TempFilesCleanup.ps1'))
 ```
-## DomainJoin
-#### Join computer to specified domain with generated name
+## ProductKeyFix
+#### Remove product key and then install product key from BIOS
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DomainJoin.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ProductKeyFix.ps1'))
 ```
 ## UpdateReset
 #### Completely Resets Windows Update
