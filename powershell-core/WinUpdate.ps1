@@ -10,6 +10,8 @@ Install-WindowsUpdate -AcceptAll -AutoReboot
 if (!($updates)) {
     schtasks.exe /delete /tn WinUpdate /f
     Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
 }
 shutdown /r /t 0
 '@
@@ -22,11 +24,15 @@ shutdown /r /t 0
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
     Import-Module PSWindowsUpdate
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
     $updates = Get-WUInstall -AcceptAll -AutoReboot
     Install-WindowsUpdate -AcceptAll -AutoReboot
     if (!($updates)) {
         schtasks.exe /delete /tn WinUpdate /f
         Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
     }
     shutdown /r /t 0
 }
