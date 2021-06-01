@@ -58,29 +58,14 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoLogin.ps1'))
 ```
-## SetupBeats
-#### Setup ES Beats
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/SetupBeats.ps1'))
-```
-## GPOImport
-#### GPO Import script
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/GPOImport.ps1'))
-```
 ## ADStatusCheck
 #### Checks the status of Active Directory domain health
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ADStatusCheck.ps1'))
 ```
-## PFMG
-#### Profile Migration Utility
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/PFMG/master/PFMG.ps1'))
-```
 ## PSS3B
 #### Configures AWS and creates scheduled tasks for a weekly AWS S3 backup
-```powershelld
+```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/PSS3B/master/PSS3B.ps1'))
 ```
 ## PortScan
@@ -103,16 +88,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CredShow.ps1'))
 ```
-## WINRMgpupdate
-#### Remote domain wide GPUpdate
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WINRMgpupdate.ps1'))
-```
-## WINRMScript
-#### Remote domain wide PowerShell Script
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WINRMScript.ps1'))
-```
 ## WiFiQR
 #### Create a iOS camera readable Wi-Fi connect QR code using information from the currently connected Wi-Fi network
 ```powershell
@@ -123,21 +98,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.We
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/RDPWrapperInstall.ps1'))
 ```
-## CleanerWindows10
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/CleanerWindows10.ps1'))
-```
-- Disable Start Menu Bing search and application suggestions
-- Disable subscribed ads, location tracking, and advertiser ID
-- Disable resource intensive P2P update sharing
-- Disable Cortana, Ink Space and 3D Objects folder
-- Disable ALL Windows Telemetry and Online Tips/Ads
-- Disable Wi-Fi Sense (Removed in 1803)
-- Remove/Unpin all Startmenu icons
-- Remove the People and Taskview icons
-- Delete all Windows Store apps (except the Calculator, Photos, StickyNotes, and the Windows Store)
-- Install [Chocolatey](https://chocolatey.org/) and defined packages
-- Remove OneDrive
 # Notes
 #### Transfer all FSMO Roles
 ```
