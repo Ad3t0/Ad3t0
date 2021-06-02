@@ -13,7 +13,7 @@ if (!($updates)) {
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
 }
-shutdown /r /t 0
+shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
     $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-file C:\ProgramData\WinUpdate.ps1"
@@ -34,5 +34,5 @@ shutdown /r /t 0
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
     }
-    shutdown /r /t 0
+    shutdown /r /t 0 /f
 }
