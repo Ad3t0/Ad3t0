@@ -2,17 +2,21 @@ while ($fileTempConf -ne "n" -and $fileTempConf -ne "y") {
     ""
     $fileTempConf = Read-Host "Install all Windows updates rebooting automatically untill all are complete? [y/n]"
 }
+New-Item -Path HKCU:\SOFTWARE\Ad3t0
+New-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
+Set-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
 if ($fileTempConf -eq "y") {
     $taskFile = @'
 Import-Module PSWindowsUpdate
 $updates = Get-WUInstall -AcceptAll -AutoReboot
 Install-WindowsUpdate -AcceptAll -AutoReboot
-if (!($updates)) {
+if (!($updates) -or $rebootCount.RebootCount -eq 5) {
     schtasks.exe /delete /tn WinUpdate /f
     Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
 }
+Set-ItemProperty -Path HKCU:\SOFTWARE\3form -Name RebootCount -Value ($rebootCount.RebootCount + 1)
 shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
