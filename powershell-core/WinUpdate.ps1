@@ -2,10 +2,10 @@ while ($fileTempConf -ne "n" -and $fileTempConf -ne "y") {
     ""
     $fileTempConf = Read-Host "Install all Windows updates rebooting automatically untill all are complete? [y/n]"
 }
-New-Item -Path HKCU:\SOFTWARE\Ad3t0
-New-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
-Set-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
 if ($fileTempConf -eq "y") {
+    New-Item -Path HKCU:\SOFTWARE\Ad3t0
+    New-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
+    Set-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
     $taskFile = @'
 Import-Module PSWindowsUpdate
 $updates = Get-WUInstall -AcceptAll -AutoReboot
@@ -20,9 +20,8 @@ Set-ItemProperty -Path HKCU:\SOFTWARE\3form -Name RebootCount -Value ($rebootCou
 shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
-    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-file C:\ProgramData\WinUpdate.ps1"
+    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle hidden -file C:\ProgramData\WinUpdate.ps1"
     $Trigger = New-ScheduledTaskTrigger -AtStartup
-    $Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 0
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
     Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
