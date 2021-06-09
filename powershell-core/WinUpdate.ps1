@@ -11,7 +11,7 @@ Import-Module PSWindowsUpdate
 $updates = Get-WUInstall -AcceptAll -AutoReboot
 Install-WindowsUpdate -AcceptAll -AutoReboot
 $rebootCount = Get-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount
-if (!($updates) -or $rebootCount.RebootCount -eq 5) {
+if (!($updates) -or $rebootCount.RebootCount -ge 5) {
     schtasks.exe /delete /tn WinUpdate /f
     Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
