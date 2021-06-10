@@ -4,8 +4,8 @@ while ($fileTempConf -ne "n" -and $fileTempConf -ne "y") {
 }
 if ($fileTempConf -eq "y") {
     New-Item -Path HKCU:\SOFTWARE\Ad3t0
-    New-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
-    Set-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
+    New-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1 -ErrorAction SilentlyContinue
+    Set-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1 -ErrorAction SilentlyContinue
     $taskFile = @'
 Import-Module PSWindowsUpdate
 $updates = Get-WUInstall -AcceptAll -AutoReboot
@@ -34,7 +34,7 @@ Set-ItemProperty -Path HKCU:\SOFTWARE\3form -Name RebootCount -Value ($rebootCou
 shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
-    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle hidden -file C:\ProgramData\WinUpdate.ps1"
+    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate.ps1"
     $Trigger = New-ScheduledTaskTrigger -AtStartup
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
     Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
