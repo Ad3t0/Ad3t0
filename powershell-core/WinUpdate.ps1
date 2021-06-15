@@ -3,21 +3,32 @@ while ($fileTempConf -ne "n" -and $fileTempConf -ne "y") {
     $fileTempConf = Read-Host "Install all Windows updates rebooting automatically untill all are complete? [y/n]"
 }
 if ($fileTempConf -eq "y") {
-    New-Item -Path HKCU:\SOFTWARE\Ad3t0
-    New-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
-    Set-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount -Value 1
+    if (!(Test-Path -Path "C:\ProgramData\ad3t0")) {
+        New-Item -Path "C:\ProgramData\ad3t0" -ItemType "directory"
+    }
+    $pathToJson = "C:\ProgramData\ad3t0\WinUpdate.json"
+    $defaultSettings = @"
+{
+    "rebootCount":  0
+}
+"@
+    New-Item $pathToJson
+    Set-Content $pathToJson $defaultSettings
     $taskFile = @'
+    $pathToJson = "C:\ProgramData\ad3t0\WinUpdate.json"
+    $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
+    $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Import-Module PSWindowsUpdate
 $updates = Get-WUInstall -AcceptAll -AutoReboot
 Install-WindowsUpdate -AcceptAll -AutoReboot
-$rebootCount = Get-ItemProperty -Path HKCU:\SOFTWARE\Ad3t0 -Name RebootCount
-if (!($updates) -or $rebootCount.RebootCount -ge 5) {
+if (!($updates) -or $jsonSettings.rebootCount -ge 5) {
     schtasks.exe /delete /tn WinUpdate /f
     Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
 }
-Set-ItemProperty -Path HKCU:\SOFTWARE\3form -Name RebootCount -Value ($rebootCount.RebootCount + 1)
+$jsonSettings.rebootCount = $jsonSettings.rebootCount + 1
+$jsonSettings | ConvertTo-Json | Set-Content $pathToJson
 shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
