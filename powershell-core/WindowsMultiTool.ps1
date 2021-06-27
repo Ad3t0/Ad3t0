@@ -1,3 +1,4 @@
+$functionsToRun = $null
 function Test-PendingReboot {
     if (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $true }
     if (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return $true }
@@ -28,7 +29,7 @@ Write-Host "2 - Remove all Windows temp files, run drive cleanup and remove old 
 Write-Host "3 - Install all Windows updates and reboot automatically without warning"
 ""
 while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $functionsToRun -notlike "*3*" -and $functionsToRun -notlike "*4*") {
-    $functionsToRun = Read-Host "Enter one or more functions to run  [1/2/3/4]"
+    $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3]"
     $functionsToRun = $functionsToRun.ToString()
 }
 $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object FreeSpace
