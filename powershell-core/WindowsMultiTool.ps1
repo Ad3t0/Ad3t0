@@ -63,6 +63,7 @@ if ($functionsToRun -like "*2*") {
         Write-Host "Removing files in $($folder)" -ForegroundColor Yellow
         ""
         Remove-Item $folder -Force -Recurse -ErrorAction SilentlyContinue
+        Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
         Start-Process -FilePath "C:\Windows\System32\cleanmgr.exe" -ArgumentList " /AUTOCLEAN" -Wait -PassThru
         Write-Host "Finished removing files in $($folder)" -ForegroundColor Yellow
     }
