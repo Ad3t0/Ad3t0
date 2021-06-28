@@ -84,7 +84,7 @@ if ($functionsToRun -like "*3*") {
 "rebootCount":  0
 }
 "@
-    New-Item $pathToJson
+    New-Item $pathToJson -ErrorAction SilentlyContinue
     Set-Content $pathToJson $defaultSettings
     $taskFile = @'
     $pathToJson = "C:\ProgramData\ad3t0\WinUpdate.json"
