@@ -63,7 +63,7 @@ if ($functionsToRun -like "*2*") {
         Write-Host "Removing files in $($folder)" -ForegroundColor Yellow
         ""
         Remove-Item $folder -Force -Recurse -ErrorAction SilentlyContinue
-        Start-Process -FilePath "C:\Windows\System32\cleanmgr.exe" -ArgumentList "/tuneup:112" -Wait -PassThru
+        Start-Process -FilePath "C:\Windows\System32\cleanmgr.exe" -ArgumentList " /AUTOCLEAN" -Wait -PassThru
         Write-Host "Finished removing files in $($folder)" -ForegroundColor Yellow
     }
     ""
@@ -82,8 +82,7 @@ if ($functionsToRun -like "*3*") {
 "@
     New-Item $pathToJson
     Set-Content $pathToJson $defaultSettings
-    if ($functionsToRun -like "*1*") {
-        $taskFile = @'
+    $taskFile = @'
     $pathToJson = "C:\ProgramData\ad3t0\WinUpdate.json"
     $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
     $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
@@ -100,24 +99,23 @@ $jsonSettings.rebootCount = $jsonSettings.rebootCount + 1
 $jsonSettings | ConvertTo-Json | Set-Content $pathToJson
 shutdown /r /t 0 /f
 '@
-        Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
-        $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate.ps1"
-        $Trigger = New-ScheduledTaskTrigger -AtStartup
-        $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
-        Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-        Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
-        Import-Module PSWindowsUpdate
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
-        $updates = Get-WUInstall -AcceptAll -AutoReboot
-        Install-WindowsUpdate -AcceptAll -AutoReboot
-        if (!($updates)) {
-            schtasks.exe /delete /tn WinUpdate /f
-            Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
-        }
+    Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
+    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate.ps1"
+    $Trigger = New-ScheduledTaskTrigger -AtStartup
+    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+    Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+    Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
+    Import-Module PSWindowsUpdate
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
+    $updates = Get-WUInstall -AcceptAll -AutoReboot
+    Install-WindowsUpdate -AcceptAll -AutoReboot
+    if (!($updates)) {
+        schtasks.exe /delete /tn WinUpdate /f
+        Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
     }
 }
 #################################################
