@@ -27,6 +27,7 @@ Clear-Host
 Write-Host "1 - Install Chocolatey and basic dependencies and utilities"
 Write-Host "2 - Remove all Windows temp files, run drive cleanup and remove old Windows versions"
 Write-Host "3 - Install all Windows updates and reboot automatically without warning"
+Write-Host "4 - Auto reboot without warning (CAUTION)"
 ""
 while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $functionsToRun -notlike "*3*" -and $functionsToRun -notlike "*4*") {
     $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3]"
@@ -63,7 +64,6 @@ if ($functionsToRun -like "*2*") {
         Write-Host "Removing files in $($folder)" -ForegroundColor Yellow
         ""
         Remove-Item $folder -Force -Recurse -ErrorAction SilentlyContinue
-
         Write-Host "Finished removing files in $($folder)" -ForegroundColor Yellow
     }
     Write-Host "Running DISM component cleanup." -ForegroundColor Yellow
@@ -129,6 +129,10 @@ $freeSpace = [math]::Round($freeSpace, 2)
 ""
 Write-Host "Free space after on C: = $($freeSpace)GB" -ForegroundColor Green
 ""
+if ($functionsToRun -like "*4*") {
+    Restart-Computer -Force
+    exit
+}
 $confirmationreboot = $null
 while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
     $confirmationreboot = Read-Host "Reboot is required, reboot this PC now? [y/n]"
