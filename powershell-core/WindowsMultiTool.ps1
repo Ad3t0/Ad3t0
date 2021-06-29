@@ -26,11 +26,11 @@ Clear-Host
 ""
 Write-Host "1 - Install Chocolatey and basic dependencies and utilities"
 Write-Host "2 - Remove all Windows temp files, run drive cleanup and remove old Windows versions"
-Write-Host "3 - Install all Windows updates and reboot automatically without warning"
+Write-Host "3 - Install all Windows updates and reboot automatically untill all are complete"
 Write-Host "4 - Auto reboot without warning (CAUTION)"
 ""
 while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $functionsToRun -notlike "*3*" -and $functionsToRun -notlike "*4*") {
-    $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3]"
+    $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3/4]"
     $functionsToRun = $functionsToRun.ToString()
 }
 $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object FreeSpace
