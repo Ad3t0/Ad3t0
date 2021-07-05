@@ -142,6 +142,26 @@ wmic path Win32_OperatingSystem get LastBootUpTime
 brew install --cask google-chrome ringcentral ringcentral-meetings appcleaner adobe-acrobat-reader adobe-creative-cloud microsoft-office
 sudo dscl . create /Users/admin IsHidden 1
 ```
+#### BIOS Keys
+------------
+| Manufacturer  | Key|
+| ------------ | ------------ |
+| Acer | Del or F2 |
+| ASRock | F2 |
+| Asus | Del, F10 or F9 |
+| Biostar | Del |
+| Dell | F2 or F12 |
+| EVGA | Del |
+| Gigabyte | Del |
+| HP | F10 |
+| Lenovo | F2, Fn + F2, F1 or Enter then F1 |
+| Intel | F2 |
+| MSI | Del |
+| Microsoft Surface | Press and hold volume up |
+| Origin PC | F2 |
+| Samsung | F2 |
+| Toshiba | F2 |
+| Zotac | Del |
 #### Windows Server ISOs
 ------------
 | OS  | Download Link|
