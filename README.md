@@ -3,6 +3,11 @@
 
 
 ### **Paste links into PowerShell**
+## WindowsMultiTool
+#### Windows multi tool for updates, temp file cleanup, package installs
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WindowsMultiTool.ps1'))
+```
 ## OpenVPN_Multi
 #### Private OpenVPN with pulled config
 ```powershell
@@ -12,11 +17,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 #### Installs [Chocolatey](https://chocolatey.org/)
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ChocoInstall.ps1'))
-```
-## WindowsMultiTool
-#### Windows multi tool for updates, temp file cleanup, package installs
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WindowsMultiTool.ps1'))
 ```
 ## MSOfficeInstall
 #### Installs MS Office
