@@ -33,6 +33,8 @@ while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $
     $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3/4]"
     $functionsToRun = $functionsToRun.ToString()
 }
+$timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
+
 $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object FreeSpace
 $freeSpace = $disk.FreeSpace / 1GB
 $freeSpace = [math]::Round($freeSpace, 2)
@@ -66,8 +68,6 @@ if ($functionsToRun -like "*2*") {
         Remove-Item $folder -Force -Recurse -ErrorAction SilentlyContinue
         Write-Host "Finished removing files in $($folder)" -ForegroundColor Yellow
     }
-    Write-Host "Running DISM component cleanup." -ForegroundColor Yellow
-    #Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
     Write-Host "Running cleanmgr autoclean all drives." -ForegroundColor Yellow
     Start-Process -FilePath "C:\Windows\System32\cleanmgr.exe" -ArgumentList " /AUTOCLEAN" -Wait -PassThru
     ""
@@ -91,8 +91,9 @@ if ($functionsToRun -like "*3*") {
     $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
     $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Import-Module PSWindowsUpdate
-$updates = Get-WUInstall -AcceptAll -AutoReboot
-Install-WindowsUpdate -AcceptAll -AutoReboot
+$updates = Get-WUInstall -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
+Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt" "------------------------------------"
+Install-WindowsUpdate -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
 if (!($updates) -or $jsonSettings.rebootCount -ge 6) {
     schtasks.exe /delete /tn WinUpdate /f
     Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
@@ -113,8 +114,9 @@ shutdown /r /t 0 /f
     Import-Module PSWindowsUpdate
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
-    $updates = Get-WUInstall -AcceptAll -AutoReboot
-    Install-WindowsUpdate -AcceptAll -AutoReboot
+    $updates = Get-WUInstall -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
+    Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt" "------------------------------------"
+    Install-WindowsUpdate -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
     if (!($updates)) {
         schtasks.exe /delete /tn WinUpdate /f
         Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
