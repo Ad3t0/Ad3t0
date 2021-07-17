@@ -8,10 +8,10 @@
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WindowsMultiTool.ps1'))
 ```
-## OpenVPN_Multi
+## OpenVPN_Setup
 #### Private OpenVPN with pulled config
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_Multi.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_Setup.ps1'))
 ```
 ## ChocoInstall
 #### Installs [Chocolatey](https://chocolatey.org/)
@@ -32,11 +32,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 #### Google search with system model for drivers
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DriverSearch.ps1'))
-```
-## FullSetup
-#### Setup
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/FullSetup.ps1'))
 ```
 ## ProductKeyFix
 #### Remove product key and then install product key from BIOS
@@ -62,11 +57,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 #### Checks the status of Active Directory domain health
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ADStatusCheck.ps1'))
-```
-## PSS3B
-#### Configures AWS and creates scheduled tasks for a weekly AWS S3 backup
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/PSS3B/master/PSS3B.ps1'))
 ```
 ## PortScan
 #### Port scan local network
