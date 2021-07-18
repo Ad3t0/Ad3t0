@@ -36,10 +36,10 @@ while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $
 }
 $timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
 $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object FreeSpace
-$freeSpace = $disk.FreeSpace / 1GB
-$freeSpace = [math]::Round($freeSpace, 2)
+$freeSpaceInitial = $disk.FreeSpace / 1GB
+$freeSpaceInitial = [math]::Round($freeSpaceInitial, 2)
 ""
-Write-Host "Current free space on C: = $($freeSpace)GB" -ForegroundColor Yellow
+Write-Host "Current free space on C: = $($freeSpaceInitial)GB" -ForegroundColor Yellow
 ""
 #################################################
 if ($functionsToRun -like "*1*") {
@@ -84,19 +84,17 @@ if ($functionsToRun -like "*3*") {
 "rebootCount":  0
 }
 "@
-    New-Item $pathToJson -ErrorAction SilentlyContinue
     Set-Content $pathToJson $defaultSettings
     $taskFile = @'
     $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
     $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
     $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Import-Module PSWindowsUpdate
-$updates = Get-WUInstall -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
-Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt" "------------------------------------"
-Install-WindowsUpdate -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
+$updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
+Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
 if (!($updates) -or $jsonSettings.rebootCount -ge 6) {
     schtasks.exe /delete /tn WinUpdate /f
-    Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
+    Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
 }
@@ -104,7 +102,7 @@ $jsonSettings.rebootCount = $jsonSettings.rebootCount + 1
 $jsonSettings | ConvertTo-Json | Set-Content $pathToJson
 shutdown /r /t 0 /f
 '@
-    Set-Content "C:\ProgramData\WinUpdate.ps1" $taskFile
+    Set-Content "C:\ProgramData\WinUpdate\WinUpdate.ps1" $taskFile
     $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate.ps1"
     $Trigger = New-ScheduledTaskTrigger -AtStartup
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
@@ -141,6 +139,7 @@ $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object 
 $freeSpace = $disk.FreeSpace / 1GB
 $freeSpace = [math]::Round($freeSpace, 2)
 ""
+Write-Host "Free space before on C: = $($freeSpaceInitial)GB" -ForegroundColor Green
 Write-Host "Free space after on C: = $($freeSpace)GB" -ForegroundColor Green
 ""
 if ($functionsToRun -like "*4*") {
