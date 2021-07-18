@@ -1,3 +1,4 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $functionsToRun = $null
 function Test-PendingReboot {
     if (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $true }
@@ -74,10 +75,10 @@ if ($functionsToRun -like "*2*") {
 }
 #################################################
 if ($functionsToRun -like "*3*") {
-    if (!(Test-Path -Path "C:\ProgramData\Ad3t0")) {
-        New-Item -Path "C:\ProgramData\Ad3t0" -ItemType "directory"
+    if (!(Test-Path -Path "C:\ProgramData\WinUpdate")) {
+        New-Item -Path "C:\ProgramData\WinUpdate" -ItemType "directory"
     }
-    $pathToJson = "C:\ProgramData\Ad3t0\WinUpdate.json"
+    $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
     $defaultSettings = @"
 {
 "rebootCount":  0
@@ -86,13 +87,13 @@ if ($functionsToRun -like "*3*") {
     New-Item $pathToJson -ErrorAction SilentlyContinue
     Set-Content $pathToJson $defaultSettings
     $taskFile = @'
-    $pathToJson = "C:\ProgramData\ad3t0\WinUpdate.json"
+    $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
     $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
     $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Import-Module PSWindowsUpdate
-$updates = Get-WUInstall -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
-Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt" "------------------------------------"
-Install-WindowsUpdate -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
+$updates = Get-WUInstall -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
+Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt" "------------------------------------"
+Install-WindowsUpdate -AcceptAll -AutoReboot | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
 if (!($updates) -or $jsonSettings.rebootCount -ge 6) {
     schtasks.exe /delete /tn WinUpdate /f
     Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
@@ -118,9 +119,9 @@ shutdown /r /t 0 /f
     }
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
-    $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
-    Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt" "------------------------------------"
-    Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
+    $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
+    Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt" "------------------------------------"
+    Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
     if (!($updates)) {
         schtasks.exe /delete /tn WinUpdate /f
         Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
