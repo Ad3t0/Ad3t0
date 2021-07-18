@@ -114,9 +114,9 @@ shutdown /r /t 0 /f
     Import-Module PSWindowsUpdate
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
-    $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
+    $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
     Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt" "------------------------------------"
-    Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
+    Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Add-Content "C:\ProgramData\ad3t0\$($timeScriptRun).txt"
     if (!($updates)) {
         schtasks.exe /delete /tn WinUpdate /f
         Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
