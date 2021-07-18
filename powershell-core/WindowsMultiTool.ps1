@@ -103,7 +103,7 @@ $jsonSettings | ConvertTo-Json | Set-Content $pathToJson
 shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate\WinUpdate.ps1" $taskFile
-    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate.ps1"
+    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate\WinUpdate.ps1"
     $Trigger = New-ScheduledTaskTrigger -AtStartup
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
     Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
@@ -120,16 +120,16 @@ shutdown /r /t 0 /f
     Clear-Host
     Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
     Write-Warning "Downloading updates..."
-    $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
+    $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
     Clear-Host
     Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
     Write-Host $updates
-    Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt" "------------------------------------"
+    Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
     Write-Warning "Installing updates..."
-    Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
+    Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
     if (!($updates)) {
         schtasks.exe /delete /tn WinUpdate /f
-        Remove-Item -Path "C:\ProgramData\WinUpdate.ps1" -Force
+        Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
     }
