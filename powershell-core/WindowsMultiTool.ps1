@@ -120,11 +120,11 @@ shutdown /r /t 0 /f
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
     Clear-Host
-    Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
+    Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
     Write-Warning "Downloading updates..."
     $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
     Clear-Host
-    Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
+    Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
     Write-Host $updates
     Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt" "------------------------------------"
     Write-Warning "Installing updates..."
