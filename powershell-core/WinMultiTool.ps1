@@ -90,9 +90,11 @@ $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
 $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
 $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Import-Module PSWindowsUpdate
-$updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
-Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
-if (!($updates) -or $jsonSettings.rebootCount -ge 6) {
+$getUpdates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory
+$getUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
+$installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
+$installUpdates | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
+if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
     schtasks.exe /delete /tn WinUpdate /f
     Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
@@ -120,14 +122,16 @@ shutdown /r /t 0 /f
     Clear-Host
     Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
     Write-Warning "Downloading updates please wait..."
-    $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
+    $getUpdates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory
+    $getUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
     Clear-Host
     Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
-    Write-Host $updates
+    Write-Host $getUpdates
     Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
     Write-Warning "Installing updates please wait..."
-    Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
-    if (!($updates)) {
+    $installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
+    $installUpdates | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
+    if (!($getUpdates)) {
         schtasks.exe /delete /tn WinUpdate /f
         Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
         Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
