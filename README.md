@@ -3,10 +3,10 @@
 
 
 ### **Paste links into PowerShell**
-## WindowsMultiTool
+## WinMultiTool
 #### Windows multi tool for updates, temp file cleanup, package installs
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WindowsMultiTool.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WinMultiTool.ps1'))
 ```
 ## OpenVPN_Setup
 #### Private OpenVPN with pulled config

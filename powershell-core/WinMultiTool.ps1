@@ -147,9 +147,12 @@ if ($functionsToRun -like "*4*") {
     exit
 }
 $confirmationreboot = $null
-while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
-    $confirmationreboot = Read-Host "Reboot is required, reboot this PC now? [y/n]"
-} if ($confirmationreboot -eq "y") {
-    Restart-Computer -Force
-    exit
+$pendingReboot = Test-PendingReboot
+if ($pendingReboot) {
+    while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
+        $confirmationreboot = Read-Host "Reboot is required, reboot this PC now? [y/n]"
+    } if ($confirmationreboot -eq "y") {
+        Restart-Computer -Force
+        exit
+    }
 }
