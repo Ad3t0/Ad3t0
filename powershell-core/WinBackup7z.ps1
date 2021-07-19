@@ -83,16 +83,14 @@ foreach ($backup in $allBackups) {
     $pathToJson = $backup.VersionInfo.FileName
     $logObj = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
     $backupCount = Get-ChildItem "$($logObj.backupDestinationPath)\$($logObj.backupName)" | Where-Object Name -Like "WinBackup7z_$($logObj.backupName)_*.7z"
-    if ($backupCount.Count -gt [int]$logObj.backupFullBackupsToKeep) {
-        $purgeBackup = Get-ChildItem "$($logObj.backupDestinationPath)\$($logObj.backupName)" | Where-Object Name -Like "WinBackup7z_$($logObj.backupName)_*.7z" | Sort-Object LastWriteTime -Descending | Select-Object -Last 1
-        Remove-Item $purgeBackup.VersionInfo.FileName
-    }
-    if ($logObj.backupDaysBeforeFull -eq $logObj.backupCurrentCount) {
-        $logObj.backupCurrentCount = 0
-    }
-    if ($logObj.backupCurrentCount -eq 0) {
+    if ([int]$logObj.backupDaysBeforeFull -eq [int]$logObj.backupCurrentCount) {
         $logObj.backupTimeStamp = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
         ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($logObj.backupDestinationPath)\$($logObj.backupName)\WinBackup7z_$($logObj.backupName)_$($logObj.backupTimeStamp).7z" $logObj.backupSourcePath -mx9
+        $logObj.backupCurrentCount = 0
+        if ($backupCount.Count -eq $logObj.backupFullBackupsToKeep) {
+            $purgeBackup = Get-ChildItem "$($logObj.backupDestinationPath)\$($logObj.backupName)" | Where-Object Name -Like "WinBackup7z_$($logObj.backupName)_*.7z" | Sort-Object LastWriteTime -Descending | Select-Object -Last 1
+            Remove-Item $purgeBackup.VersionInfo.FileName
+        }
     }
     else {
         ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($logObj.backupDestinationPath)\$($logObj.backupName)\WinBackup7z_$($logObj.backupName)_$($logObj.backupTimeStamp).7z" $logObj.backupSourcePath -mx9
