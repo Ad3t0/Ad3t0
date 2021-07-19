@@ -86,9 +86,9 @@ if ($functionsToRun -like "*3*") {
 "@
     Set-Content $pathToJson $defaultSettings
     $taskFile = @'
-    $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
-    $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
-    $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
+$pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
+$jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
+$jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Import-Module PSWindowsUpdate
 $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"
 Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).txt"

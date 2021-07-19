@@ -28,7 +28,7 @@ $pathToJson = "C:\ProgramData\WinBackup\WinBackup_$($logObj.backupName).json"
 $logObj | ConvertTo-Json | Set-Content $pathToJson
 $taskFile = @'
 param ($backupName)
-$pathToJson = "C:\ProgramData\WinBackup\WinBackup_$backupName.json"
+$pathToJson = "C:\ProgramData\WinBackup\WinBackup_$($backupName).json"
 $logObj = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
 $timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
 $backupCount = Get-ChildItem $logObj.backupDestinationPath
