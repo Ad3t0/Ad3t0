@@ -146,14 +146,17 @@ $freeSpace = [math]::Round($freeSpace, 2)
 Write-Host "Free space before on C: = $($freeSpaceInitial)GB" -ForegroundColor Yellow
 Write-Host "Free space after on C: = $($freeSpace)GB" -ForegroundColor Green
 ""
+$pendingReboot = $null
 if ($functionsToRun -like "*4*") {
-    Write-Warning "Rebooting in 5 seconds..."
-    Start-Sleep 5
-    Restart-Computer -Force
-    exit
+    $pendingReboot = Test-PendingReboot
+    if ($pendingReboot) {
+        Write-Warning "Rebooting in 5 seconds..."
+        Start-Sleep 5
+        Restart-Computer -Force
+        exit
+    }
 }
 $confirmationreboot = $null
-$pendingReboot = $null
 $pendingReboot = Test-PendingReboot
 if ($pendingReboot) {
     while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
