@@ -119,13 +119,13 @@ shutdown /r /t 0 /f
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
     Clear-Host
     Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
-    Write-Warning "Downloading updates..."
+    Write-Warning "Downloading updates please wait..."
     $updates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
     Clear-Host
     Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
     Write-Host $updates
     Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
-    Write-Warning "Installing updates..."
+    Write-Warning "Installing updates please wait..."
     Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
     if (!($updates)) {
         schtasks.exe /delete /tn WinUpdate /f

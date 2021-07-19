@@ -1,32 +1,45 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-Clear-Host
-""
-Write-Host "1 - Install Chocolatey and basic dependencies and utilities"
-Write-Host "2 - Remove all Windows temp files, run drive cleanup and remove old Windows versions"
-Write-Host "3 - Install all Windows updates and reboot automatically untill all are complete"
-Write-Host "4 - Auto reboot without warning (CAUTION)"
-""
-while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $functionsToRun -notlike "*3*" -and $functionsToRun -notlike "*4*") {
-    $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3/4]"
-    $functionsToRun = $functionsToRun.ToString()
+$logObj = [PSCustomObject]@{
+    backupName = $null
+    backupPath = $null
 }
+
+
+
+
+
+$logObj.backupName = Read-Host "Enter name for backup"
+
+
+
+
+
+$pathToJson = "C:\ProgramData\WinBackup\WinBackup.json"
+
+Set-Content $pathToJson $defaultSettings
+
+$logObj | ConvertTo-Json | Set-Content $pathToJson
+
+
+
+
+
 $timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
 
 
-
+if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
+    $url = "https://www.7-zip.org/a/7z1900-x64.exe"
+    $output = "$($env:TEMP)\7z1900-x64.exe"
+    Invoke-WebRequest -Uri $url -OutFile $output
+    ."$($env:TEMP)\7z1900-x64.exe" /S
+    Wait-Process -Name 7z1900-x64
+}
 
 
 if (!(Test-Path -Path "C:\ProgramData\WinUpdate")) {
     New-Item -Path "C:\ProgramData\WinUpdate" -ItemType "directory"
 }
-$pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
-$defaultSettings = @"
-{
-"rebootCount":  0
-}
-"@
-Set-Content $pathToJson $defaultSettings
+
 
 
 
