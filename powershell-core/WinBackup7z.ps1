@@ -8,23 +8,18 @@ $logObj = [PSCustomObject]@{
     backupCurrentCount    = 0
     backupTimeStamp       = $null
 }
-
 ""
-Write-Host "Current backup configurations"
-Write-Host "-----------------------------"
-$allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" | Where-Object Name -Like "WinBackup7z_*.json"
-
-foreach ($backup in $allBackups) {
-
-    $tempLogObj = Get-Content -Path $backup.VersionInfo.FileName -Raw | ConvertFrom-Json
-    $tempLogObj | Format-Table
-
+$allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" -ErrorAction SilentlyContinue | Where-Object Name -Like "WinBackup7z_*.json" -ErrorAction SilentlyContinue
+if ($allBackups) {
+    Write-Host "Current backup configurations"
+    Write-Host "-----------------------------"
+    foreach ($backup in $allBackups) {
+        $tempLogObj = Get-Content -Path $backup.VersionInfo.FileName -Raw | ConvertFrom-Json
+        $tempLogObj | Select-Object backupName, backupSourcePath, backupDestinationPath, backupRetention, backupCurrentCount | Format-Table
+    }
+    ""
+    ""
 }
-""
-""
-
-
-
 while ($null -eq $logObj.backupName -or $logObj.backupName -eq $tempLogObj.backupName) {
     $logObj.backupName = Read-Host "Enter name for backup"
 }
@@ -37,19 +32,19 @@ while ($null -eq $logObj.backupSourcePath) {
         ""
     }
 }
-
-
 while ($null -eq $logObj.backupDestinationPath) {
     $logObj.backupDestinationPath = Read-Host "Enter a destination path to backup to"
 }
 if (!(Test-Path -Path "$($logObj.backupDestinationPath)\$($logObj.backupName)")) {
     New-Item -Path "$($logObj.backupDestinationPath)\$($logObj.backupName)" -ItemType "directory" -Force
 }
-$backupTime = Read-Host "Enter a time for backups to run, formatted like 3am for 3:00 AM"
-$logObj.backupRetention = Read-Host "How many full backups to keep"
-
-
-
+while ($backupTime -notmatch "\d\wm") {
+    $backupTime = Read-Host "Enter a time for backups to run, formatted like 3am for 3:00 AM"
+}
+while ($logObj.backupRetention -isnot [int]) {
+    $logObj.backupRetention = Read-Host "How many full backups to keep"
+    $logObj.backupRetention = [int]$logObj.backupRetention
+}
 if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
     $url = "https://www.7-zip.org/a/7z1900-x64.exe"
     $output = "$($env:TEMP)\7z1900-x64.exe"
@@ -60,11 +55,9 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 if (!(Test-Path -Path "C:\ProgramData\WinBackup7z")) {
     New-Item -Path "C:\ProgramData\WinBackup7z" -ItemType "directory"
 }
-
 $pathToJson = "C:\ProgramData\WinBackup7z\WinBackup7z_$($logObj.backupName).json"
 $logObj | ConvertTo-Json | Set-Content $pathToJson
-if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.ps1")) {
-    $taskFile = @'
+$taskFile = @'
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" | Where-Object Name -Like "WinBackup7z_*.json"
 foreach ($backup in $allBackups) {
     $pathToJson = $backup.VersionInfo.FileName
@@ -86,9 +79,11 @@ foreach ($backup in $allBackups) {
     $logObj | ConvertTo-Json | Set-Content $pathToJson
 }
 '@
-    Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
-    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinBackup7z\WinBackup7z.ps1"
-    $Trigger = New-ScheduledTaskTrigger -Daily -At $backupTime
-    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
-    Register-ScheduledTask -TaskName "WinBackup7z" -InputObject $Task -User SYSTEM
-}
+Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
+Unregister-ScheduledTask -TaskName "WinBackup7z" -Confirm:$False -ErrorAction SilentlyContinue
+Start-Sleep 1
+$Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinBackup7z\WinBackup7z.ps1"
+$Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 0 -AllowStartIfOnBatteries
+$Trigger = New-ScheduledTaskTrigger -Daily -At $backupTime
+$Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
+Register-ScheduledTask -TaskName "WinBackup7z" -InputObject $Task -User SYSTEM
