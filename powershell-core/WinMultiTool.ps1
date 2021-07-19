@@ -126,7 +126,7 @@ shutdown /r /t 0 /f
     $getUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
     Clear-Host
     Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
-    Write-Host $getUpdates
+    $getUpdates
     Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
     Write-Warning "Installing updates please wait..."
     $installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
