@@ -143,6 +143,8 @@ Write-Host "Free space before on C: = $($freeSpaceInitial)GB" -ForegroundColor G
 Write-Host "Free space after on C: = $($freeSpace)GB" -ForegroundColor Green
 ""
 if ($functionsToRun -like "*4*") {
+    Write-Warning "Rebooting in 5 seconds..."
+    Start-Sleep 5
     Restart-Computer -Force
     exit
 }
