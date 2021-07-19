@@ -143,7 +143,7 @@ $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object 
 $freeSpace = $disk.FreeSpace / 1GB
 $freeSpace = [math]::Round($freeSpace, 2)
 ""
-Write-Host "Free space before on C: = $($freeSpaceInitial)GB" -ForegroundColor Green
+Write-Host "Free space before on C: = $($freeSpaceInitial)GB" -ForegroundColor Yellow
 Write-Host "Free space after on C: = $($freeSpace)GB" -ForegroundColor Green
 ""
 if ($functionsToRun -like "*4*") {
