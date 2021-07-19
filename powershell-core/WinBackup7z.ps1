@@ -4,28 +4,52 @@ $logObj = [PSCustomObject]@{
     backupSourcePath      = $null
     backupDestinationPath = $null
     backupRetention       = $null
-    backupNewFullBackup   = $null
+    backupDayBeforeFull   = $null
     backupCurrentCount    = 0
     backupTimeStamp       = $null
 }
 ""
+
+$tempLogObjAll = [System.Collections.ArrayList]::new()
+
+
+
+
+
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" -ErrorAction SilentlyContinue | Where-Object Name -Like "WinBackup7z_*.json" -ErrorAction SilentlyContinue
 if ($allBackups) {
     Write-Host "Current backup configurations"
     Write-Host "-----------------------------"
+
     foreach ($backup in $allBackups) {
         $tempLogObj = Get-Content -Path $backup.VersionInfo.FileName -Raw | ConvertFrom-Json
         $tempLogObj | Select-Object backupName, backupSourcePath, backupDestinationPath, backupRetention, backupCurrentCount | Format-Table
+        [void]$tempLogObjAll.Add($tempLogObj)
     }
     ""
     ""
 }
-while ($null -eq $logObj.backupName -or $logObj.backupName -eq $tempLogObj.backupName) {
+while ($null -eq $logObj.backupName) {
     $logObj.backupName = Read-Host "Enter name for backup"
 }
+
+
+$backupExists = $tempLogObjAll.backupName | Where-Object {$_ -eq $logObj.backupName}
+
+
+
+if ($logObj.backupName -eq $backupExists) {
+    Write-Warning "Editing current backup named $($logObj.backupName) type DELETE as source path to remove its configuration"
+}
 ""
-while ($null -eq $logObj.backupSourcePath) {
+while ($null -eq $logObj.backupSourcePath -or $logObj.backupSourcePath -eq "DELETE") {
+
     $logObj.backupSourcePath = Read-Host "Enter a source path to backup"
+    if ($logObj.backupSourcePath -eq "DELETE") {
+        $logObj.backupName
+        Remove-Item -Path "C:\ProgramData\WinBackup7z\WinBackup7z_$($logObj.backupName).json"
+        $host.Exit()
+    }
     if (!(Test-Path -Path $logObj.backupSourcePath)) {
         $logObj.backupSourcePath = $null
         Write-Warning "The path specified does not exist please try again"
@@ -35,16 +59,24 @@ while ($null -eq $logObj.backupSourcePath) {
 while ($null -eq $logObj.backupDestinationPath) {
     $logObj.backupDestinationPath = Read-Host "Enter a destination path to backup to"
 }
+""
 if (!(Test-Path -Path "$($logObj.backupDestinationPath)\$($logObj.backupName)")) {
     New-Item -Path "$($logObj.backupDestinationPath)\$($logObj.backupName)" -ItemType "directory" -Force
 }
 while ($backupTime -notmatch "\d\wm") {
     $backupTime = Read-Host "Enter a time for backups to run, formatted like 3am for 3:00 AM"
 }
+""
+while ($logObj.backupDayBeforeFull -isnot [int]) {
+    $logObj.backupDayBeforeFull = Read-Host "How many days until a new full backup point"
+    $logObj.backupDayBeforeFull = [int]$logObj.backupDayBeforeFull
+}
+""
 while ($logObj.backupRetention -isnot [int]) {
     $logObj.backupRetention = Read-Host "How many full backups to keep"
     $logObj.backupRetention = [int]$logObj.backupRetention
 }
+""
 if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
     $url = "https://www.7-zip.org/a/7z1900-x64.exe"
     $output = "$($env:TEMP)\7z1900-x64.exe"
@@ -67,7 +99,7 @@ foreach ($backup in $allBackups) {
         $purgeBackup = Get-ChildItem "$($logObj.backupDestinationPath)\$($logObj.backupName)" | Where-Object Name -Like "WinBackup7z_$($logObj.backupName)_*.7z" | Sort-Object LastWriteTime -Descending | Select-Object -Last 1
         Remove-Item $purgeBackup.VersionInfo.FileName
     }
-    if ($logObj.backupNewFullBackup -eq $logObj.backupCurrentCount) {
+    if ($logObj.backupDayBeforeFull -eq $logObj.backupCurrentCount) {
         $logObj.backupTimeStamp = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
         ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($logObj.backupDestinationPath)\$($logObj.backupName)\WinBackup7z_$($logObj.backupName)_$($logObj.backupTimeStamp).7z" $logObj.backupSourcePath -mx9
         $logObj.backupCurrentCount = 0
