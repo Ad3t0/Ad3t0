@@ -149,6 +149,7 @@ if ($functionsToRun -like "*4*") {
     exit
 }
 $confirmationreboot = $null
+$pendingReboot = $null
 $pendingReboot = Test-PendingReboot
 if ($pendingReboot) {
     while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
