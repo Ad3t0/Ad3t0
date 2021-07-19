@@ -21,8 +21,8 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 if (!(Test-Path -Path "C:\ProgramData\WinBackup")) {
     New-Item -Path "C:\ProgramData\WinBackup" -ItemType "directory"
 }
-if (!(Test-Path -Path $logObj.backupDestinationPath)) {
-    New-Item -Path $logObj.backupDestinationPath -ItemType "directory" -Force
+if (!(Test-Path -Path "$($logObj.backupDestinationPath)\$($logObj.backupName)")) {
+    New-Item -Path "$($logObj.backupDestinationPath)\$($logObj.backupName)" -ItemType "directory" -Force
 }
 $pathToJson = "C:\ProgramData\WinBackup\WinBackup_$($logObj.backupName).json"
 $logObj | ConvertTo-Json | Set-Content $pathToJson
@@ -31,12 +31,12 @@ param ($backupName)
 $pathToJson = "C:\ProgramData\WinBackup\WinBackup_$($backupName).json"
 $logObj = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
 $timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
-$backupCount = Get-ChildItem $logObj.backupDestinationPath
+$backupCount = Get-ChildItem "$($logObj.backupDestinationPath)\$($logObj.backupName)" | Where-Object Name -Like "WinBackup_$($backupName)_*.7z"
 if ($backupCount.Count -gt [int]$logObj.backupRetention) {
-    $purgeBackup = Get-ChildItem $logObj.backupDestinationPath | Where-Object Name -Like "WinBackup_$($backupName)_*.7z" |Sort-Object LastWriteTime -Descending | Select-Object -Last 1
+    $purgeBackup = Get-ChildItem "$($logObj.backupDestinationPath)\$($logObj.backupName)" | Where-Object Name -Like "WinBackup_$($backupName)_*.7z" | Sort-Object LastWriteTime -Descending | Select-Object -Last 1
     Remove-Item $purgeBackup.VersionInfo.FileName
 }
-."C:\Program Files\7-Zip\7z.exe" a -t7z "$($logObj.backupDestinationPath)\WinBackup_$($logObj.backupName)_$($timeScriptRun).7z" $logObj.backupSourcePath -mx9
+."C:\Program Files\7-Zip\7z.exe" a -t7z "$($logObj.backupDestinationPath)\$($logObj.backupName)\WinBackup_$($logObj.backupName)_$($timeScriptRun).7z" $logObj.backupSourcePath -mx9
 '@
 Set-Content "C:\ProgramData\WinBackup\WinBackup_$($logObj.backupName).ps1" $taskFile
 $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinBackup\WinBackup_$($logObj.backupName).ps1 -backupName $($logObj.backupName)"
