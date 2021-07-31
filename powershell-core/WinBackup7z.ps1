@@ -7,6 +7,7 @@ $logObj = [PSCustomObject]@{
     backupDaysBeforeFull    = $null
     backupCurrentCount      = 0
     backupTimeStamp         = $null
+    backupFirst             = $True
 }
 $backupTime = $null
 ""
@@ -83,7 +84,8 @@ foreach ($backup in $allBackups) {
     $pathToJson = $backup.VersionInfo.FileName
     $logObj = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
     $backupCount = Get-ChildItem "$($logObj.backupDestinationPath)\$($logObj.backupName)" | Where-Object Name -Like "WinBackup7z_$($logObj.backupName)_*.7z"
-    if ([int]$logObj.backupDaysBeforeFull -eq [int]$logObj.backupCurrentCount) {
+    if ([int]$logObj.backupDaysBeforeFull -eq [int]$logObj.backupCurrentCount -or $logObj.backupCurrentCount -eq 0 -or $logObj.backupFirst -eq $True) {
+        $logObj.backupFirst = $False
         $logObj.backupTimeStamp = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
         ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($logObj.backupDestinationPath)\$($logObj.backupName)\WinBackup7z_$($logObj.backupName)_$($logObj.backupTimeStamp).7z" $logObj.backupSourcePath -mx9
         $logObj.backupCurrentCount = 0
