@@ -45,6 +45,7 @@ while ($null -eq $logObj.backupSourcePath -or $logObj.backupSourcePath -eq "DELE
         ""
     }
 }
+""
 while ($null -eq $logObj.backupDestinationPath) {
     $logObj.backupDestinationPath = Read-Host "Enter a destination path to backup to"
 }
@@ -61,43 +62,54 @@ while ($logObj.backupFullBackupsToKeep -isnot [int]) {
     $logObj.backupFullBackupsToKeep = Read-Host "How many full backups to keep"
     $logObj.backupFullBackupsToKeep = [int]$logObj.backupFullBackupsToKeep
 }
-""
-while ($backupTime -notmatch "\d\wm") {
-    $backupTime = Read-Host "Enter a time for backups to run, formatted like 3am for 3:00 AM"
-}
-""
-while (!($verifiedCreds)) {
-    $username = Read-Host "Enter the domain\user for the task to run as"
-    $password = Read-Host "Enter the password"
-    $computer = $env:COMPUTERNAME
-    Add-Type -AssemblyName System.DirectoryServices.AccountManagement
-    $obj = New-Object System.DirectoryServices.AccountManagement.PrincipalContext ('machine', $computer)
-    $goodCreds = $obj.ValidateCredentials($username, $password)
-    if ($goodCreds) {
-        ""
-        Write-Host "Credentials validated successfully" -ForegroundColor Green
-        ""
-        $verifiedCreds = $true
-    }
-    else {
-        ""
-        Write-Warning "Credentials failed to validate try again"
-        ""
-    }
-}
-""
-$scheduledTaskExists = Get-ScheduledTask -TaskName "WinBackup7z"
+$scheduledTaskExists = Get-ScheduledTask -TaskName "WinBackup7z" -ErrorAction SilentlyContinue
 if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
+    ""
+    while ($backupTime -notmatch "\d\wm") {
+        $backupTime = Read-Host "Enter a time for backups to run, formatted like 3am for 3:00 AM"
+    }
+    ""
+    while (!($verifiedCreds)) {
+        $username = Read-Host "Enter the domain\user for the task to run as"
+        if ($username -eq "SYSTEM") {
+            ""
+            Write-Host "Creating task as system, network file shares will not work" -ForegroundColor Green
+            ""
+            $verifiedCreds = $true
+        }
+        else {
+            $password = Read-Host "Enter the password for the task user"
+            $computer = $env:COMPUTERNAME
+            Add-Type -AssemblyName System.DirectoryServices.AccountManagement
+            $obj = New-Object System.DirectoryServices.AccountManagement.PrincipalContext ('machine', $computer)
+            $goodCreds = $obj.ValidateCredentials($username, $password)
+            if ($goodCreds) {
+                ""
+                Write-Host "Credentials validated successfully" -ForegroundColor Green
+                ""
+                $verifiedCreds = $true
+            }
+            else {
+                ""
+                Write-Warning "Credentials failed to validate try again"
+                ""
+            }
+        }
+    }
+    ""
     Start-Sleep 1
     $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinBackup7z\WinBackup7z.ps1"
     $Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 0 -AllowStartIfOnBatteries
     $Trigger = New-ScheduledTaskTrigger -Daily -At $backupTime
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
-    Register-ScheduledTask -TaskName 'WinBackup7z' -InputObject $Task -User $username -Password $password
+    if ($username -eq "SYSTEM") {
+        Register-ScheduledTask -TaskName 'WinBackup7z' -InputObject $Task -User SYSTEM
+    }
+    else {
+        Register-ScheduledTask -TaskName 'WinBackup7z' -InputObject $Task -User $username -Password $password
+    }
     Write-Host "Scheduled task was created" -ForegroundColor Green
 }
-#Register-ScheduledTask -TaskName "WinBackup7z" -InputObject $Task -User SYSTEM
-#Unregister-ScheduledTask -TaskName "WinBackup7z" -Confirm:$False -ErrorAction SilentlyContinue
 if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
     $url = "https://www.7-zip.org/a/7z1900-x64.exe"
     $output = "$($env:TEMP)\7z1900-x64.exe"
