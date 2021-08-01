@@ -213,8 +213,10 @@ foreach ($backup in $allBackups) {
         $backupSettings.backupCurrentCount++
     }
     $backupSettings.backupFirst = $False
-    $timeEnd = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
     if (Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json") {
+        $timeEnd = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
+        $backupFileSize = Get-Item "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z".length/1MB
+        $backupFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
         $smtpSettings = Get-Content -Path $pathToSMTPJson -Raw | ConvertFrom-Json
         $encrypted = ConvertTo-SecureString $smtpSettings.smtpPassword -AsPlainText -Force
         $credential = New-Object System.Management.Automation.PsCredential($smtpSettings.smtpUser, $encrypted)
@@ -222,10 +224,16 @@ foreach ($backup in $allBackups) {
         $SMTPClient.EnableSsl = $smtpSettings.smtpSSL
         $SMTPClient.Credentials = $credential
         $Body = @"
-Time Started: $($timeStart)
-Time Ended: $($timeEnd)
 Computer Name: $($env:COMPUTERNAME)
 Domain: $($env:USERDOMAIN)
+Time Started: $($timeStart)
+Time Ended: $($timeEnd)
+Backup Name: $($backupSettings.backupName)
+Backup File Size: $($backupFileSize) MB
+Backup Folder Size: $($backupFolderSize) MB
+Full Backups to Keep: $($backupSettings.backupFullBackupsToKeep)
+Days Before Full Backup: $($backupSettings.backupDaysBeforeFull)
+Current Backup Count: $($backupSettings.backupCurrentCount)
 "@
         $Subject = "WinBackup7z: Backup $($backupSettings.backupName) @ $($env:COMPUTERNAME) Completed"
         $SMTPClient.Send($smtpSettings.smtpUser, $smtpSettings.smtpUser, $Subject, $Body)
