@@ -148,13 +148,10 @@ Write-Host "Free space after on C: = $($freeSpace)GB" -ForegroundColor Green
 ""
 $pendingReboot = $null
 if ($functionsToRun -like "*4*") {
-    $pendingReboot = Test-PendingReboot
-    if ($pendingReboot) {
-        Write-Warning "Rebooting in 5 seconds..."
-        Start-Sleep 5
-        Restart-Computer -Force
-        exit
-    }
+    Write-Warning "Rebooting in 5 seconds..."
+    Start-Sleep 5
+    Restart-Computer -Force
+    exit
 }
 $confirmationreboot = $null
 $pendingReboot = Test-PendingReboot
