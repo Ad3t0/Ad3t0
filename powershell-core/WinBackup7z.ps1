@@ -137,7 +137,8 @@ if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json")) {
                 $smtpSettings.smtpServer = Read-Host "Enter SMTP server"
                 if ($smtpSettings.smtpServer -match "^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$") {
                     if (Test-Connection $smtpSettings.smtpServer -Count 1) {
-                        Write-Host "SMTP server format and pinged sucessful" -ForegroundColor Green
+                        ""
+                        Write-Host "SMTP server format correct and was pinged sucessfully" -ForegroundColor Green
                         ""
                         $smtpServerConVal = $True
                     }
@@ -162,6 +163,7 @@ if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json")) {
                 }
             }
             while ($smtpUserVal -ne $True) {
+                ""
                 $smtpSettings.smtpUser = Read-Host "Enter the SMTP username"
                 if ($smtpSettings.smtpUser -match "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|`"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*`")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])") {
                     $smtpUserVal = $True
@@ -171,8 +173,10 @@ if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json")) {
                     ""
                 }
             }
-            while ($null -eq $smtpSettings.smtpPassword -or $smtpSettings.smtpPassword.Count -lt 4) {
+            while ($null -eq $smtpSettings.smtpPassword -or $smtpPasswordLength.Characters -lt 5) {
+                ""
                 $smtpSettings.smtpPassword = Read-Host "Enter the SMTP password"
+                $smtpPasswordLength = $smtpSettings.smtpPassword | Measure-Object -Character
                 ""
             }
             while ($smtpSSL -ne "n" -and $smtpSSL -ne "y") {
