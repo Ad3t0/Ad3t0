@@ -229,7 +229,6 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
     ."$($env:TEMP)\7z1900-x64.exe" /S
     Wait-Process -Name 7z1900-x64
 }
-
 $pathToBackupJson = "C:\ProgramData\WinBackup7z\WinBackup7z_$($backupSettings.backupName).json"
 $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 $taskFile = @'
@@ -257,8 +256,12 @@ foreach ($backup in $allBackups) {
     $backupSettings.backupFirst = $False
     if (Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json") {
         $timeEnd = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
-        $backupFileSize = Get-Item "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z".length/1MB
+        $backupFileSize = Get-Item "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z"
+        $backupFileSize = $backupFileSize.Length / 1mb
+        $backupFileSize = [math]::Round($backupFileSize, 2)
         $backupFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
+        $backupFolderSize = [math]::Round($backupFolderSize, 2)
+        $pathToSMTPJson = "C:\ProgramData\WinBackup7z\WinBackup7z.json"
         $smtpSettings = Get-Content -Path $pathToSMTPJson -Raw | ConvertFrom-Json
         $encrypted = ConvertTo-SecureString $smtpSettings.smtpPassword -AsPlainText -Force
         $credential = New-Object System.Management.Automation.PsCredential($smtpSettings.smtpUser, $encrypted)
