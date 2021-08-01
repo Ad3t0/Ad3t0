@@ -125,58 +125,84 @@ if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json")) {
             smtpPassword = $null
             smtpSSL      = $null
         }
-        while ($smtpServerConVal -ne $True) {
-            ""
-            $smtpSettings.smtpServer = Read-Host "Enter SMTP server"
-            if ($smtpSettings.smtpServer -match "^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$") {
-                if (Test-Connection $smtpSettings.smtpServer -Count 1) {
-                    Write-Host "SMTP server format and pinged sucessful" -ForegroundColor Green
-                    ""
-                    $smtpServerConVal = $True
+        while ($smtpSuccess -ne $True) {
+            while ($smtpServerConVal -ne $True) {
+                ""
+                $smtpSettings.smtpServer = Read-Host "Enter SMTP server"
+                if ($smtpSettings.smtpServer -match "^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$") {
+                    if (Test-Connection $smtpSettings.smtpServer -Count 1) {
+                        Write-Host "SMTP server format and pinged sucessful" -ForegroundColor Green
+                        ""
+                        $smtpServerConVal = $True
+                    }
+                    else {
+                        Write-Warning "The SMTP server could not be pinged please try again"
+                        ""
+                    }
                 }
                 else {
-                    Write-Warning "The SMTP server could not be pinged please try again"
+                    Write-Warning "The SMTP server does not match a proper domain format try again"
                     ""
                 }
             }
-            else {
-                Write-Warning "The SMTP server does not match a proper domain format try again"
+            while ($smtpPortVal -ne $True) {
+                $smtpSettings.smtpPort = Read-Host "Enter SMTP port"
+                if ($smtpSettings.smtpPort -match "^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$") {
+                    $smtpPortVal = $True
+                }
+                else {
+                    Write-Warning "The SMTP server port is invalid please try again"
+                    ""
+                }
+            }
+            while ($smtpUserVal -ne $True) {
+                $smtpSettings.smtpUser = Read-Host "Enter the SMTP username"
+                if ($smtpSettings.smtpUser -match "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|`"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*`")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])") {
+                    $smtpUserVal = $True
+                }
+                else {
+                    Write-Warning "The SMTP username is not a valid email address please try again"
+                    ""
+                }
+            }
+            while ($null -eq $smtpSettings.smtpPassword -or $smtpSettings.smtpPassword.Count -lt 4) {
+                $smtpSettings.smtpPassword = Read-Host "Enter the SMTP password"
                 ""
             }
-        }
-        while ($smtpPortVal -ne $True) {
-            $smtpSettings.smtpPort = Read-Host "Enter SMTP port"
-            if ($smtpSettings.smtpPort -match "^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$") {
-                $smtpPortVal = $True
-            }
-            else {
-                Write-Warning "The SMTP server port is invalid please try again"
+            while ($smtpSSL -ne "n" -and $smtpSSL -ne "y") {
+                $smtpSSL = Read-Host "Enable SSL SMTP connections? (needed for Gmail) [y/n]"
                 ""
             }
-        }
-        while ($smtpUserVal -ne $True) {
-            $smtpSettings.smtpUser = Read-Host "Enter the SMTP username"
-            if ($smtpSettings.smtpUser -match "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|`"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*`")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])") {
-                $smtpUserVal = $True
+            if ($smtpSSL -eq "y") {
+                $smtpSettings.smtpSSL = $True
             }
             else {
-                Write-Warning "The SMTP username is not a valid email address please try again"
-                ""
+                $smtpSettings.smtpSSL = $False
             }
-        }
-        while ($null -eq $smtpSettings.smtpPassword -or $smtpSettings.smtpPassword.Count -lt 4) {
-            $smtpSettings.smtpPassword = Read-Host "Enter the SMTP password"
-            ""
-        }
-        while ($smtpSSL -ne "n" -and $smtpSSL -ne "y") {
-            $smtpSSL = Read-Host "Enable SSL SMTP connections? (needed for Gmail) [y/n]"
-            ""
-        }
-        if ($smtpSSL -eq "y") {
-            $smtpSettings.smtpSSL = $True
-        }
-        else {
-            $smtpSettings.smtpSSL = $False
+            $encrypted = ConvertTo-SecureString $smtpSettings.smtpPassword -AsPlainText -Force
+            $credential = New-Object System.Management.Automation.PsCredential($smtpSettings.smtpUser, $encrypted)
+            $SMTPClient = New-Object Net.Mail.SmtpClient($smtpSettings.smtpServer, $smtpSettings.smtpPort)
+            $SMTPClient.EnableSsl = $smtpSettings.smtpSSL
+            $SMTPClient.Credentials = $credential
+            $Body = @"
+This is a WinBackup7z SMTP test
+"@
+            $Subject = "This is a WinBackup7z SMTP test"
+            try {
+                $SMTPClient.Send($smtpSettings.smtpUser, $smtpSettings.smtpUser, $Subject, $Body)
+                $smtpSuccess = $True
+            }
+            catch {
+                $smtpSuccess = $False
+            }
+            if ($smtpSuccess -eq $True) {
+                ""
+                Write-Host "The SMTP message was sent successfully" -ForegroundColor Green
+            }
+            else {
+                ""
+                Write-Warning "The SMTP message failed to send successfully"
+            }
         }
         $pathToSMTPJson = "C:\ProgramData\WinBackup7z\WinBackup7z.json"
         $smtpSettings | ConvertTo-Json | Set-Content $pathToSMTPJson
@@ -246,3 +272,5 @@ Current Backup Count: $($backupSettings.backupCurrentCount)
 }
 '@
 Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
+""
+Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
