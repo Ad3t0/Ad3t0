@@ -1,3 +1,9 @@
+$ps = [PowerShell]::Create()
+$ps.AddScript('Get-Variable | Select-Object -ExpandProperty Name') | Out-Null
+$builtIn = $ps.Invoke()
+$ps.Dispose()
+$builtIn += "profile", "psISE", "psUnsupportedConsoleApplications"
+Remove-Variable (Get-Variable | Select-Object -ExpandProperty Name | Where-Object { $builtIn -NotContains $_ })
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $backupSettings = [PSCustomObject]@{
     backupName              = $null
