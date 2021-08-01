@@ -53,11 +53,12 @@ if (!(Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSetting
     New-Item -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -ItemType "directory" -Force
 }
 while ($backupSettings.backupDaysBeforeFull -isnot [int]) {
+    ""
     $backupSettings.backupDaysBeforeFull = Read-Host "How many days until a new full backup point"
     $backupSettings.backupDaysBeforeFull = [int]$backupSettings.backupDaysBeforeFull
 }
-""
 while ($backupSettings.backupFullBackupsToKeep -isnot [int]) {
+    ""
     $backupSettings.backupFullBackupsToKeep = Read-Host "How many full backups to keep"
     $backupSettings.backupFullBackupsToKeep = [int]$backupSettings.backupFullBackupsToKeep
 }
@@ -77,6 +78,7 @@ if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
             $verifiedCreds = $true
         }
         else {
+            ""
             $password = Read-Host "Enter the password for the task user"
             $computer = $env:COMPUTERNAME
             Add-Type -AssemblyName System.DirectoryServices.AccountManagement
@@ -112,6 +114,7 @@ if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
 }
 if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json")) {
     while ($setupSMTP -ne "n" -and $setupSMTP -ne "y") {
+        ""
         $setupSMTP = Read-Host "Configure SMTP backup alerts? [y/n]"
     }
     if ($setupSMTP -eq "y") {
@@ -123,8 +126,9 @@ if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json")) {
             smtpSSL      = $null
         }
         while ($smtpServerConVal -ne $True) {
+            ""
             $smtpSettings.smtpServer = Read-Host "Enter SMTP server"
-            if ($smtpSettings.smtpServer -notmatch "^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$") {
+            if ($smtpSettings.smtpServer -match "^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$") {
                 if (Test-Connection $smtpSettings.smtpServer -Count 1) {
                     Write-Host "SMTP server format and pinged sucessful" -ForegroundColor Green
                     ""
