@@ -16,8 +16,12 @@ $backupSettings = [PSCustomObject]@{
     backupFirst             = $True
 }
 ""
+if (!(Test-Path -Path "C:\ProgramData\WinBackup7z")) {
+    New-Item -Path "C:\ProgramData\WinBackup7z" -ItemType "directory"
+}
 $tempBackupSettingsAll = [System.Collections.ArrayList]::new()
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" -ErrorAction SilentlyContinue | Where-Object Name -Like "WinBackup7z_*.json" -ErrorAction SilentlyContinue
+Clear-Host
 if ($allBackups) {
     Write-Host "Current backup configurations"
     Write-Host "-----------------------------"
@@ -225,9 +229,7 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
     ."$($env:TEMP)\7z1900-x64.exe" /S
     Wait-Process -Name 7z1900-x64
 }
-if (!(Test-Path -Path "C:\ProgramData\WinBackup7z")) {
-    New-Item -Path "C:\ProgramData\WinBackup7z" -ItemType "directory"
-}
+
 $pathToBackupJson = "C:\ProgramData\WinBackup7z\WinBackup7z_$($backupSettings.backupName).json"
 $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 $taskFile = @'
