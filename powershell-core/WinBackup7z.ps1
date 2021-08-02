@@ -58,23 +58,24 @@ while ($null -eq $backupSettings.backupSourcePath -or $backupSettings.backupSour
 ""
 while ($null -eq $backupSettings.backupDestinationPath -or $backupSettings.backupDestinationPath -eq "") {
     $backupSettings.backupDestinationPath = Read-Host "Enter a destination path to backup to"
+    ""
 }
-""
 if (!(Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)")) {
     New-Item -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -ItemType "directory" -Force
 }
 while ($backupSettings.backupDaysBeforeFull -isnot [int]) {
-    ""
     $backupSettings.backupDaysBeforeFull = Read-Host "How many days until a new full backup point"
     $backupSettings.backupDaysBeforeFull = [int]$backupSettings.backupDaysBeforeFull
+    ""
 }
 while ($backupSettings.backupFullBackupsToKeep -isnot [int]) {
-    ""
+
     $backupSettings.backupFullBackupsToKeep = Read-Host "How many full backups to keep"
     $backupSettings.backupFullBackupsToKeep = [int]$backupSettings.backupFullBackupsToKeep
+    ""
 }
 while ($validBackupPassword -ne $True) {
-    ""
+
     $backupSettings.backupPassword = Read-Host "Enter a backup password for encryption, blank for no password"
     $backupPasswordLength = $backupSettings.backupPassword | Measure-Object -Character
     if ($backupPasswordLength.Characters -lt 5) {
@@ -90,7 +91,6 @@ while ($validBackupPassword -ne $True) {
     else {
         $validBackupPassword = $True
     }
-    ""
 }
 $scheduledTaskExists = Get-ScheduledTask -TaskName "WinBackup7z" -ErrorAction SilentlyContinue
 if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
@@ -117,17 +117,14 @@ if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
             if ($goodCreds) {
                 ""
                 Write-Host "Credentials validated successfully" -ForegroundColor Green
-                ""
                 $verifiedCreds = $true
             }
             else {
-                ""
                 Write-Warning "Credentials failed to validate try again"
                 ""
             }
         }
     }
-    ""
     Start-Sleep 1
     $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinBackup7z\WinBackup7z.ps1"
     $Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 0 -AllowStartIfOnBatteries
@@ -139,8 +136,8 @@ if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
     else {
         Register-ScheduledTask -TaskName 'WinBackup7z' -InputObject $Task -User $username -Password $password
     }
-    ""
     Write-Host "Scheduled task was created" -ForegroundColor Green
+    ""
 }
 if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\WinBackup7z.json")) {
     while ($setupSMTP -ne "n" -and $setupSMTP -ne "y") {
@@ -342,5 +339,8 @@ $($7zipLog)
 }
 '@
 Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
+""
+Start-Sleep 2
+Write-Host "To uninstall delete scheduled task with name WinBackup7z and remove folder C:\ProgramData\WinBackup7z"
 ""
 Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
