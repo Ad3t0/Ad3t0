@@ -73,14 +73,19 @@ while ($backupSettings.backupFullBackupsToKeep -isnot [int]) {
     $backupSettings.backupFullBackupsToKeep = Read-Host "How many full backups to keep"
     $backupSettings.backupFullBackupsToKeep = [int]$backupSettings.backupFullBackupsToKeep
 }
-$backupSettings.backupPassword = Read-Host "Enter a backup password for encryption, blank for no password"
 while ($validBackupPassword -ne $True) {
     ""
     $backupSettings.backupPassword = Read-Host "Enter a backup password for encryption, blank for no password"
     $backupPasswordLength = $backupSettings.backupPassword | Measure-Object -Character
-    if ($backupPasswordLength -lt 5 -or $backupPasswordLength -ne 0) {
+    if ($backupPasswordLength.Characters -lt 5) {
         Write-Warning "Password is too short please use over 5 characters please try again"
         ""
+    }
+    if ($backupPasswordLength.Characters -eq 0) {
+        Write-Warning "Backup will not be encrypted"
+        ""
+        $backupSettings.backupPassword = $False
+        $validBackupPassword = $True
     }
     else {
         $validBackupPassword = $True
@@ -95,7 +100,7 @@ if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
     }
     ""
     while (!($verifiedCreds)) {
-        $username = Read-Host "Enter the domain\user for the task to run as"
+        $username = Read-Host "Enter the DOMAIN\user for the task to run as"
         if ($username -eq "SYSTEM") {
             ""
             Write-Host "Creating task as system, network file shares will not work" -ForegroundColor Green
@@ -261,7 +266,7 @@ foreach ($backup in $allBackups) {
             New-Item -ItemType Directory -Path "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)" -Force
         }
         $backupFileLog = "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).log"
-        if ($backupSettings.backupPassword -eq 0) {
+        if ($backupSettings.backupPassword -eq $False) {
             ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
         }
         else {
@@ -274,7 +279,7 @@ foreach ($backup in $allBackups) {
         }
     }
     else {
-        if ($backupSettings.backupPassword -eq 0) {
+        if ($backupSettings.backupPassword -eq $False) {
             ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
         }
         else {
