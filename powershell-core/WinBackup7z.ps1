@@ -14,6 +14,7 @@ $backupSettings = [PSCustomObject]@{
     backupCurrentCount      = 0
     backupTimeStamp         = $null
     backupFirst             = $True
+    backupPassword          = $null
 }
 ""
 if (!(Test-Path -Path "C:\ProgramData\WinBackup7z")) {
@@ -71,6 +72,20 @@ while ($backupSettings.backupFullBackupsToKeep -isnot [int]) {
     ""
     $backupSettings.backupFullBackupsToKeep = Read-Host "How many full backups to keep"
     $backupSettings.backupFullBackupsToKeep = [int]$backupSettings.backupFullBackupsToKeep
+}
+$backupSettings.backupPassword = Read-Host "Enter a backup password for encryption, blank for no password"
+while ($validBackupPassword -ne $True) {
+    ""
+    $backupSettings.backupPassword = Read-Host "Enter a backup password for encryption, blank for no password"
+    $backupPasswordLength = $backupSettings.backupPassword | Measure-Object -Character
+    if ($backupPasswordLength -lt 5 -or $backupPasswordLength -ne 0) {
+        Write-Warning "Password is too short please use over 5 characters please try again"
+        ""
+    }
+    else {
+        $validBackupPassword = $True
+    }
+    ""
 }
 $scheduledTaskExists = Get-ScheduledTask -TaskName "WinBackup7z" -ErrorAction SilentlyContinue
 if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
@@ -232,13 +247,6 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 $pathToBackupJson = "C:\ProgramData\WinBackup7z\WinBackup7z_$($backupSettings.backupName).json"
 $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 $taskFile = @'
-
-'@
-Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
-""
-Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
-
-####
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" | Where-Object Name -Like "WinBackup7z_*.json"
 foreach ($backup in $allBackups) {
     $timeStart = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
@@ -247,7 +255,12 @@ foreach ($backup in $allBackups) {
     $backupCount = Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" | Where-Object Name -Like "WinBackup7z_$($backupSettings.backupName)_*.7z"
     if ([int]$backupSettings.backupDaysBeforeFull -eq [int]$backupSettings.backupCurrentCount -or $backupSettings.backupCurrentCount -eq 0) {
         $backupSettings.backupTimeStamp = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
-        ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9
+        if ($backupSettings.backupPassword -eq 0) {
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9
+        }
+        else {
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9 -p $backupSettings.backupPassword
+        }
         $backupSettings.backupCurrentCount = 0
         if ($backupCount.Count -eq $backupSettings.backupFullBackupsToKeep) {
             $purgeBackup = Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" | Where-Object Name -Like "WinBackup7z_$($backupSettings.backupName)_*.7z" | Sort-Object LastWriteTime -Descending | Select-Object -Last 1
@@ -255,7 +268,12 @@ foreach ($backup in $allBackups) {
         }
     }
     else {
-        ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9
+        if ($backupSettings.backupPassword -eq 0) {
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9
+        }
+        else {
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9 -p $backupSettings.backupPassword
+        }
     }
     if ($backupSettings.backupFirst -eq $False) {
         $backupSettings.backupCurrentCount++
@@ -287,8 +305,20 @@ Full Backups to Keep: $($backupSettings.backupFullBackupsToKeep)
 Days Before Full Backup: $($backupSettings.backupDaysBeforeFull)
 Current Backup Count: $($backupSettings.backupCurrentCount)
 "@
-        $Subject = "WinBackup7z: Backup $($backupSettings.backupName) @ $($env:COMPUTERNAME) Completed"
+        if (Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z") {
+            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME)] Completed Successfully"
+        }
+        if (!(Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z")) {
+            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME)] Backup Failed (no backup file found)"
+        }
+        if ($backupFileSize -eq 0) {
+            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME)] Backup Failed (file smaller than 1mb)"
+        }
         $SMTPClient.Send($smtpSettings.smtpUser, $smtpSettings.smtpUser, $Subject, $Body)
     }
     $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 }
+'@
+Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
+""
+Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
