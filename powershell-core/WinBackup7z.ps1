@@ -78,7 +78,7 @@ while ($validBackupPassword -ne $True) {
     $backupSettings.backupPassword = Read-Host "Enter a backup password for encryption, blank for no password"
     $backupPasswordLength = $backupSettings.backupPassword | Measure-Object -Character
     if ($backupPasswordLength.Characters -lt 5) {
-        Write-Warning "Password is too short please use over 5 characters please try again"
+        Write-Warning "Password is too short use more than 5 characters please try again"
         ""
     }
     if ($backupPasswordLength.Characters -eq 0) {
@@ -261,16 +261,16 @@ foreach ($backup in $allBackups) {
     $backupCount = Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -ErrorAction SilentlyContinue | Where-Object Name -Like "WinBackup7z_$($backupSettings.backupName)_*.7z"
     if ([int]$backupSettings.backupDaysBeforeFull -eq [int]$backupSettings.backupCurrentCount -or $backupSettings.backupCurrentCount -eq 0) {
         $backupSettings.backupTimeStamp = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
-        $backupFileName = "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z"
+        $backupFileName = "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupTimeStamp)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z"
         if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)")) {
             New-Item -ItemType Directory -Path "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)" -Force
         }
         $backupFileLog = "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).log"
         if ($backupSettings.backupPassword -eq $False) {
-            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe > $backupFileLog 2>&1
         }
         else {
-            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
         }
         $backupSettings.backupCurrentCount = 0
         if ($backupCount.Count -eq $backupSettings.backupFullBackupsToKeep) {
@@ -280,10 +280,10 @@ foreach ($backup in $allBackups) {
     }
     else {
         if ($backupSettings.backupPassword -eq $False) {
-            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe > $backupFileLog 2>&1
         }
         else {
-            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
         }
     }
     if ($backupSettings.backupFirst -eq $False) {
@@ -295,11 +295,10 @@ foreach ($backup in $allBackups) {
         $timeEnd = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
         $timeEndD = Get-Date
         $timeSpan = New-TimeSpan -Start $timeStartD -End $timeEndD
-        $backupFileSize = Get-Item "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z"
-        $backupFileSize = $backupFileSize.Length / 1mb
-        $backupFileSize = [math]::Round($backupFileSize, 2)
-        $backupFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
-        $backupFolderSize = [math]::Round($backupFolderSize, 2)
+        $backupCurrentFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupTimeStamp)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
+        $backupCurrentFolderSize = [math]::Round($backupCurrentFolderSize, 2)
+        $backupAllFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
+        $backupAllFolderSize = [math]::Round($backupAllFolderSize, 2)
         if ($backupSettings.backupPassword -eq 0) {
             $backupEncrypted = $False
         }
@@ -319,14 +318,12 @@ Backup Duration: $($timeSpan)
 Time Started: $($timeStart)
 Time Ended: $($timeEnd)
 Backup Name: $($backupSettings.backupName)
-Compressed Backup File Size: $($backupFileSize) MB
-Current Backup Folder Size: $($backupFolderSize) MB
+Current Backup Folder Size: $($backupCurrentFolderSize) MB
+All Backups Folder Size: $($backupAllFolderSize) MB
 Full Backups to Keep: $($backupSettings.backupFullBackupsToKeep)
 Days Before Full Backup: $($backupSettings.backupDaysBeforeFull)
 Current Backup Count: $($backupSettings.backupCurrentCount)
 Backup Encrypted: $($backupEncrypted)
------------------------------
-7zip Log
 -----------------------------
 $($7zipLog)
 "@
