@@ -69,13 +69,11 @@ while ($backupSettings.backupDaysBeforeFull -isnot [int]) {
     ""
 }
 while ($backupSettings.backupFullBackupsToKeep -isnot [int]) {
-
     $backupSettings.backupFullBackupsToKeep = Read-Host "How many full backups to keep"
     $backupSettings.backupFullBackupsToKeep = [int]$backupSettings.backupFullBackupsToKeep
     ""
 }
 while ($validBackupPassword -ne $True) {
-
     $backupSettings.backupPassword = Read-Host "Enter a backup password for encryption, blank for no password"
     $backupPasswordLength = $backupSettings.backupPassword | Measure-Object -Character
     if ($backupPasswordLength.Characters -lt 5) {
@@ -292,6 +290,7 @@ foreach ($backup in $allBackups) {
         $timeEnd = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
         $timeEndD = Get-Date
         $timeSpan = New-TimeSpan -Start $timeStartD -End $timeEndD
+        $backupDuration = [math]::Round($timeSpan.ToString(), 0)
         $backupCurrentFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupTimeStamp)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
         $backupCurrentFolderSize = [math]::Round($backupCurrentFolderSize, 2)
         $backupAllFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
@@ -311,7 +310,7 @@ foreach ($backup in $allBackups) {
         $SMTPClient.Credentials = $credential
         $Body = @"
 Computer Name: $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)
-Backup Duration: $($timeSpan)
+Backup Duration: $($backupDuration)
 Time Started: $($timeStart)
 Time Ended: $($timeEnd)
 Backup Name: $($backupSettings.backupName)
@@ -341,6 +340,8 @@ $($7zipLog)
 Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
 ""
 Start-Sleep 2
-Write-Host "To uninstall delete scheduled task with name WinBackup7z and remove folder C:\ProgramData\WinBackup7z"
+Write-Host "To uninstall delete scheduled task with name WinBackup7z and remove folder C:\ProgramData\WinBackup7z" -ForegroundColor Yellow
 ""
 Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
+""
+####
