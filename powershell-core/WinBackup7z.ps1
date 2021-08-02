@@ -34,7 +34,7 @@ if ($allBackups) {
     ""
     ""
 }
-while ($null -eq $backupSettings.backupName -or $backupSettings.backupName -ne "") {
+while ($null -eq $backupSettings.backupName -or $backupSettings.backupName -eq "") {
     $backupSettings.backupName = Read-Host "Enter name for backup"
 }
 $backupExists = $tempBackupSettingsAll.backupName | Where-Object { $_ -eq $backupSettings.backupName }
