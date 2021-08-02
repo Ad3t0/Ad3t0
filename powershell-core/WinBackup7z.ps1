@@ -232,6 +232,13 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 $pathToBackupJson = "C:\ProgramData\WinBackup7z\WinBackup7z_$($backupSettings.backupName).json"
 $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 $taskFile = @'
+
+'@
+Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
+""
+Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
+
+####
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" | Where-Object Name -Like "WinBackup7z_*.json"
 foreach ($backup in $allBackups) {
     $timeStart = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
@@ -285,7 +292,3 @@ Current Backup Count: $($backupSettings.backupCurrentCount)
     }
     $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 }
-'@
-Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
-""
-Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
