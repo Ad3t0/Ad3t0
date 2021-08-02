@@ -17,8 +17,8 @@ $backupSettings = [PSCustomObject]@{
     backupPassword          = $null
 }
 ""
-if (!(Test-Path -Path "C:\ProgramData\WinBackup7z")) {
-    New-Item -Path "C:\ProgramData\WinBackup7z" -ItemType "directory"
+if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\logs")) {
+    New-Item -Path "C:\ProgramData\WinBackup7z\logs" -ItemType "directory" -Force
 }
 $tempBackupSettingsAll = [System.Collections.ArrayList]::new()
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" -ErrorAction SilentlyContinue | Where-Object Name -Like "WinBackup7z_*.json" -ErrorAction SilentlyContinue
@@ -250,16 +250,22 @@ $taskFile = @'
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" | Where-Object Name -Like "WinBackup7z_*.json"
 foreach ($backup in $allBackups) {
     $timeStart = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
+    $timeStartD = Get-Date
     $pathToBackupJson = $backup.VersionInfo.FileName
     $backupSettings = Get-Content -Path $pathToBackupJson -Raw | ConvertFrom-Json
     $backupCount = Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -ErrorAction SilentlyContinue | Where-Object Name -Like "WinBackup7z_$($backupSettings.backupName)_*.7z"
     if ([int]$backupSettings.backupDaysBeforeFull -eq [int]$backupSettings.backupCurrentCount -or $backupSettings.backupCurrentCount -eq 0) {
         $backupSettings.backupTimeStamp = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
+        $backupFileName = "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z"
+        if (!(Test-Path -Path "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)")) {
+            New-Item -ItemType Directory -Path "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)" -Force
+        }
+        $backupFileLog = "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).log"
         if ($backupSettings.backupPassword -eq 0) {
-            ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
         }
         else {
-            ."C:\Program Files\7-Zip\7z.exe" a -t7z "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9 -p $backupSettings.backupPassword
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
         }
         $backupSettings.backupCurrentCount = 0
         if ($backupCount.Count -eq $backupSettings.backupFullBackupsToKeep) {
@@ -269,10 +275,10 @@ foreach ($backup in $allBackups) {
     }
     else {
         if ($backupSettings.backupPassword -eq 0) {
-            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
         }
         else {
-            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z" $backupSettings.backupSourcePath -mx9 -p $backupSettings.backupPassword
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
         }
     }
     if ($backupSettings.backupFirst -eq $False) {
@@ -282,6 +288,8 @@ foreach ($backup in $allBackups) {
     $pathToSMTPJson = "C:\ProgramData\WinBackup7z\WinBackup7z.json"
     if (Test-Path -Path $pathToSMTPJson) {
         $timeEnd = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
+        $timeEndD = Get-Date
+        $timeSpan = New-TimeSpan -Start $timeStartD -End $timeEndD
         $backupFileSize = Get-Item "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z"
         $backupFileSize = $backupFileSize.Length / 1mb
         $backupFileSize = [math]::Round($backupFileSize, 2)
@@ -293,6 +301,7 @@ foreach ($backup in $allBackups) {
         else {
             $backupEncrypted = $True
         }
+        $7zipLog = Get-Content -Path $backupFileLog
         $smtpSettings = Get-Content -Path $pathToSMTPJson -Raw | ConvertFrom-Json
         $encrypted = ConvertTo-SecureString $smtpSettings.smtpPassword -AsPlainText -Force
         $credential = New-Object System.Management.Automation.PsCredential($smtpSettings.smtpUser, $encrypted)
@@ -300,26 +309,30 @@ foreach ($backup in $allBackups) {
         $SMTPClient.EnableSsl = $smtpSettings.smtpSSL
         $SMTPClient.Credentials = $credential
         $Body = @"
-Computer Name: $($env:COMPUTERNAME)
-Domain: $($env:USERDOMAIN)
+Computer Name: $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)
+Backup Duration: $($timeSpan)
 Time Started: $($timeStart)
 Time Ended: $($timeEnd)
 Backup Name: $($backupSettings.backupName)
-Backup File Size: $($backupFileSize) MB
-Backup Folder Size: $($backupFolderSize) MB
+Compressed Backup File Size: $($backupFileSize) MB
+Current Backup Folder Size: $($backupFolderSize) MB
 Full Backups to Keep: $($backupSettings.backupFullBackupsToKeep)
 Days Before Full Backup: $($backupSettings.backupDaysBeforeFull)
 Current Backup Count: $($backupSettings.backupCurrentCount)
 Backup Encrypted: $($backupEncrypted)
+-----------------------------
+7zip Log
+-----------------------------
+$($7zipLog)
 "@
         if (Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z") {
-            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME)] Completed Successfully"
+            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)] Completed Successfully"
         }
         if (!(Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z")) {
-            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME)] Backup Failed (no backup file found)"
+            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)] Backup Failed (no backup file found)"
         }
         if ($backupFileSize -eq 0) {
-            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME)] Backup Failed (file smaller than 1mb)"
+            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)] Backup Failed (file smaller than 1mb)"
         }
         $SMTPClient.Send($smtpSettings.smtpUser, $smtpSettings.smtpUser, $Subject, $Body)
     }
