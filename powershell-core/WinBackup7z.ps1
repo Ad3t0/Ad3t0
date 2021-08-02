@@ -34,7 +34,7 @@ if ($allBackups) {
     ""
     ""
 }
-while ($null -eq $backupSettings.backupName) {
+while ($null -eq $backupSettings.backupName -or $backupSettings.backupName -ne "") {
     $backupSettings.backupName = Read-Host "Enter name for backup"
 }
 $backupExists = $tempBackupSettingsAll.backupName | Where-Object { $_ -eq $backupSettings.backupName }
@@ -42,7 +42,7 @@ if ($backupSettings.backupName -eq $backupExists) {
     Write-Warning "Editing current backup named $($backupSettings.backupName) type DELETE as source path to remove its configuration"
 }
 ""
-while ($null -eq $backupSettings.backupSourcePath -or $backupSettings.backupSourcePath -eq "DELETE") {
+while ($null -eq $backupSettings.backupSourcePath -or $backupSettings.backupSourcePath -eq "" -or $backupSettings.backupSourcePath -eq "DELETE") {
     $backupSettings.backupSourcePath = Read-Host "Enter a source path to backup"
     if ($backupSettings.backupSourcePath -eq "DELETE") {
         $backupSettings.backupName
@@ -56,7 +56,7 @@ while ($null -eq $backupSettings.backupSourcePath -or $backupSettings.backupSour
     }
 }
 ""
-while ($null -eq $backupSettings.backupDestinationPath) {
+while ($null -eq $backupSettings.backupDestinationPath -or $backupSettings.backupDestinationPath -eq "") {
     $backupSettings.backupDestinationPath = Read-Host "Enter a destination path to backup to"
 }
 ""
