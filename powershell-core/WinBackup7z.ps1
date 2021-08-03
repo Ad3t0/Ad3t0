@@ -247,6 +247,16 @@ if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 $pathToBackupJson = "C:\ProgramData\WinBackup7z\WinBackup7z_$($backupSettings.backupName).json"
 $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 $taskFile = @'
+
+'@
+Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
+""
+Start-Sleep 2
+Write-Host "To uninstall delete scheduled task with name WinBackup7z and remove folder C:\ProgramData\WinBackup7z" -ForegroundColor Yellow
+""
+Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
+""
+####
 $allBackups = Get-ChildItem "C:\ProgramData\WinBackup7z" | Where-Object Name -Like "WinBackup7z_*.json"
 foreach ($backup in $allBackups) {
     $timeStart = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
@@ -323,25 +333,13 @@ Backup Encrypted: $($backupEncrypted)
 -----------------------------
 $($7zipLog)
 "@
-        if (Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z") {
+        if ($7zipLog -like "*Everything is Ok*") {
             $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)] Completed Successfully"
         }
-        if (!(Test-Path -Path "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).7z")) {
-            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)] Backup Failed (no backup file found)"
-        }
-        if ($backupFileSize -eq 0) {
-            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)] Backup Failed (file smaller than 1mb)"
+        if ($7zipLog -like "*WARNING*") {
+            $Subject = "WinBackup7z: [$($backupSettings.backupName) @ $($env:COMPUTERNAME).$($env:USERDNSDOMAIN)] Completed With Warning"
         }
         $SMTPClient.Send($smtpSettings.smtpUser, $smtpSettings.smtpUser, $Subject, $Body)
     }
     $backupSettings | ConvertTo-Json | Set-Content $pathToBackupJson
 }
-'@
-Set-Content "C:\ProgramData\WinBackup7z\WinBackup7z.ps1" $taskFile
-""
-Start-Sleep 2
-Write-Host "To uninstall delete scheduled task with name WinBackup7z and remove folder C:\ProgramData\WinBackup7z" -ForegroundColor Yellow
-""
-Write-Host "WinBackup7z Configured Successfully" -ForegroundColor Green -BackgroundColor Blue
-""
-####
