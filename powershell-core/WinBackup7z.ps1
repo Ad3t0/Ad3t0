@@ -288,7 +288,7 @@ foreach ($backup in $allBackups) {
             ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe > $backupFileLog 2>&1
         }
         else {
-            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupFileName).001" $backupSettings.backupSourcePath -mx9 -v50m -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
         }
     }
     if ($backupSettings.backupFirst -eq $False) {
