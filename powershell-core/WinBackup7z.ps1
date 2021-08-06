@@ -290,7 +290,7 @@ foreach ($backup in $allBackups) {
         $timeEnd = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
         $timeEndD = Get-Date
         $timeSpan = New-TimeSpan -Start $timeStartD -End $timeEndD
-        $backupDuration = [math]::Round($timeSpan.ToString(), 0)
+        $backupDuration = $timeSpan.ToString("hh\:mm\:ss")
         $backupCurrentFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupTimeStamp)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
         $backupCurrentFolderSize = [math]::Round($backupCurrentFolderSize, 2)
         $backupAllFolderSize = (Get-ChildItem "$($backupSettings.backupDestinationPath)\$($backupSettings.backupName)" -Recurse | Measure-Object -Property Length -Sum -ErrorAction SilentlyContinue).Sum / 1MB
