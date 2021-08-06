@@ -262,10 +262,10 @@ foreach ($backup in $allBackups) {
         }
         $backupFileLog = "C:\ProgramData\WinBackup7z\logs\$($backupSettings.backupName)\WinBackup7z_$($backupSettings.backupName)_$($backupSettings.backupTimeStamp).log"
         if ($backupSettings.backupPassword -eq $False) {
-            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
         }
         else {
-            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" a -t7z $backupFileName $backupSettings.backupSourcePath -mx9 -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
         }
         $backupSettings.backupCurrentCount = 0
         if ($backupCount.Count -eq $backupSettings.backupFullBackupsToKeep) {
@@ -275,10 +275,10 @@ foreach ($backup in $allBackups) {
     }
     else {
         if ($backupSettings.backupPassword -eq $False) {
-            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -v50m -mhe > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 $backupFileName $backupSettings.backupSourcePath -mx9 -mhe > $backupFileLog 2>&1
         }
         else {
-            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupFileName)" $backupSettings.backupSourcePath -mx9 -v50m -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
+            ."C:\Program Files\7-Zip\7z.exe" u -up0q3r2x2y2z1w2 "$($backupFileName)" $backupSettings.backupSourcePath -mx9 -mhe -p"$($backupSettings.backupPassword)" > $backupFileLog 2>&1
         }
     }
     if ($backupSettings.backupFirst -eq $False) {
