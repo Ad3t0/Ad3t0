@@ -101,7 +101,7 @@ if ($scheduledTaskExists.TaskName -ne "WinBackup7z") {
         $username = Read-Host "Enter the DOMAIN\user for the task to run as"
         if ($username -eq "SYSTEM") {
             ""
-            Write-Host "Creating task as system, network file shares will not work" -ForegroundColor Green
+            Write-Host "Creating task as SYSTEM, network file shares will not work" -ForegroundColor Green
             ""
             $verifiedCreds = $true
         }
