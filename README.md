@@ -137,6 +137,10 @@ wmic path Win32_OperatingSystem get LastBootUpTime
 brew install --cask google-chrome ringcentral ringcentral-meetings appcleaner adobe-acrobat-reader adobe-creative-cloud microsoft-office
 sudo dscl . create /Users/admin IsHidden 1
 ```
+#### Apps
+```
+choco install opera rdmfree github-desktop vscode vlc obs logitechgaming putty winscp dbeaver discord
+```
 #### BIOS Keys
 ------------
 | Manufacturer  | Key|
