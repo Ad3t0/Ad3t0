@@ -109,14 +109,9 @@ shutdown /r /t 0 /f
     $Trigger = New-ScheduledTaskTrigger -AtStartup
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
     Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
-    try {
-        Import-Module PSWindowsUpdate
-    }
-    catch {
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-        Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
-        Import-Module PSWindowsUpdate
-    }
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+    Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
+    Import-Module PSWindowsUpdate
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
     Clear-Host
