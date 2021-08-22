@@ -89,6 +89,8 @@ if ($functionsToRun -like "*3*") {
 $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
 $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
 $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
 Import-Module PSWindowsUpdate
 $getUpdates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory
 $getUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
