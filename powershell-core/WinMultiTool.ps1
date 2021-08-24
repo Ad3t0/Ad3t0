@@ -14,7 +14,6 @@ function Test-PendingReboot {
     catch { }
     return $false
 }
-
 Clear-Host
 ""
 Write-Host "1 - Install Chocolatey and basic dependencies and utilities"
@@ -67,13 +66,6 @@ if ($functionsToRun -like "*2*") {
 }
 #################################################
 if ($functionsToRun -like "*3*") {
-
-
-
-
-
-
-
     if (!(Test-Path -Path "C:\ProgramData\WinUpdate")) {
         New-Item -Path "C:\ProgramData\WinUpdate" -ItemType "directory"
     }
@@ -112,21 +104,14 @@ shutdown /r /t 0 /f
     Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
-
     $pendingReboot = Test-PendingReboot
     if ($pendingReboot) {
         Restart-Computer -Force
     }
     else {
-
-
-
-
-
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
         Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
         Import-Module PSWindowsUpdate
-
         Clear-Host
         Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
         Write-Warning "Downloading updates please wait..."
@@ -139,7 +124,6 @@ shutdown /r /t 0 /f
         Write-Warning "Installing updates please wait..."
         $installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
         $installUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
-
         if (!($getUpdates)) {
             schtasks.exe /delete /tn WinUpdate /f
             Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
@@ -163,4 +147,3 @@ if ($functionsToRun -like "*4*") {
     Restart-Computer -Force
     exit
 }
-
