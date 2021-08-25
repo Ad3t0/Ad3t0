@@ -139,7 +139,7 @@ sudo dscl . create /Users/admin IsHidden 1
 ```
 #### Apps
 ```
-choco install opera rdmfree github-desktop vscode vlc obs logitechgaming putty winscp dbeaver discord
+choco install opera rdmfree notepadplusplus github-desktop vscode vlc obs logitechgaming putty winscp dbeaver discord megasync
 ```
 #### BIOS Keys
 ------------
