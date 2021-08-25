@@ -14,15 +14,6 @@ function Test-PendingReboot {
     catch { }
     return $false
 }
-$pendingReboot = Test-PendingReboot
-if ($pendingReboot) {
-    while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
-        $confirmationreboot = Read-Host "Reboot is pending, reboot this PC now? [y/n]"
-    } if ($confirmationreboot -eq "y") {
-        Restart-Computer -Force
-        exit
-    }
-}
 Clear-Host
 ""
 Write-Host "1 - Install Chocolatey and basic dependencies and utilities"
@@ -111,28 +102,34 @@ shutdown /r /t 0 /f
     $Trigger = New-ScheduledTaskTrigger -AtStartup
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
     Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-    Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
-    Import-Module PSWindowsUpdate
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
-    Clear-Host
-    Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
-    Write-Warning "Downloading updates please wait..."
-    $getUpdates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory
-    $getUpdates | Format-List | Out-String | Set-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
-    Clear-Host
-    Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
-    $getUpdates | Format-Table
-    Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
-    Write-Warning "Installing updates please wait..."
-    $installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
-    $installUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
-    if (!($getUpdates)) {
-        schtasks.exe /delete /tn WinUpdate /f
-        Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
-        Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
+    $pendingReboot = Test-PendingReboot
+    if ($pendingReboot) {
+        Restart-Computer -Force
+    }
+    else {
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+        Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
+        Import-Module PSWindowsUpdate
+        Clear-Host
+        Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
+        Write-Warning "Downloading updates please wait..."
+        $getUpdates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory
+        $getUpdates | Format-List | Out-String | Set-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
+        Clear-Host
+        Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
+        $getUpdates | Format-Table
+        Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
+        Write-Warning "Installing updates please wait..."
+        $installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
+        $installUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
+        if (!($getUpdates)) {
+            schtasks.exe /delete /tn WinUpdate /f
+            Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
+        }
     }
 }
 #################################################
@@ -149,14 +146,4 @@ if ($functionsToRun -like "*4*") {
     Start-Sleep 5
     Restart-Computer -Force
     exit
-}
-$confirmationreboot = $null
-$pendingReboot = Test-PendingReboot
-if ($pendingReboot) {
-    while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
-        $confirmationreboot = Read-Host "Reboot is required, reboot this PC now? [y/n]"
-    } if ($confirmationreboot -eq "y") {
-        Restart-Computer -Force
-        exit
-    }
 }
