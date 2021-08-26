@@ -100,7 +100,8 @@ shutdown /r /t 0 /f
     Set-Content "C:\ProgramData\WinUpdate\WinUpdate.ps1" $taskFile
     $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate\WinUpdate.ps1"
     $Trigger = New-ScheduledTaskTrigger -AtStartup
-    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger
+    $Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 0 -AllowStartIfOnBatteries
+    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
     Register-ScheduledTask -TaskName 'WinUpdate' -InputObject $Task -User SYSTEM
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
