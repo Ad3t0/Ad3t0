@@ -94,6 +94,20 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/RDPWrapperInstall.ps1'))
 ```
 # Notes
+#### Filter Windows Logins
+```
+<QueryList>
+  <Query Id="0" Path="Security">
+    <Select Path="Security">
+      *[
+        EventData[Data[@Name='LogonType']='2']
+        and
+        System[(EventID='4624')]
+      ]
+    </Select>
+  </Query>
+</QueryList>
+```
 #### Transfer all FSMO Roles
 ```
 Move-ADDirectoryServerOperationMasterRole "DC1" –OperationMasterRole 0,1,2,3,4
