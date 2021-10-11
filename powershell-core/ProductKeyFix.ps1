@@ -1,8 +1,5 @@
-slmgr.vbs /upk
-Start-Sleep 5
-slmgr.vbs /cpky
-Start-Sleep 5
+Start-Process -FilePath "C:\Windows\System32\cmd.exe" -ArgumentList "/c cscript C:\Windows\System32\slmgr.vbs /upk" -Wait -PassThru
+Start-Process -FilePath "C:\Windows\System32\cmd.exe" -ArgumentList "/c cscript C:\Windows\System32\slmgr.vbs /cpky" -Wait -PassThru
 $key = wmic path softwarelicensingservice get OA3xOriginalProductKey
-slmgr.vbs /ipk $key[2]
-Start-Sleep 5
-slmgr.vbs /ato
+Start-Process -FilePath "C:\Windows\System32\cmd.exe" -ArgumentList "/c cscript C:\Windows\System32\slmgr.vbs /ipk $($key[2])" -Wait -PassThru
+Start-Process -FilePath "C:\Windows\System32\cmd.exe" -ArgumentList "/c cscript C:\Windows\System32\slmgr.vbs /ato" -Wait -PassThru
