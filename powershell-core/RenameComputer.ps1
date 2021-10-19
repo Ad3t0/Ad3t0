@@ -9,10 +9,10 @@ while (!($verifiedCreds)) {
         ""
         Write-Host "Credentials validated successfully" -ForegroundColor Green
         ""
-        while ($newPCName -ne $True) {
+        while ($verifiedPCName -ne $True) {
             $newPCName = Read-Host "Enter the new computer name"
             if ($newPCName -match "^(?!\.)(?![0-9]{1,15}$)[a-zA-Z0-9-_.]{1,15}$") {
-                $newPCName = $True
+                $verifiedPCName = $True
             }
             else {
                 Write-Warning "The new computer name was invalid"
