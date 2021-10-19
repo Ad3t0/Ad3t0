@@ -1,6 +1,7 @@
 while (!($verifiedCreds)) {
     $username = Read-Host "Enter the domain username for renaming"
     $password = Read-Host "Enter the domain user password for renaming"
+    $computer = $env:COMPUTERNAME
     Add-Type -AssemblyName System.DirectoryServices.AccountManagement
     $obj = New-Object System.DirectoryServices.AccountManagement.PrincipalContext ('machine', $computer)
     $goodCreds = $obj.ValidateCredentials($username, $password)
