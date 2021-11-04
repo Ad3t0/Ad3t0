@@ -46,10 +46,10 @@ if ($functionsToRun -like "*1*") {
     }
     $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
     if ($osInfo.ProductType -ne 1) {
-        choco install powershell googlechrome vcredist-all dotnetfx directx notepadplusplus 7zip revo-uninstaller autoruns
+        choco install revo-uninstaller googlechrome vcredist-all dotnetfx directx notepadplusplus 7zip autoruns
     }
     else {
-        choco install powershell googlechrome vcredist-all dotnetfx directx dotnet3.5 javaruntime 7zip adobereader revo-uninstaller
+        choco install revo-uninstaller googlechrome vcredist-all dotnetfx directx dotnet3.5 javaruntime 7zip adobereader notepadplusplus
     }
 }
 #################################################
