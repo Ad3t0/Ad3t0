@@ -16,7 +16,7 @@ function Test-PendingReboot {
 }
 Clear-Host
 ""
-Write-Host "1 - Install Chocolatey and basic dependencies and utilities"
+Write-Host "1 - Install or update Chocolatey and basic dependencies and utilities"
 Write-Host "2 - Remove all Windows temp files, run drive cleanup and remove old Windows versions"
 Write-Host "3 - Install all Windows updates and reboot automatically untill all are complete"
 Write-Host "4 - Auto reboot without warning (CAUTION)"
@@ -37,8 +37,12 @@ if ($functionsToRun -like "*1*") {
     if (!(Test-Path -Path "C:\ProgramData\chocolatey\choco.exe")) {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-        choco feature enable -n=allowGlobalConfirmation
-        choco feature disable -n=checksumFiles
+        choco feature enable -n allowGlobalConfirmation
+        choco feature disable -n checksumFiles
+    }
+    else {
+        choco upgrade chocolatey
+        choco upgrade all
     }
     $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
     if ($osInfo.ProductType -ne 1) {
