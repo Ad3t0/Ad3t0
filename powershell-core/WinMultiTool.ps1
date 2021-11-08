@@ -47,7 +47,6 @@ if ($functionsToRun -like "*1*") {
         choco feature enable -n skipPackageUpgradesWhenNotInstalled
         choco feature disable -n checksumFiles
         choco upgrade chocolatey
-        choco upgrade all
     }
     $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
     if ($osInfo.ProductType -ne 1) {
