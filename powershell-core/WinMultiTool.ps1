@@ -124,14 +124,14 @@ shutdown /r /t 0 /f
         Clear-Host
         Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
         Write-Warning "Downloading updates please wait..."
-        $getUpdates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory
+        $getUpdates = Get-WUInstall -AcceptAll -SendHistory
         $getUpdates | Format-List | Out-String | Set-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
         Clear-Host
         Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
         $getUpdates | Format-Table
         Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
         Write-Warning "Installing updates please wait..."
-        $installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
+        $installUpdates = Install-WindowsUpdate -AcceptAll -SendHistory
         $installUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
         if (!($getUpdates)) {
             schtasks.exe /delete /tn WinUpdate /f
