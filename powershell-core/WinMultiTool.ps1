@@ -1,3 +1,6 @@
+$timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
+$LogFileName = "C:\ProgramData\WinUpdate\$($timeScriptRun)-transcript.log"
+Start-Transcript -Path $LogFileName
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $functionsToRun = $null
 function Test-PendingReboot {
@@ -25,7 +28,6 @@ while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $
     $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3/4]"
     $functionsToRun = $functionsToRun.ToString()
 }
-$timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
 $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object FreeSpace
 $freeSpaceInitial = $disk.FreeSpace / 1GB
 $freeSpaceInitial = [math]::Round($freeSpaceInitial, 2)
@@ -40,7 +42,6 @@ if ($functionsToRun -like "*1*") {
         choco feature enable -n allowGlobalConfirmation
         choco feature enable -n skipPackageUpgradesWhenNotInstalled
         choco feature disable -n checksumFiles
-
     }
     else {
         choco feature enable -n allowGlobalConfirmation
@@ -78,22 +79,24 @@ if ($functionsToRun -like "*3*") {
         New-Item -Path "C:\ProgramData\WinUpdate" -ItemType "directory"
     }
     $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
-    $defaultSettings = @"
-{
-"rebootCount":  0
-}
-"@
-    Set-Content $pathToJson $defaultSettings
+    $settingsBody = @{
+        rebootCount = 0
+    }
+    $settingsJson = (ConvertTo-Json -depth 5 $settingsBody)
+    Set-Content $pathToJson $settingsJson
     $taskFile = @'
+$timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
+$LogFileName = "C:\ProgramData\WinUpdate\$($timeScriptRun)-transcript.log"
+Start-Transcript -Path $LogFileName
 $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
 $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
 $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
 Import-Module PSWindowsUpdate
-$getUpdates = Get-WUInstall -AcceptAll -AutoReboot -SendHistory
+$getUpdates = Get-WUInstall -AcceptAll -SendHistory
 $getUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
-$installUpdates = Install-WindowsUpdate -AcceptAll -AutoReboot -SendHistory
+$installUpdates = Install-WindowsUpdate -AcceptAll -SendHistory
 $installUpdates | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
 if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
     schtasks.exe /delete /tn WinUpdate /f
@@ -103,10 +106,11 @@ if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
 }
 $jsonSettings.rebootCount = $jsonSettings.rebootCount + 1
 $jsonSettings | ConvertTo-Json | Set-Content $pathToJson
+Stop-Transcript
 shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate\WinUpdate.ps1" $taskFile
-    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoLogo -WindowStyle Hidden -ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate\WinUpdate.ps1"
+    $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate\WinUpdate.ps1"
     $Trigger = New-ScheduledTaskTrigger -AtStartup
     $Settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit 0 -AllowStartIfOnBatteries
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
@@ -115,7 +119,7 @@ shutdown /r /t 0 /f
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
     $pendingReboot = Test-PendingReboot
     if ($pendingReboot) {
-        Restart-Computer -Force
+        shutdown /r /t 0 /f
     }
     else {
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
@@ -149,6 +153,7 @@ $freeSpace = [math]::Round($freeSpace, 2)
 Write-Host "Free space before on C: = $($freeSpaceInitial)GB" -ForegroundColor Yellow
 Write-Host "Free space after on C: = $($freeSpace)GB" -ForegroundColor Green
 ""
+Stop-Transcript
 $pendingReboot = $null
 if ($functionsToRun -like "*4*") {
     Write-Warning "Rebooting in 5 seconds..."
