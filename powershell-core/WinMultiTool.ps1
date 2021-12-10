@@ -88,6 +88,11 @@ if ($functionsToRun -like "*3*") {
 $timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
 $LogFileName = "C:\ProgramData\WinUpdate\$($timeScriptRun)-transcript.log"
 Start-Transcript -Path $LogFileName
+while ($numIntExplorer -eq 0) {
+    $numIntExplorer = (Get-Process -ea SilentlyContinue "explorer").Count
+    Start-Sleep 1
+}
+Start-Sleep 20
 $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
 $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
 $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
