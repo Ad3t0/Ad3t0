@@ -94,9 +94,9 @@ $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
 Import-Module PSWindowsUpdate
-$getUpdates = Get-WUInstall -AcceptAll -SendHistory
+$getUpdates = Get-WUInstall -AcceptAll -SendHistory -AutoReboot
 $getUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
-$installUpdates = Install-WindowsUpdate -AcceptAll -SendHistory
+$installUpdates = Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot
 $installUpdates | Format-List | Out-String |  Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
 if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
     schtasks.exe /delete /tn WinUpdate /f
@@ -128,14 +128,14 @@ shutdown /r /t 0 /f
         Clear-Host
         Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
         Write-Warning "Downloading updates please wait..."
-        $getUpdates = Get-WUInstall -AcceptAll -SendHistory
+        $getUpdates = Get-WUInstall -AcceptAll -SendHistory -AutoReboot
         $getUpdates | Format-List | Out-String | Set-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
         Clear-Host
         Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
         $getUpdates | Format-Table
         Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log" "------------------------------------"
         Write-Warning "Installing updates please wait..."
-        $installUpdates = Install-WindowsUpdate -AcceptAll -SendHistory
+        $installUpdates = Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot
         $installUpdates | Format-List | Out-String | Add-Content "C:\ProgramData\WinUpdate\$($timeScriptRun).log"
         if (!($getUpdates)) {
             schtasks.exe /delete /tn WinUpdate /f
