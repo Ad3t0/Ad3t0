@@ -91,6 +91,8 @@ Start-Transcript -Path $LogFileName
 $pathToJson = "C:\ProgramData\WinUpdate\WinUpdate.json"
 $jsonSettings = Get-Content -Path $pathToJson -Raw | ConvertFrom-Json
 $jsonSettings.rebootCount = [int]$jsonSettings.rebootCount
+$jsonSettings.rebootCount = $jsonSettings.rebootCount + 1
+$jsonSettings | ConvertTo-Json | Set-Content $pathToJson
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
 Import-Module PSWindowsUpdate
@@ -104,8 +106,6 @@ if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
 }
-$jsonSettings.rebootCount = $jsonSettings.rebootCount + 1
-$jsonSettings | ConvertTo-Json | Set-Content $pathToJson
 Stop-Transcript
 shutdown /r /t 0 /f
 '@
