@@ -15,10 +15,10 @@ $documentsPath = [Environment]::GetFolderPath("MyDocuments")
 $downloadsPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 $picturesPath = [Environment]::GetFolderPath("MyPictures")
 $desktopPath = [Environment]::GetFolderPath("Desktop")
-New-Item -Path "$($migratePath)$($refName)\Desktop" -ItemType Directory -Force
-New-Item -Path "$($migratePath)$($refName)\Documents" -ItemType Directory -Force
-New-Item -Path "$($migratePath)$($refName)\Pictures" -ItemType Directory -Force
-New-Item -Path "$($migratePath)$($refName)\Downloads" -ItemType Directory -Force
+New-Item -Path "$($migratePath)\$($refName)\Desktop" -ItemType Directory -Force
+New-Item -Path "$($migratePath)\$($refName)\Documents" -ItemType Directory -Force
+New-Item -Path "$($migratePath)\$($refName)\Pictures" -ItemType Directory -Force
+New-Item -Path "$($migratePath)\$($refName)\Downloads" -ItemType Directory -Force
 robocopy $documentsPath "$($migratePath)\$($refName)\Desktop" /s /np /eta /xf *.lnk *.pst *.exe desktop.ini | Write-Host
 robocopy $desktopPath "$($migratePath)\$($refName)\Documents" /s /np /eta /xf *.lnk *.pst *.exe desktop.ini | Write-Host
 robocopy $picturesPath "$($migratePath)\$($refName)\Pictures" /s /np /eta /xf *.lnk *.pst *.exe desktop.ini | Write-Host
