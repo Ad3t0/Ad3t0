@@ -9,16 +9,17 @@ Function Get-Folder($initialDirectory = "") {
 	}
 	return $folder
 }
+$refName = Read-Host "Enter migration name for reference"
 $migratePath = Get-Folder
 $documentsPath = [Environment]::GetFolderPath("MyDocuments")
 $downloadsPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 $picturesPath = [Environment]::GetFolderPath("MyPictures")
 $desktopPath = [Environment]::GetFolderPath("Desktop")
-New-Item -Path "$($migratePath)$($computer)\Desktop" -ItemType Directory -Force
-New-Item -Path "$($migratePath)$($computer)\Documents" -ItemType Directory -Force
-New-Item -Path "$($migratePath)$($computer)\Pictures" -ItemType Directory -Force
-New-Item -Path "$($migratePath)$($computer)\Downloads" -ItemType Directory -Force
-robocopy $documentsPath "$($migratePath)$($computer)\Desktop" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
-robocopy $desktopPath "$($migratePath)$($computer)\Documents" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
-robocopy $picturesPath "$($migratePath)$($computer)\Pictures" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
-robocopy $downloadsPath "$($migratePath)$($computer)\Downloads" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
+New-Item -Path "$($migratePath)$($refName)\Desktop" -ItemType Directory -Force
+New-Item -Path "$($migratePath)$($refName)\Documents" -ItemType Directory -Force
+New-Item -Path "$($migratePath)$($refName)\Pictures" -ItemType Directory -Force
+New-Item -Path "$($migratePath)$($refName)\Downloads" -ItemType Directory -Force
+robocopy $documentsPath "$($migratePath)\$($refName)\Desktop" /s /np /eta /xf *.lnk *.pst *.exe desktop.ini | Write-Host
+robocopy $desktopPath "$($migratePath)\$($refName)\Documents" /s /np /eta /xf *.lnk *.pst *.exe desktop.ini | Write-Host
+robocopy $picturesPath "$($migratePath)\$($refName)\Pictures" /s /np /eta /xf *.lnk *.pst *.exe desktop.ini | Write-Host
+robocopy $downloadsPath "$($migratePath)\$($refName)\Downloads" /s /np /eta /xf *.lnk *.pst *.exe desktop.ini | Write-Host
