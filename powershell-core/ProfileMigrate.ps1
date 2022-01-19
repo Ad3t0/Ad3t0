@@ -25,6 +25,8 @@ $migratePath = Get-Folder
 New-Item -Path "$($migratePath)$($computer)\Desktop" -ItemType Directory -Force
 New-Item -Path "$($migratePath)$($computer)\Documents" -ItemType Directory -Force
 New-Item -Path "$($migratePath)$($computer)\Pictures" -ItemType Directory -Force
+New-Item -Path "$($migratePath)$($computer)\Downloads" -ItemType Directory -Force
 robocopy "$($profilePath)\Desktop" "$($migratePath)$($computer)\Desktop" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
 robocopy "$($profilePath)\Documents" "$($migratePath)$($computer)\Documents" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
 robocopy "$($profilePath)\Pictures" "$($migratePath)$($computer)\Pictures" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
+robocopy "$($profilePath)\Downloads" "$($migratePath)$($computer)\Downloads" /s /np /eta /xf *.lnk *.pst desktop.ini | Write-Host
