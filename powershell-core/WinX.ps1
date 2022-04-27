@@ -12,9 +12,9 @@ $url = "https://github.com/Ad3t0/windows/raw/master/bin/Group3.7z"
 $output = "$($env:TEMP)\Group3.7z"
 Invoke-WebRequest -Uri $url -OutFile $output
 ."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\Group3.7z" -o"$($env:TEMP)" -aoa
-$userCheck = Get-ChildItem -LiteralPath "C:\Users"
+$userCheck = Get-ChildItem -LiteralPath "C:\Users" -Force -Directory
 foreach ($item in $userCheck.Name) {
-    if ($item -ne "Public") {
+    if ($item -ne "Public" -and $item -ne "Default User" -and $item -ne "All Users") {
         Remove-Item -Path "C:\Users\$($item)\AppData\Local\Microsoft\Windows\WinX\Group3" -Recurse -Force
         Copy-Item -Path "$($env:TEMP)\Group3" -Destination "C:\Users\$($item)\AppData\Local\Microsoft\Windows\WinX\" -Recurse -Force
     }
