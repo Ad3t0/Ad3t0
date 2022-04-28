@@ -347,7 +347,6 @@ If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
 }
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Type DWord -Value 0
 Stop-Process -Name "SearchApp" -Force -PassThru -ErrorAction SilentlyContinue
-Restart-Process -Process "explorer"
 Write-Host "Disabled Cortana"
 Write-Host "Disabling Background application access..."
 Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" |  ForEach-Object {
@@ -377,7 +376,6 @@ If (!(Test-Path $onedrive)) {
 }
 Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
 Start-Sleep -Seconds 2
-Restart-Process -Process "explorer" -Restart -RestartDelay 5
 Start-Sleep -Seconds 2
 Remove-Item -Path "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
 Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
@@ -406,7 +404,6 @@ if (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personal
 }
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Type DWord -Value 0
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Type DWord -Value 0
-Restart-Process -Process "explorer" -Restart
 Write-Host "Enabled Dark Mode"
 Write-Host "Removing bloatware ... Wait ..."
 $BloatwareList = @(
@@ -440,7 +437,6 @@ foreach ($Bloat in $BloatwareList) {
 	}
 }
 Write-Host "Bloatware is removed."
-Restart-Process -Process "explorer" -Restart
 while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
 	$confirmationreboot = Read-Host "Reboot is recommended reboot this PC now? [y/n]"
 } if ($confirmationreboot -eq "y") {
