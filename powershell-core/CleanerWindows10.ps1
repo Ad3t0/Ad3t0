@@ -3,76 +3,12 @@ if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups 
 	Start-Sleep 3
 	Return
 }
-$PSVer = $PSVersionTable
-if ($PSVer.PSVersion.Major -lt 5) {
-	Write-Warning "Powershell version is $($PSVer.PSVersion.Major). Version 5.1 is needed please update using the following web page. Exiting..."
-	Start-Sleep 3
-	$URL = "https://www.microsoft.com/en-us/download/details.aspx?id=54616"
-	Start-Process $URL
-	Return
-}
-$ErrorActionPreference = "SilentlyContinue"
-$systemmodel = wmic computersystem get model /VALUE
-$systemmodel = $systemmodel -replace ('Model=', '')
-$currentversion = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ReleaseId" -ErrorAction SilentlyContinue
-$productname = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name "ProductName" -ErrorAction SilentlyContinue
-Write-Host $ver -ForegroundColor Green
-Write-Host $text
-Write-Host " System Model: " -ForegroundColor yellow -NoNewline
-Write-Host $systemmodel -ForegroundColor white
-Write-Host " Operating System: " -ForegroundColor yellow -NoNewline
-Write-Host $productname.ProductName $currentversion.ReleaseId -ForegroundColor white
-Write-Host " PC Name: " -ForegroundColor yellow -NoNewline
-Write-Host $env:COMPUTERNAME -ForegroundColor white
-Write-Host " Username: " -ForegroundColor yellow -NoNewline
-Write-Host $env:USERNAME -ForegroundColor white
-Write-Host " Domain: " -ForegroundColor yellow -NoNewline
-Write-Host $env:USERDNSDOMAIN -ForegroundColor white
-Write-Host
-while ($confirmationpowersch -ne "n" -and $confirmationpowersch -ne "y") {
- $confirmationpowersch = Read-Host "Set PowerScheme to maximum performance? [y/n]"
-}
-while ($confirmationappremoval -ne "n" -and $confirmationappremoval -ne "y") {
-	$confirmationappremoval = Read-Host "Remove all Windows Store apps except the Calculator, Photos, StickyNotes, and the Windows Store? [y/n]"
-}
-while ($confirmationchocoinstall -ne "n" -and $confirmationchocoinstall -ne "y") {
- $confirmationchocoinstall = Read-Host "Install Chocolatey and choose packages? [y/n]"
-}
-if ($confirmationchocoinstall -eq "y") {
-	$chocolist = Read-Host "Specify Chocolatey packages to install separeted by spaces"
-}
-while ($confirmationonedrive -ne "n" -and $confirmationonedrive -ne "y") {
-	$confirmationonedrive = Read-Host "Remove all traces of OneDrive? BE CAREFUL [y/n]"
-}
-Write-Host
-Write-Host "Maximum PowerScheme: [$($confirmationpowersch)]"
-Write-Host "App Removal: [$($confirmationappremoval)]"
-Write-Host "Choco install: [$($confirmationchocoinstall)]"
-Write-Host "OneDrive Removal: [$($confirmationonedrive)]"
-Write-Host
-Write-Host "Windows 10 De-Bloat Script will now run"
-Write-Host
-while ($confirmationfull -ne "n" -and $confirmationfull -ne "y") {
-	$confirmationfull = Read-Host "Continue? [y/n]"
-} if ($confirmationfull -ne "y") {
-	Clear-Host
-	exit
-}
 # Change Windows PowerScheme to maximum performance
-if ($confirmationpowersch -eq "y") {
-	$currScheme = powercfg /LIST | Select-String "High performance"
-	$currScheme = $currScheme -split (" ")
-	powercfg -SetActive $currScheme[3]
-}
-# Chocolatey install
-if ($confirmationchocoinstall -eq "y") {
-	Write-Host "Installing Chocolatey, specified packages" -ForegroundColor yellow
-	Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-	choco feature enable -n=allowGlobalConfirmation
-	choco feature disable -n=checksumFiles
-	$chocotobeinstalled = $chocolist.Replace(' ', ';').Replace(';;', ';')
-	choco install $chocotobeinstalled
-}
+
+$currScheme = powercfg /LIST | Select-String "High performance"
+$currScheme = $currScheme -split (" ")
+powercfg -SetActive $currScheme[3]
+
 # Registry changes
 $services = @(
 	"diagnosticshub.standardcollector.service"
@@ -96,47 +32,24 @@ foreach ($service in $services) {
 	Write-Host "Disabling $service"
 	Get-Service -Name $service | Set-Service -StartupType Disabled
 }
-$Keys = @(
-	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
-	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.File\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
-	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.PreInstalledConfigTask\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe"
-	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.16299.15.0_neutral_neutral_cw5n1h2txyewy"
-	"HKCR:\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0"
-	"HKCR:\Extensions\ContractId\Windows.BackgroundTasks\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y"
-	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
-	"HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
-)
-ForEach ($Key in $Keys) {
-	Write-Host "Removing $Key from registry"
-	Remove-Item $Key -Recurse
-}
+
 $appsToRemove = @("Microsoft Edge", "Microsoft Store", "Mail")
 foreach ($app in $appsToRemove) {
 	((New-Object -Com Shell.Application).Namespace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() | Where-Object { $_.Name -eq $app }).Verbs() | Where-Object { $_.Name.Replace('&', '') -match 'Unpin from taskbar' } | ForEach-Object { $_.DoIt(); $exec = $true } > $null 2>&1
 }
-Get-ScheduledTask XblGameSaveTaskLogon | Disable-ScheduledTask
-Get-ScheduledTask XblGameSaveTask | Disable-ScheduledTask
-Get-ScheduledTask Consolidator | Disable-ScheduledTask
-Get-ScheduledTask UsbCeip | Disable-ScheduledTask
-Get-ScheduledTask DmClient | Disable-ScheduledTask
-Get-ScheduledTask DmClientOnScenarioDownload | Disable-ScheduledTask
-Get-ScheduledTask Microsoft-Windows-DiskDiagnosticDataCollector | Disable-ScheduledTask
-Get-ScheduledTask Proxy | Disable-ScheduledTask
-Get-ScheduledTask ProgramDataUpdater | Disable-ScheduledTask
-Get-ScheduledTask QueueReporting | Disable-ScheduledTask
-Get-ScheduledTask Microsoft Compatibility Appraiser | Disable-ScheduledTask
+Get-ScheduledTask "XblGameSaveTask" | Disable-ScheduledTask
+Get-ScheduledTask "Consolidator" | Disable-ScheduledTask
+Get-ScheduledTask "UsbCeip" | Disable-ScheduledTask
+Get-ScheduledTask "DmClient" | Disable-ScheduledTask
+Get-ScheduledTask "DmClientOnScenarioDownload" | Disable-ScheduledTask
+Get-ScheduledTask "Microsoft-Windows-DiskDiagnosticDataCollector" | Disable-ScheduledTask
+Get-ScheduledTask "Proxy" | Disable-ScheduledTask
+Get-ScheduledTask "ProgramDataUpdater" | Disable-ScheduledTask
+Get-ScheduledTask "QueueReporting" | Disable-ScheduledTask
+Get-ScheduledTask "Microsoft Compatibility Appraiser" | Disable-ScheduledTask
+
+
+
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo"
 New-Item -Path "HKCU:\Software\Policies\Microsoft\Windows\CloudContent"
 New-Item -Path "HKCU:\Software\Microsoft\Siuf\Rules"
