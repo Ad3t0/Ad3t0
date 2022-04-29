@@ -426,6 +426,10 @@ $BloatwareList = @(
 	"Microsoft.ZuneMusic"
 	"Microsoft.ZuneVideo"
 	"MicrosoftTeams"
+	"*Spotify*"
+	"*Disney*"
+	"*Xbox*"
+	"*Zoom*"
 )
 foreach ($Bloat in $BloatwareList) {
 	if ((Get-AppxPackage -Name $Bloat).NonRemovable -eq $false) {
