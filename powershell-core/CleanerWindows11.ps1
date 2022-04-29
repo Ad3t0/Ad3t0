@@ -3,9 +3,9 @@ if (!([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups 
 	Start-Sleep 3
 	Return
 }
-while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
-	$confirmationreboot = Read-Host "Are you sure you want to run the CleanerWindows11 script? [y/n]"
-} if ($confirmationreboot -ne "y") {
+while ($confirmationStart -ne "n" -and $confirmationStart -ne "y") {
+	$confirmationStart = Read-Host "Are you sure you want to run the CleanerWindows11 script? [y/n]"
+} if ($confirmationStart -ne "y") {
 	exit
 }
 # Change Windows PowerScheme to maximum performance
@@ -215,9 +215,9 @@ If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explor
 }
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "HideSCAMeetNow" -Type DWord -Value 1
 Write-Host "Removing AutoLogger file and restricting directory..."
-$autoLoggerDir = "$env:PROGRAMDATA\Microsoft\Diagnosis\ETLLogs\AutoLogger"
-If (Test-Path "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl") {
-	Remove-Item "$autoLoggerDir\AutoLogger-Diagtrack-Listener.etl"
+$autoLoggerDir = "$($env:PROGRAMDATA)\Microsoft\Diagnosis\ETLLogs\AutoLogger"
+If (Test-Path "$($autoLoggerDir)\AutoLogger-Diagtrack-Listener.etl") {
+	Remove-Item "$($autoLoggerDir)\AutoLogger-Diagtrack-Listener.etl"
 }
 icacls $autoLoggerDir /deny SYSTEM:`(OI`)`(CI`)F | Out-Null
 #Disable LockScreen
@@ -375,17 +375,17 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Nam
 Write-Host "Uninstalling OneDrive..."
 Stop-Process -Name *onedrive* -ErrorAction SilentlyContinue -Force
 Start-Sleep -Seconds 2
-$onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+$onedrive = "$($env:SYSTEMROOT)\SysWOW64\OneDriveSetup.exe"
 If (!(Test-Path $onedrive)) {
-	$onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
+	$onedrive = "$($env:SYSTEMROOT)\System32\OneDriveSetup.exe"
 }
 Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
 Start-Sleep -Seconds 2
 Start-Sleep -Seconds 2
-Remove-Item -Path "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-Remove-Item -Path "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-Remove-Item -Path "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "$($env:USERPROFILE)\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "$($env:LOCALAPPDATA)\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "$($env:PROGRAMDATA)\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -Path "$($env:SYSTEMDRIVE)\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
 If (!(Test-Path "HKCR:")) {
 	New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT | Out-Null
 }
@@ -410,7 +410,7 @@ if (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personal
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Type DWord -Value 0
 Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Type DWord -Value 0
 Write-Host "Enabled Dark Mode"
-Write-Host "Removing bloatware ... Wait ..."
+Write-Host "Removing bloatware..."
 $BloatwareList = @(
 	"Microsoft.BingNews"
 	"Microsoft.BingWeather"
@@ -438,17 +438,15 @@ $BloatwareList = @(
 )
 foreach ($Bloat in $BloatwareList) {
 	if ((Get-AppxPackage -Name $Bloat).NonRemovable -eq $false) {
-		Write-Host "Trying to remove `"" -NoNewline
-		Write-Host $Bloat -NoNewline
-		Write-Host "`" Package! Be patient..."
+		Write-Host "Trying to remove $($Bloat) package..."
 		Get-AppxPackage -Name $Bloat | Remove-AppxPackage -ErrorAction SilentlyContinue | Out-Null
 		Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
 	}
 }
-Write-Host "Bloatware is removed."
-while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
-	$confirmationreboot = Read-Host "Reboot is recommended reboot this PC now? [y/n]"
-} if ($confirmationreboot -eq "y") {
+Write-Host "Bloatware is removed." -ForegroundColor Green
+while ($confirmationReboot -ne "n" -and $confirmationReboot -ne "y") {
+	$confirmationReboot = Read-Host "Reboot is recommended reboot this PC now? [y/n]"
+} if ($confirmationReboot -eq "y") {
 	Restart-Computer
 	exit
 }
