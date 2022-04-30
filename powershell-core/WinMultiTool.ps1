@@ -577,6 +577,9 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         "*Disney*"
         "*Xbox*"
         "*Zoom*"
+        "*Skype*"
+        "*Paint 3D*"
+        "*Reailty*"
     )
     foreach ($Bloat in $BloatwareList) {
         if ((Get-AppxPackage -Name $Bloat).NonRemovable -eq $false) {
