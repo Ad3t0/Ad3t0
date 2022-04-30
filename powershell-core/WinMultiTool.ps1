@@ -150,11 +150,6 @@ shutdown /r /t 0 /f
 }
 #################################################
 if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
-    while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
-        $confirmationreboot = Read-Host "Are you sure you want to run the CleanerWindows11 script? [y/n]"
-    } if ($confirmationreboot -ne "y") {
-        exit
-    }
     # Change Windows PowerScheme to maximum performance
     $currScheme = powercfg /LIST | Select-String "High performance"
     $currScheme = $currScheme -split (" ")
