@@ -576,6 +576,7 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         "*Spotify*"
         "*Disney*"
         "*Xbox*"
+        "*Gaming*"
         "*Zoom*"
         "*Skype*"
         "*Paint 3D*"
