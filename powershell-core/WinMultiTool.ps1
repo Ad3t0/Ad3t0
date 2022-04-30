@@ -593,12 +593,6 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         }
     }
     Write-Host "Bloatware is removed."
-    while ($confirmationreboot -ne "n" -and $confirmationreboot -ne "y") {
-        $confirmationreboot = Read-Host "Reboot is recommended reboot this PC now? [y/n]"
-    } if ($confirmationreboot -eq "y") {
-        Restart-Computer
-        exit
-    }
 }
 if ($functionsToRun -like "*6*" -and $functionsToRun -notlike "*7*") {
     $scriptRun = (Get-Item HKLM:\SOFTWARE\WinXMenu -ErrorAction SilentlyContinue).GetValue('Version')
