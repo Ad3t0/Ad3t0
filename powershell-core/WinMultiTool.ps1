@@ -31,12 +31,14 @@ while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $
     $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3/4]"
     $functionsToRun = $functionsToRun.ToString()
 }
-$disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object FreeSpace
-$freeSpaceInitial = $disk.FreeSpace / 1GB
-$freeSpaceInitial = [math]::Round($freeSpaceInitial, 2)
-""
-Write-Host "Current free space on C: = $($freeSpaceInitial)GB" -ForegroundColor Yellow
-""
+if ($functionsToRun -like "*2*" -and $functionsToRun -notlike "*7*") {
+    $disk = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object FreeSpace
+    $freeSpaceInitial = $disk.FreeSpace / 1GB
+    $freeSpaceInitial = [math]::Round($freeSpaceInitial, 2)
+    ""
+    Write-Host "Current free space on C: = $($freeSpaceInitial)GB" -ForegroundColor Yellow
+    ""
+}
 #################################################
 if ($functionsToRun -like "*1*" -and $functionsToRun -notlike "*7*") {
     if (!(Test-Path -Path "C:\ProgramData\chocolatey\choco.exe")) {
@@ -125,10 +127,7 @@ shutdown /r /t 0 /f
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Please wait..."
     $pendingReboot = Test-PendingReboot
-    if ($pendingReboot) {
-        shutdown /r /t 0 /f
-    }
-    else {
+    if (!($pendingReboot)) {
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
         Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
         Import-Module PSWindowsUpdate
