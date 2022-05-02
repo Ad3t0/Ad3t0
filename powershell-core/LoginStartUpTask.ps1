@@ -61,8 +61,12 @@ if ($taskUser -eq "SYSTEM") {
     $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
     Register-ScheduledTask -TaskName $taskName -InputObject $Task -User SYSTEM -Force
 }
-else {
-    $Principal = New-ScheduledTaskPrincipal -UserId $taskUser -LogonType Interactive -RunLevel Limited
-    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings -Principal $Principal
+elseif ($taskTrigger -eq "1") {
+    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings
     Register-ScheduledTask -TaskName $taskName -InputObject $Task -User $taskUser -Password $taskKey -Force
+}
+else {
+    $Principal = New-ScheduledTaskPrincipal -RunLevel Highest -UserId $taskUser -LogonType Interactive
+    $Task = New-ScheduledTask -Action $Action -Trigger $Trigger -Settings $Settings -Principal $Principal
+    Register-ScheduledTask -TaskName $taskName -InputObject $Task -Force
 }
