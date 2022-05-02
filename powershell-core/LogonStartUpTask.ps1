@@ -1,6 +1,7 @@
 Clear-Host
 ""
 Write-Host "Define Task Name"
+""
 $taskName = Read-Host "Choose a name for the scheduled task"
 ""
 Write-Host "Define Task Trigger"
