@@ -27,8 +27,8 @@ Write-Host "5 - Windows Debloat Edits"
 Write-Host "6 - Custom WinX Menu"
 Write-Host "7 - Windows Update Reset (Must be used alone)"
 ""
-while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $functionsToRun -notlike "*3*" -and $functionsToRun -notlike "*4*" -and $functionsToRun -notlike "*5*" -and $functionsToRun -notlike "*6*") {
-    $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3/4]"
+while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $functionsToRun -notlike "*3*" -and $functionsToRun -notlike "*4*" -and $functionsToRun -notlike "*5*" -and $functionsToRun -notlike "*6*" -and $functionsToRun -notlike "*7*") {
+    $functionsToRun = Read-Host "Enter one or more functions to run [1/2/3/4/5/6/7]"
     $functionsToRun = $functionsToRun.ToString()
 }
 if ($functionsToRun -like "*2*" -and $functionsToRun -notlike "*7*") {
