@@ -117,9 +117,9 @@ if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
     Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
+    shutdown /r /t 0 /f
 }
 Stop-Transcript
-shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate\WinUpdate.ps1" $taskFile
     $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate\WinUpdate.ps1"
@@ -717,10 +717,12 @@ if ($functionsToRun -like "*2*" -and $functionsToRun -notlike "*7*") {
 Stop-Transcript
 $pendingReboot = $null
 if ($functionsToRun -like "*4*") {
-    Write-Host "Script is complete. Rebooting in 5 seconds..." -ForegroundColor Green
-    Start-Sleep 5
-    Restart-Computer -Force
-    exit
+    if (!($getUpdates)) {
+        Write-Host "Script is complete. Rebooting in 5 seconds..." -ForegroundColor Green
+        Start-Sleep 5
+        Restart-Computer -Force
+        exit
+    }
 }
 else {
     Write-Host "Process complete. Please reboot your computer." -ForegroundColor Green
