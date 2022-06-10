@@ -109,7 +109,7 @@ Import-Module PSWindowsUpdate
 Write-Warning "Downloading updates please wait..."
 Add-WUServiceManager -ServiceID "7971f918-a847-4430-9279-4a52d1efe18d" -AddServiceFlag 7 -Confirm:$false
 Write-Warning "Installing updates please wait..."
-Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot -Criteria "isinstalled=0 and deploymentaction=*"
+$getUpdates = Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot -Criteria "isinstalled=0 and deploymentaction=*"
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Reboot Count $($jsonSettings.rebootCount) Please wait..."
 if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
@@ -137,7 +137,7 @@ shutdown /r /t 0 /f
         Write-Warning "Downloading updates please wait..."
         Add-WUServiceManager -ServiceID "7971f918-a847-4430-9279-4a52d1efe18d" -AddServiceFlag 7 -Confirm:$false
         Write-Warning "Installing updates please wait..."
-        Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot -Criteria "isinstalled=0 and deploymentaction=*"
+        $getUpdates = Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot -Criteria "isinstalled=0 and deploymentaction=*"
         if (!($getUpdates)) {
             schtasks.exe /delete /tn WinUpdate /f
             Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
