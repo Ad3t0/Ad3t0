@@ -106,9 +106,10 @@ $jsonSettings | ConvertTo-Json | Set-Content $pathToJson
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
 Import-Module PSWindowsUpdate
-$getUpdates = Get-WUInstall -AcceptAll -SendHistory -AutoReboot
-$getUpdates
-Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot
+Write-Warning "Downloading updates please wait..."
+Add-WUServiceManager -ServiceID "7971f918-a847-4430-9279-4a52d1efe18d" -AddServiceFlag 7 -Confirm:$false
+Write-Warning "Installing updates please wait..."
+Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot -Criteria "isinstalled=0 and deploymentaction=*"
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value "Updates In Progress"
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value "Updates are still running and the system may periodically reboot. Reboot Count $($jsonSettings.rebootCount) Please wait..."
 if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
@@ -133,16 +134,10 @@ shutdown /r /t 0 /f
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
         Install-Module -Name PSWindowsUpdate -Confirm:$False -Force
         Import-Module PSWindowsUpdate
-        Clear-Host
-        Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
         Write-Warning "Downloading updates please wait..."
         Add-WUServiceManager -ServiceID "7971f918-a847-4430-9279-4a52d1efe18d" -AddServiceFlag 7 -Confirm:$false
-        $getUpdates = Get-WUInstall -AcceptAll -SendHistory -AutoReboot
-        Clear-Host
-        Write-Host "`r`n`r`n`r`n`r`n`r`n`r`n`r`n"
-        $getUpdates | Format-Table
         Write-Warning "Installing updates please wait..."
-        Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot
+        Install-WindowsUpdate -AcceptAll -SendHistory -AutoReboot -Criteria "isinstalled=0 and deploymentaction=*"
         if (!($getUpdates)) {
             schtasks.exe /delete /tn WinUpdate /f
             Remove-Item -Path "C:\ProgramData\WinUpdate\WinUpdate.ps1" -Force
