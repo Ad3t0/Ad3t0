@@ -118,8 +118,11 @@ if (!($getUpdates) -or $jsonSettings.rebootCount -ge 6) {
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticecaption" -Value ""
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "legalnoticetext" -Value ""
     shutdown /r /t 0 /f
+    exit
 }
 Stop-Transcript
+Start-Sleep 15
+shutdown /r /t 0 /f
 '@
     Set-Content "C:\ProgramData\WinUpdate\WinUpdate.ps1" $taskFile
     $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-ExecutionPolicy Bypass -File C:\ProgramData\WinUpdate\WinUpdate.ps1"
