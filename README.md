@@ -1,5 +1,8 @@
 # Useful scripts and notes for system administration and engineering
 
+<details>
+<summary>PowerShell</summary>
+
 ## WinMultiTool
 
 Windows multi tool for updates, temp file cleanup, package installs
@@ -7,9 +10,6 @@ Windows multi tool for updates, temp file cleanup, package installs
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WinMultiTool.ps1'))
 ```
-
-<details>
-<summary>PowerShell</summary>
 
 ## ProfileMigrate
 
