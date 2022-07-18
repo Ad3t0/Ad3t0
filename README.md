@@ -1,7 +1,7 @@
 # Scripts and Notes for System Administration and Engineering
 
 <details>
-<summary>PowerShell Scripts</summary>
+<summary markdown="span"> PowerShell Scripts</summary>
 
 ## WinMultiTool
 
