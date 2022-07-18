@@ -9,13 +9,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 ```
 
 <details>
-<summary>Preview</summary>
-
-{% highlight ruby %}
-puts 'Expanded message'
-{% endhighlight %}
-
-</details>
+<summary>PowerShell</summary>
 
 ## ProfileMigrate
 
@@ -80,3 +74,5 @@ Setup Windows Auto Login
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoLogin.ps1'))
 ```
+
+</details>
