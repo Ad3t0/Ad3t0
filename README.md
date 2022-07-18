@@ -1,4 +1,4 @@
-# Useful scripts and notes for system administration and engineering
+# Scripts and Notes for System Administration and Engineering
 
 <details>
 <summary>PowerShell Scripts</summary>
@@ -79,6 +79,64 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 <details>
 <summary>Bash Scripts</summary>
+
+</details>
+
+<details>
+<summary>Windows Notes</summary>
+
+</details>
+
+<details>
+<summary>Ubuntu/Debian Notes</summary>
+
+</details>
+
+<details>
+<summary>MacOS Notes</summary>
+#### Mac Setup
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/admin/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+sudo softwareupdate --install-rosetta
+brew install --cask google-chrome ringcentral appcleaner adobe-acrobat-reader adobe-creative-cloud microsoft-office
+sudo dscl . create /Users/admin IsHidden 1
+```
+</details>
+
+<details>
+<summary>Proxmox Notes</summary>
+
+</details>
+
+<details>
+<summary>Microsoft Download Links</summary>
+#### Windows Server ISOs
+------------
+| OS  | Download Link|
+| ------------ | ------------ |
+| Windows Server 2012 R2  | http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO |
+| Windows Server 2016  | http://download.microsoft.com/download/6/9/5/6957BB28-1FAD-4E62-B161-F873196130BD/14393.0.161119-1705.RS1_REFRESH_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO |
+| Windows Server 2019 | https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso |
+| Windows Server 2022 | https://software-download.microsoft.com/download/sg/20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso |
+#### Microsoft Office Installers
+------------
+| Version  | Download Link|
+| ------------ | ------------ |
+| Office 365 Professional Plus | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365ProPlusRetail.img |
+| Office 365 Business | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365BusinessRetail.img |
+| Office 365 Home Premium | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365HomePremRetail.img |
+| Office 2019 Professional Plus | https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlus2019Retail.img |
+| Office 2016 Professional Plus | https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlusRetail.img |
+| Office 2013 Professional | https://officeredir.microsoft.com/r/rlidO15C2RMediaDownload?p1=db&p2=en-US&p3=ProfessionalRetail |
+| Visio 2019 Professional | https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioPro2019Retail.img |
+| Visio 2016 Professional | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioProRetail.img |
+| Visio 2016 Standard | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioStdRetail.img |
+| Project 2019 Professional | https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectPro2019Retail.img |
+| Project 2016 Professional | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectProRetail.img |
+| Project 2016 Standard | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectStdRetail.img |
+| Outlook 2016 | http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/OutlookRetail.img |
 
 </details>
 
