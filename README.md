@@ -78,12 +78,12 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 </details>
 
 <details>
-<summary>Bash Scripts</summary>
+<summary markdown="span"> Bash Scripts</summary>
 
 </details>
 
 <details>
-<summary>Windows Notes</summary>
+<summary markdown="span"> Windows Notes</summary>
 
 ### Convert Windows Server 2019 Evaluation to Standard
 
@@ -160,12 +160,12 @@ Export-PfxCertificate -cert $path -FilePath c:\cert.pfx -Password $pwd
 </details>
 
 <details>
-<summary>Ubuntu/Debian Notes</summary>
+<summary markdown="span"> Ubuntu/Debian Notes</summary>
 
 </details>
 
 <details>
-<summary>MacOS Notes</summary>
+<summary markdown="span"> MacOS Notes</summary>
 
 #### Mac Setup
 
@@ -181,12 +181,12 @@ sudo dscl . create /Users/admin IsHidden 1
 </details>
 
 <details>
-<summary>Proxmox Notes</summary>
+<summary markdown="span"> Proxmox Notes</summary>
 
 </details>
 
 <details>
-<summary>Microsoft Download Links</summary>
+<summary markdown="span"> Microsoft Download Links</summary>
 
 #### Windows Server ISOs
 
@@ -220,7 +220,7 @@ sudo dscl . create /Users/admin IsHidden 1
 </details>
 
 <details>
-<summary>BIOS Keys</summary>
+<summary markdown="span"> BIOS Keys</summary>
 
 ------------
 | Manufacturer  | Key|
@@ -245,7 +245,7 @@ sudo dscl . create /Users/admin IsHidden 1
 </details>
 
 <details>
-<summary>IP BlackLists</summary>
+<summary markdown="span"> IP BlackLists</summary>
 
 |Category|Name|Description|Source|Header/Label|
 |:----|:----|:----|:----|:----|
