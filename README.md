@@ -85,6 +85,78 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 <details>
 <summary>Windows Notes</summary>
 
+### Convert Windows Server 2019 Evaluation to Standard
+
+```powershell
+DISM /online /Set-Edition:ServerStandard /ProductKey:N69G4-B89J2-4G8F4-WWYCC-J464C /AcceptEula
+```
+
+### Convert Windows Server 2019 Evaluation to Datacenter
+
+```powershell
+DISM /online /Set-Edition:ServerDatacenter /ProductKey:WMDGN-G9PQG-XVVXX-R3X43-63DFG /AcceptEula
+```
+
+### Convert Windows Server 2022 Evaluation to Datacenter
+
+```powershell
+DISM /online /Set-Edition:ServerDatacenter /ProductKey:WX4NM-KYWYW-QJJR4-XV3QB-6VM33 /AcceptEula
+```
+
+### Transfer all FSMO Roles
+
+```powershell
+Move-ADDirectoryServerOperationMasterRole "DC1" –OperationMasterRole 0,1,2,3,4
+```
+
+### Seize all FSMO Roles
+
+```powershell
+Move-ADDirectoryServerOperationMasterRole "DC1" –OperationMasterRole 0,1,2,3,4 -Force
+```
+
+### Reset Domain Admin Password Error 4000, 4007
+
+```powershell
+netdom resetpwd /server:PDC.domain.com /userd:Domain\domain_admin /passwordd:*
+```
+
+### Restore Deleted AD Object
+
+```powershell
+Get-ADObject -Filter {displayName -eq 'Full Name'} -IncludeDeletedObjects | Restore-ADObject
+```
+
+### Set time server to domain hierarchy
+
+```powershell
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\w32time\TimeProviders\VMICTimeProvider" -Name "Enabled" -Value 0
+w32tm /query /source
+w32tm /config /syncfromflags:DOMHIER /update
+w32tm /resync
+```
+
+### Set time server
+
+```powershell
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\w32time\TimeProviders\VMICTimeProvider" -Name "Enabled" -Value 0
+w32tm /config /manualpeerlist:time.nist.gov,0x1 /syncfromflags:manual /reliable:yes /update
+net stop w32time
+net start w32time
+w32tm /resync /force
+w32tm /query /configuration
+```
+
+### Generate and export .pfx cert
+
+```powershell
+$notafter = (Get-date).AddYears(10)
+$cert = New-SelfSignedCertificate -certstorelocation cert:\localmachine\my -dnsname test.com -NotAfter $notafter
+$pwd = ConvertTo-SecureString -String '12345678' -Force -AsPlainText
+$path = 'cert:\localMachine\my\' + $cert.thumbprint
+Export-PfxCertificate -cert $path -FilePath c:\cert.pfx -Password $pwd
+```
+
 </details>
 
 <details>
@@ -97,7 +169,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 #### Mac Setup
 
-```
+```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/admin/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
