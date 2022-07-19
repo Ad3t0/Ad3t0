@@ -164,6 +164,69 @@ Export-PfxCertificate -cert $path -FilePath c:\cert.pfx -Password $pwd
 <details>
 <summary markdown="span"> Ubuntu/Debian Notes</summary>
 
+Set Timezone
+
+```bash
+sudo timedatectl set-timezone America/Denver
+```
+
+Edit Crontab
+
+```bash
+sudo crontab -e
+sudo service cron reload
+```
+
+Zabbix Setup
+
+```bash
+apt install zabbix-agent
+sed -i 's/Server=127.0.0.1/Server=192.168.250.10/' /etc/zabbix/zabbix_agentd.conf
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
+```
+
+Install QEMU Guest Agent
+
+```bash
+apt-get install qemu-guest-agent
+systemctl start qemu-guest-agent
+```
+
+Set Network Config
+
+```bash
+sudo nano /etc/netplan/01-netcfg.yaml
+```
+
+```bash
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens160:
+      dhcp4: 'no'
+      addresses:
+        - 192.168.250.10/24
+      gateway4: 192.168.250.1
+      nameservers:
+        search:
+          - TEST.lan
+        addresses:
+          - 192.168.250.2
+          - 192.168.250.1
+```
+
+```bash
+sudo netplan apply
+```
+
+Disk Speed Test
+
+```bash
+hdparm -Tt /dev/sda
+```
+
 </details>
 
 <details>
@@ -184,6 +247,55 @@ sudo dscl . create /Users/admin IsHidden 1
 
 <details>
 <summary markdown="span"> Proxmox Notes</summary>
+
+Proxmox Helper Scripts VE 7 Post Install https://tteck.github.io/Proxmox/
+
+```bash
+bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-install-v3.sh)"
+```
+
+Zabbix Setup
+
+```bash
+apt install zabbix-agent
+sed -i 's/Server=127.0.0.1/Server=192.168.250.10/' /etc/zabbix/zabbix_agentd.conf
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
+```
+
+ZFS Set Volsize
+
+```bash
+zfs set volsize=10G /dev/zvol/rpool/data/vm-<vmid>-disk-0
+```
+
+Install QEMU Guest Agent
+
+```bash
+apt-get install qemu-guest-agent
+systemctl start qemu-guest-agent
+```
+
+Fix Windows 11/22 crashing on old hardware
+
+```bash
+sed -i 's/boot=zfs/boot=zfs kvm.tdp_mmu=N/' /etc/kernel/cmdline
+proxmox-boot-tool refresh
+```
+
+Set dedicated network interface for replication
+
+```bash
+echo "migration: insecure,network=172.17.93.0/24" >> /etc/pve/datacenter.cfg
+```
+
+Manually Remove Snapshot
+
+```bash
+nano /etc/pve/qemu-server/<vmid>.conf
+zfs list
+zfs destroy
+```
 
 </details>
 
