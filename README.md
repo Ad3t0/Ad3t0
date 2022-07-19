@@ -2,8 +2,8 @@
 
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-<details>
-<summary markdown="span" open="true"> PowerShell Scripts</summary>
+<details open="true">
+<summary markdown="span"> PowerShell Scripts</summary>
 
 ## WinMultiTool
 
@@ -374,7 +374,7 @@ sudo dscl . create /Users/admin IsHidden 1
          <td>Anonymizers</td>
          <td>dan.me.uk</td>
          <td>This list contains a full list of all TOR nodes</td>
-         <td><a href="https://www.dan.me.uk/torlist/	">https://www.dan.me.uk/torlist/</a></td>
+         <td><a href="https://www.dan.me.uk/torlist/ ">https://www.dan.me.uk/torlist/</a></td>
          <td>Anon_TOR</td>
       </tr>
       <tr>
