@@ -2,7 +2,7 @@
 
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-<details open="true">
+<details open="false">
 <summary markdown="span"> PowerShell Scripts</summary>
 
 ## WinMultiTool
