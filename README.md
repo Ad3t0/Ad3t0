@@ -31,7 +31,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## ChocoInstall
 
-Installs [Chocolatey](https://chocolatey.org/)
+Installs [https://chocolatey.org/](https://chocolatey.org/)
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ChocoInstall.ps1'))
@@ -254,7 +254,7 @@ sudo dscl . create /Users/admin IsHidden 1
 <details>
 <summary markdown="span"> Proxmox Notes</summary>
 
-Proxmox Helper Scripts VE 7 Post Install https://tteck.github.io/Proxmox/
+Proxmox Helper Scripts VE 7 Post Install [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
 
 ```bash
 bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-install-v3.sh)"
