@@ -1,9 +1,13 @@
 # Scripts and Notes for System Administration and Engineering
 
 <details>
-<summary markdown="span"> PowerShell Scripts</summary>
+<summary  markdown="span">
 
-## WinMultiTool
+## PowerShell Scripts
+
+</summary>
+
+### WinMultiTool
 
 Windows multi tool for updates, temp file cleanup, package installs
 
@@ -11,7 +15,7 @@ Windows multi tool for updates, temp file cleanup, package installs
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WinMultiTool.ps1'))
 ```
 
-## ProfileMigrate
+### ProfileMigrate
 
 Migrates data from C:\Users\CurrentUser\Documents, Desktop, Pictures to selected path
 
@@ -19,7 +23,7 @@ Migrates data from C:\Users\CurrentUser\Documents, Desktop, Pictures to selected
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ProfileMigrate.ps1'))
 ```
 
-## OpenVPN_Setup
+### OpenVPN_Setup
 
 Private OpenVPN with pulled config
 
@@ -27,7 +31,7 @@ Private OpenVPN with pulled config
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_Setup.ps1'))
 ```
 
-## ChocoInstall
+### ChocoInstall
 
 Installs [Chocolatey](https://chocolatey.org/)
 
@@ -35,7 +39,7 @@ Installs [Chocolatey](https://chocolatey.org/)
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ChocoInstall.ps1'))
 ```
 
-## MSOfficeInstall
+### MSOfficeInstall
 
 Installs MS Office
 
@@ -43,7 +47,7 @@ Installs MS Office
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/MSOfficeInstall.ps1'))
 ```
 
-## LogonStartUpTask
+### LogonStartUpTask
 
 PowerShell logon or startup task creator
 
@@ -51,7 +55,7 @@ PowerShell logon or startup task creator
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/LogonStartUpTask.ps1'))
 ```
 
-## DriverSearch
+### DriverSearch
 
 Google search with system model for drivers
 
@@ -59,7 +63,7 @@ Google search with system model for drivers
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DriverSearch.ps1'))
 ```
 
-## ProductKeyFix
+### ProductKeyFix
 
 Remove product key and then install product key from BIOS
 
@@ -67,7 +71,7 @@ Remove product key and then install product key from BIOS
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ProductKeyFix.ps1'))
 ```
 
-## AutoLogin
+### AutoLogin
 
 Setup Windows Auto Login
 
@@ -78,12 +82,21 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 </details>
 
 <details>
-<summary markdown="span"> Bash Scripts</summary>
+<summary  markdown="span">
+
+## Bash Scripts
+
+</summary>
 
 </details>
 
 <details>
-<summary markdown="span"> Windows Notes</summary>
+
+<summary  markdown="span">
+
+## Windows Notes
+
+</summary>
 
 ### Convert Windows Server 2019 Evaluation to Standard
 
@@ -160,14 +173,23 @@ Export-PfxCertificate -cert $path -FilePath c:\cert.pfx -Password $pwd
 </details>
 
 <details>
-<summary markdown="span"> Ubuntu/Debian Notes</summary>
+
+<summary  markdown="span">
+
+## Ubuntu/Debian Notes
+
+</summary>
 
 </details>
 
 <details>
-<summary markdown="span"> MacOS Notes</summary>
+<summary  markdown="span">
 
-#### Mac Setup
+## MacOS Notes
+
+</summary>
+
+### Mac Setup
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -181,14 +203,21 @@ sudo dscl . create /Users/admin IsHidden 1
 </details>
 
 <details>
-<summary markdown="span"> Proxmox Notes</summary>
+<summary  markdown="span">
 
+## Proxmox Notes
+
+</summary>
 </details>
 
 <details>
-<summary markdown="span"> Microsoft Download Links</summary>
+<summary  markdown="span">
 
-#### Windows Server ISOs
+## Microsoft Download Links
+
+</summary>
+
+### Windows Server ISOs
 
 <table>
    <tbody>
@@ -215,7 +244,7 @@ sudo dscl . create /Users/admin IsHidden 1
    </tbody>
 </table>
 
-#### Microsoft Office Installers
+### Microsoft Office Installers
 
 ------------
 | Version  | Download Link|
@@ -237,8 +266,11 @@ sudo dscl . create /Users/admin IsHidden 1
 </details>
 
 <details>
-<summary markdown="span"> BIOS Keys</summary>
+<summary  markdown="span">
 
+## BIOS Keys
+
+</summary>
 ------------
 | Manufacturer  | Key|
 | ------------ | ------------ |
@@ -262,8 +294,9 @@ sudo dscl . create /Users/admin IsHidden 1
 </details>
 
 <details>
-<summary markdown="span"> IP BlackLists</summary>
-
+<summary  markdown="span">
+## IP BlackLists
+</summary>
 |Category|Name|Description|Source|Header/Label|
 |:----|:----|:----|:----|:----|
 |Anonymizers|dan.me.uk|This list contains a full list of all TOR nodes|<https://www.dan.me.uk/torlist/>|Anon_TOR|
