@@ -3,6 +3,7 @@
         "allowed_elements": [
             "summary",
             "tbody",
+            "link",
             "a",
             "td",
             "tr",

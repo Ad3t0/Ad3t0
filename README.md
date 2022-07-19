@@ -1,5 +1,7 @@
 # Scripts and Notes
 
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
 <details>
 <summary markdown="span"> PowerShell Scripts</summary>
 
