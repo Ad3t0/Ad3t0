@@ -10,7 +10,6 @@
 Windows multi tool for updates, temp file cleanup, package installs, Windows 10/11 debloat, Windows update reset
 
 {% include codeHeader.html %}
-
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WinMultiTool.ps1'))
 ```
