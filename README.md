@@ -108,13 +108,13 @@ DISM /online /Set-Edition:ServerDatacenter /ProductKey:WX4NM-KYWYW-QJJR4-XV3QB-6
 ### Transfer all FSMO Roles
 
 ```powershell
-Move-ADDirectoryServerOperationMasterRole "DC1" –OperationMasterRole 0,1,2,3,4
+Move-ADDirectoryServerOperationMasterRole "DC1" -OperationMasterRole 0,1,2,3,4
 ```
 
 ### Seize all FSMO Roles
 
 ```powershell
-Move-ADDirectoryServerOperationMasterRole "DC1" –OperationMasterRole 0,1,2,3,4 -Force
+Move-ADDirectoryServerOperationMasterRole "DC1" -OperationMasterRole 0,1,2,3,4 -Force
 ```
 
 ### Reset Domain Admin Password Error 4000, 4007
