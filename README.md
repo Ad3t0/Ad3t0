@@ -190,13 +190,36 @@ sudo dscl . create /Users/admin IsHidden 1
 
 #### Windows Server ISOs
 
-------------
-| OS  | Download Link|
-| ------------ | ------------ |
-| Windows Server 2012 R2  | <http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO> |
-| Windows Server 2016  | <http://download.microsoft.com/download/6/9/5/6957BB28-1FAD-4E62-B161-F873196130BD/14393.0.161119-1705.RS1_REFRESH_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO> |
-| Windows Server 2019 | <https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso> |
-| Windows Server 2022 | <https://software-download.microsoft.com/download/sg/20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso> |
+<table>
+    <tr>
+        <td>------------</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>OS</td>
+        <td>Download Link</td>
+    </tr>
+    <tr>
+        <td>------------</td>
+        <td>------------</td>
+    </tr>
+    <tr>
+        <td>Windows Server 2012 R2</td>
+        <td>&lt;http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO&gt;</td>
+    </tr>
+    <tr>
+        <td>Windows Server 2016</td>
+        <td>&lt;http://download.microsoft.com/download/6/9/5/6957BB28-1FAD-4E62-B161-F873196130BD/14393.0.161119-1705.RS1_REFRESH_SERVERESSENTIALS_OEM_X64FRE_EN-US.ISO&gt;</td>
+    </tr>
+    <tr>
+        <td>Windows Server 2019</td>
+        <td>&lt;https://software-download.microsoft.com/download/pr/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso&gt;</td>
+    </tr>
+    <tr>
+        <td>Windows Server 2022</td>
+        <td>&lt;https://software-download.microsoft.com/download/sg/20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso&gt;</td>
+    </tr>
+</table>
 
 #### Microsoft Office Installers
 
