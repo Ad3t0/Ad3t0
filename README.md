@@ -186,6 +186,12 @@ systemctl restart zabbix-agent
 systemctl enable zabbix-agent
 ```
 
+Montor network interface bandwidth
+
+```bash
+tcptrack -i eno1
+```
+
 Install QEMU Guest Agent
 
 ```bash
