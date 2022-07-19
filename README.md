@@ -1,4 +1,4 @@
-# Scripts and Notes for System Administration and Engineering
+# Scripts and Notes
 
 <details>
 <summary markdown="span"> PowerShell Scripts</summary>
@@ -188,7 +188,7 @@ sudo dscl . create /Users/admin IsHidden 1
 <details>
 <summary markdown="span"> Microsoft Download Links</summary>
 
-#### Windows Server ISOs
+### Windows Server ISOs
 
 <table>
    <tbody>
@@ -217,89 +217,382 @@ sudo dscl . create /Users/admin IsHidden 1
 
 #### Microsoft Office Installers
 
-------------
-| Version  | Download Link|
-| ------------ | ------------ |
-| Office 365 Professional Plus | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365ProPlusRetail.img> |
-| Office 365 Business | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365BusinessRetail.img> |
-| Office 365 Home Premium | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365HomePremRetail.img> |
-| Office 2019 Professional Plus | <https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlus2019Retail.img> |
-| Office 2016 Professional Plus | <https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlusRetail.img> |
-| Office 2013 Professional | <https://officeredir.microsoft.com/r/rlidO15C2RMediaDownload?p1=db&p2=en-US&p3=ProfessionalRetail> |
-| Visio 2019 Professional | <https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioPro2019Retail.img> |
-| Visio 2016 Professional | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioProRetail.img> |
-| Visio 2016 Standard | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioStdRetail.img> |
-| Project 2019 Professional | <https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectPro2019Retail.img> |
-| Project 2016 Professional | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectProRetail.img> |
-| Project 2016 Standard | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectStdRetail.img> |
-| Outlook 2016 | <http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/OutlookRetail.img> |
+<table>
+   <tbody>
+      <tr>
+         <td>Version</td>
+         <td>Download Link</td>
+      </tr>
+      <tr>
+         <td>Office 365 Professional Plus</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365ProPlusRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365ProPlusRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Office 365 Business</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365BusinessRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365BusinessRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Office 365 Home Premium</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365HomePremRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/O365HomePremRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Office 2019 Professional Plus</td>
+         <td><a href="https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlus2019Retail.img">https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlus2019Retail.img</a></td>
+      </tr>
+      <tr>
+         <td>Office 2016 Professional Plus</td>
+         <td><a href="https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlusRetail.img">https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProPlusRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Office 2013 Professional</td>
+         <td><a href="https://officeredir.microsoft.com/r/rlidO15C2RMediaDownload?p1=db&amp;p2=en-US&amp;p3=ProfessionalRetail">https://officeredir.microsoft.com/r/rlidO15C2RMediaDownload?p1=db&amp;p2=en-US&amp;p3=ProfessionalRetail</a></td>
+      </tr>
+      <tr>
+         <td>Visio 2019 Professional</td>
+         <td><a href="https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioPro2019Retail.img">https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioPro2019Retail.img</a></td>
+      </tr>
+      <tr>
+         <td>Visio 2016 Professional</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioProRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioProRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Visio 2016 Standard</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioStdRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/VisioStdRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Project 2019 Professional</td>
+         <td><a href="https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectPro2019Retail.img">https://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectPro2019Retail.img</a></td>
+      </tr>
+      <tr>
+         <td>Project 2016 Professional</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectProRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectProRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Project 2016 Standard</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectStdRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/ProjectStdRetail.img</a></td>
+      </tr>
+      <tr>
+         <td>Outlook 2016</td>
+         <td><a href="http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/OutlookRetail.img">http://officecdn.microsoft.com/db/492350F6-3A01-4F97-B9C0-C7C6DDF67D60/media/en-US/OutlookRetail.img</a></td>
+      </tr>
+   </tbody>
+</table>
 
 </details>
 
 <details>
 <summary markdown="span"> BIOS Keys</summary>
 
-------------
-| Manufacturer  | Key|
-| ------------ | ------------ |
-| Acer | Del or F2 |
-| ASRock | F2 |
-| Asus | Del, F10 or F9 |
-| Biostar | Del |
-| Dell | F2 or F12 |
-| EVGA | Del |
-| Gigabyte | Del |
-| HP | F10 |
-| Lenovo | F2, Fn + F2, F1 or Enter then F1 |
-| Intel | F2 |
-| MSI | Del |
-| Microsoft Surface | Press and hold volume up |
-| Origin PC | F2 |
-| Samsung | F2 |
-| Toshiba | F2 |
-| Zotac | Del |
+<table>
+   <tr>
+      <td>Manufacturer</td>
+      <td>Key</td>
+   </tr>
+   <tr>
+      <td>Acer</td>
+      <td>Del or F2</td>
+   </tr>
+   <tr>
+      <td>ASRock</td>
+      <td>F2</td>
+   </tr>
+   <tr>
+      <td>Asus</td>
+      <td>Del, F10 or F9</td>
+   </tr>
+   <tr>
+      <td>Biostar</td>
+      <td>Del</td>
+   </tr>
+   <tr>
+      <td>Dell</td>
+      <td>F2 or F12</td>
+   </tr>
+   <tr>
+      <td>EVGA</td>
+      <td>Del</td>
+   </tr>
+   <tr>
+      <td>Gigabyte</td>
+      <td>Del</td>
+   </tr>
+   <tr>
+      <td>HP</td>
+      <td>F10</td>
+   </tr>
+   <tr>
+      <td>Lenovo</td>
+      <td>F2, Fn + F2, F1 or Enter then F1</td>
+   </tr>
+   <tr>
+      <td>Intel</td>
+      <td>F2</td>
+   </tr>
+   <tr>
+      <td>MSI</td>
+      <td>Del</td>
+   </tr>
+   <tr>
+      <td>Microsoft Surface</td>
+      <td>Press and hold volume up</td>
+   </tr>
+   <tr>
+      <td>Origin PC</td>
+      <td>F2</td>
+   </tr>
+   <tr>
+      <td>Samsung</td>
+      <td>F2</td>
+   </tr>
+   <tr>
+      <td>Toshiba</td>
+      <td>F2</td>
+   </tr>
+   <tr>
+      <td>Zotac</td>
+      <td>Del</td>
+   </tr>
+</table>
 
 </details>
 
 <details>
 <summary markdown="span"> IP BlackLists</summary>
 
-|Category|Name|Description|Source|Header/Label|
-|:----|:----|:----|:----|:----|
-|Anonymizers|dan.me.uk|This list contains a full list of all TOR nodes|<https://www.dan.me.uk/torlist/>|Anon_TOR|
-|Anonymizers|MaxMind|MaxMind.com sample list of high-risk IP addresses.|<https://www.maxmind.com/en/high-risk-ip-sample-list>|Anon_MaxMind|
-|Attacks|Talos|TalosIntel.com List of known malicious network threats|<http://talosintel.com/feeds/ip-filter.blf>|Talos|
-|Attacks|BadIPs 15d|Bad IPs in category any with score above 2 and age less than 15d|<https://www.badips.com/get/list/any/2?age=15d>|BadIPs_15d|
-|Attacks|BadIPs 30d|BadIPs.com Bad IPs in category any with score above 2 and age less than 30d|<https://www.badips.com/get/list/any/2?age=30d>|BadIPs_30d|
-|Attacks|Blocklist.de|Blocklist.de IPs that have been detected by fail2ban in the last 48 hours|<http://lists.blocklist.de/lists/all.txt>|Blocklist.de|
-|Attacks|Cyber Crime WHQ|Block IPs|<https://cybercrime-tracker.net/fuckerz.php>|Cyber_Crime|
-|Attacks|ISC_1d|<https://isc.sans.edu/api/sources/attacks/1000/1?text>|<https://cinsarmy.com/list/ci-badguys.txt>| |
-|Attacks|Emerging Threats and DShield - Block IPs|This is combines several lists. At the moment of writing the blocklist contains the following:
-Several malware C&C servers (Feodo, Zeus, Spyeye, Palevo).
-Spamhaus drop list
-DShield top 20 attackers. DShield provides a platform for users of firewalls to share intrusion information|<https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt>|ET_Block_IP|
-|Attacks|Emerging Threats and DShield - Compromised IPs|Compromised IPs|<https://rules.emergingthreats.net/blockrules/compromised-ips.txt>|ET_Comp_IP|
-|Attacks|GreenSnow|GreenSnow.co the blacklisted list of IPs for online servers.|<https://blocklist.greensnow.co/greensnow.txt>|GreenSnow|
-| |MyIP.ms|Our sites are visited by tens of thousands of people every day. Our unique protection system allows us to easily identify the IP of Unknown Spam Bots / Crawlers and other IP with dangerous software. Below are published in real time our blacklist of such IP's. Hope it will be helpful for you. Read More|<https://www.myip.ms/files/blacklist/general/latest_blacklist.txt>|MyIP_ms|
-|Attacks|Internet Storm Center|IP Block List|<https://isc.sans.edu/api/sources/attacks/1000/30?text>|ISC_30d|
-|Attacks|NormShield|NormShield.com IPs in category attack with severity all|<https://iplists.firehol.org/files/normshield_all_attack.ipset>|NormShield_All|
-|Attacks|Snort IPfilter|Same as TALOS|<http://labs.snort.org/feeds/ip-filter.blf>|SnortIPfilter|
-|Malware|Abuse.ch Feodo|Included in RW. Abuse.ch Feodo tracker trojan includes IPs which are being used by Feodo (also known as Cridex or Bugat) which commits ebanking fraud|<https://feodotracker.abuse.ch/blocklist/?download=ipblocklist>|Abusech_Feodo|
-|Malware|Abuse.ch Ransomware Tracker Feed|Abuse.ch Ransomware Tracker Ransomware Tracker tracks and monitors the status of domain names, IP addresses and URLs that are associated with Ransomware, such as Botnet C&C servers, distribution sites and payment sites.|<https://ransomwaretracker.abuse.ch/feeds/csv/>|Abusech_Feed|
-|Malware|Abuse.ch Ransomware Tracker RW|Abuse.ch Ransomware Tracker Ransomware Tracker tracks and monitors the status of domain names, IP addresses and URLs that are associated with Ransomware, such as Botnet C&C servers, distribution sites and payment sites.|<https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt>|Abusech_RW|
-|Malware|Abuse.ch SSL Blacklist Agressive|Abuse.ch SSL Blacklist The aggressive version of the SSL IP Blacklist contains all IPs that SSLBL ever detected being associated with a malicious SSL certificate|<https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv>|Abusech_sslbl|
-|Malware|Abuse.ch Zeus|Included in RW. Abuse.ch Zeus tracker standard, contains the same data as the ZeuS IP blocklist (zeus_badips) but with the slight difference that it doesn't exclude hijacked websites (level 2) and free web hosting providers (level 3)|<https://zeustracker.abuse.ch/blocklist.php?download=ipblocklist>|Abusech_Zeus|
-|Malware|Bambenek|Master Feed of known, active and non-sinkholed C&Cs IP addresses|<https://osint.bambenekconsulting.com/feeds/c2-ipmasterlist.txt>|Bambenek_All|
-|Malware|IBM X-Force|IBM X-Force Exchange Botnet Command and Control Servers|<https://iplists.firehol.org/files/xforce_bccs.ipset>|IBM_XForce|
-|Malware|Malc0de|Malc0de.com malicious IPs of the last 30 days|<http://malc0de.com/bl/IP_Blacklist.txt>|Malc0de|
-|Malware|MalwareDomainList|malwaredomainlist.com list of malware active ip addresses|<http://www.malwaredomainlist.com/hostslist/ip.txt>|MalwareDomainList|
-|Malware|URLVir|URLVir.com Active Malicious IP Addresses Hosting Malware. URLVir is an online security service developed by NoVirusThanks Company Srl that automatically monitors changes of malicious URLs (executable files)|<http://www.urlvir.com/export-ip-addresses/>|URLVir|
-|Malware|VxVault|VxVault The latest 100 additions of VxVault.|<http://vxvault.net/ViriList.php?s=0&m=100>|VxVault|
-|Reputation|AlienVault|AlienVault.com IP reputation database|<https://reputation.alienvault.com/reputation.generic>|AlienVault|
-|Reputation|Binary Defense|Binary Defense Systems Artillery Threat Intelligence Feed and Banlist Feed|<https://www.binarydefense.com/banlist.txt>|BinaryDefense|
-|Reputation|CINS Army|CIArmy.com IPs with poor Rogue Packet score that have not yet been identified as malicious by the community|<http://cinsscore.com/list/ci-badguys.txt>|CINS_Army|
-|Attacks|ISCBlock| |<https://isc.sans.edu/feeds/block.txt>| |
-|Anonymizers|ProxyLists_1d| |<https://iplists.firehol.org/files/proxylists_1d.ipset>| |
-|Malware|Abuse_DYRE| |<https://sslbl.abuse.ch/blacklist/dyre_sslipblacklist.csv>| |
+<table>
+   <tbody>
+      <tr>
+         <td>Category</td>
+         <td>Name</td>
+         <td>Description</td>
+         <td>Source</td>
+         <td>Header/Label</td>
+      </tr>
+      <tr>
+         <td>Anonymizers</td>
+         <td>dan.me.uk</td>
+         <td>This list contains a full list of all TOR nodes</td>
+         <td><a href="https://www.dan.me.uk/torlist/	">https://www.dan.me.uk/torlist/</a></td>
+         <td>Anon_TOR</td>
+      </tr>
+      <tr>
+         <td>Anonymizers</td>
+         <td>MaxMind</td>
+         <td>MaxMind.com sample list of high-risk IP addresses.</td>
+         <td><a href="https://www.maxmind.com/en/high-risk-ip-sample-list">https://www.maxmind.com/en/high-risk-ip-sample-list</a></td>
+         <td>Anon_MaxMind</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>Talos</td>
+         <td>TalosIntel.com List of known malicious network threats</td>
+         <td><a href="http://talosintel.com/feeds/ip-filter.blf">http://talosintel.com/feeds/ip-filter.blf</a></td>
+         <td>Talos</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>BadIPs 15d</td>
+         <td>Bad IPs in category any with score above 2 and age less than 15d</td>
+         <td><a href="https://www.badips.com/get/list/any/2?age=15d">https://www.badips.com/get/list/any/2?age=15d</a></td>
+         <td>BadIPs_15d</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>BadIPs 30d</td>
+         <td>BadIPs.com Bad IPs in category any with score above 2 and age less than 30d</td>
+         <td><a href="https://www.badips.com/get/list/any/2?age=30d">https://www.badips.com/get/list/any/2?age=30d</a></td>
+         <td>BadIPs_30d</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>Blocklist.de</td>
+         <td>Blocklist.de IPs that have been detected by fail2ban in the last 48 hours</td>
+         <td><a href="http://lists.blocklist.de/lists/all.txt">http://lists.blocklist.de/lists/all.txt</a></td>
+         <td>Blocklist.de</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>Cyber Crime WHQ</td>
+         <td>Block IPs</td>
+         <td><a href="https://cybercrime-tracker.net/fuckerz.php">https://cybercrime-tracker.net/fuckerz.php</a></td>
+         <td>Cyber_Crime</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>ISC_1d</td>
+         <td>https://isc.sans.edu/api/sources/attacks/1000/1?text</td>
+         <td><a href="https://cinsarmy.com/list/ci-badguys.txt">https://cinsarmy.com/list/ci-badguys.txt</a></td>
+         <td>&nbsp;</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>Emerging Threats and DShield - Block IPs</td>
+         <td>This is combines several lists. At the moment of writing the blocklist contains the following:</td>
+         <td>&nbsp;</td>
+         <td>&nbsp;</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>Emerging Threats and DShield - Compromised IPs</td>
+         <td>Compromised IPs</td>
+         <td><a href="https://rules.emergingthreats.net/blockrules/compromised-ips.txt">https://rules.emergingthreats.net/blockrules/compromised-ips.txt</a></td>
+         <td>ET_Comp_IP</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>GreenSnow</td>
+         <td>GreenSnow.co the blacklisted list of IPs for online servers.</td>
+         <td><a href="https://blocklist.greensnow.co/greensnow.txt">https://blocklist.greensnow.co/greensnow.txt</a></td>
+         <td>GreenSnow</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>MyIP.ms</td>
+         <td>Our sites are visited by tens of thousands of people every day. Our unique protection system allows us to easily identify the IP of Unknown Spam Bots / Crawlers and other IP with dangerous software. Below are published in real time our blacklist of such IP's. Hope it will be helpful for you. Read More</td>
+         <td><a href="https://www.myip.ms/files/blacklist/general/latest_blacklist.txt">https://www.myip.ms/files/blacklist/general/latest_blacklist.txt</a></td>
+         <td>MyIP_ms</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>Internet Storm Center</td>
+         <td>IP Block List</td>
+         <td><a href="https://isc.sans.edu/api/sources/attacks/1000/30?text">https://isc.sans.edu/api/sources/attacks/1000/30?text</a></td>
+         <td>ISC_30d</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>NormShield</td>
+         <td>NormShield.com IPs in category attack with severity all</td>
+         <td><a href="https://iplists.firehol.org/files/normshield_all_attack.ipset">https://iplists.firehol.org/files/normshield_all_attack.ipset</a></td>
+         <td>NormShield_All</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>Snort IPfilter</td>
+         <td>Same as TALOS</td>
+         <td><a href="http://labs.snort.org/feeds/ip-filter.blf">http://labs.snort.org/feeds/ip-filter.blf</a></td>
+         <td>SnortIPfilter</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Abuse.ch Feodo</td>
+         <td>Included in RW. Abuse.ch Feodo tracker trojan includes IPs which are being used by Feodo (also known as Cridex or Bugat) which commits ebanking fraud</td>
+         <td><a href="https://feodotracker.abuse.ch/blocklist/?download=ipblocklist">https://feodotracker.abuse.ch/blocklist/?download=ipblocklist</a></td>
+         <td>Abusech_Feodo</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Abuse.ch Ransomware Tracker Feed</td>
+         <td>Abuse.ch Ransomware Tracker Ransomware Tracker tracks and monitors the status of domain names, IP addresses and URLs that are associated with Ransomware, such as Botnet C&amp;C servers, distribution sites and payment sites.</td>
+         <td><a href="https://ransomwaretracker.abuse.ch/feeds/csv/">https://ransomwaretracker.abuse.ch/feeds/csv/</a></td>
+         <td>Abusech_Feed</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Abuse.ch Ransomware Tracker RW</td>
+         <td>Abuse.ch Ransomware Tracker Ransomware Tracker tracks and monitors the status of domain names, IP addresses and URLs that are associated with Ransomware, such as Botnet C&amp;C servers, distribution sites and payment sites.</td>
+         <td><a href="https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt">https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt</a></td>
+         <td>Abusech_RW</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Abuse.ch SSL Blacklist Agressive</td>
+         <td>Abuse.ch SSL Blacklist The aggressive version of the SSL IP Blacklist contains all IPs that SSLBL ever detected being associated with a malicious SSL certificate</td>
+         <td><a href="https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv">https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv</a></td>
+         <td>Abusech_sslbl</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Abuse.ch Zeus</td>
+         <td>Included in RW. Abuse.ch Zeus tracker standard, contains the same data as the ZeuS IP blocklist (zeus_badips) but with the slight difference that it doesn't exclude hijacked websites (level 2) and free web hosting providers (level 3)</td>
+         <td><a href="https://zeustracker.abuse.ch/blocklist.php?download=ipblocklist">https://zeustracker.abuse.ch/blocklist.php?download=ipblocklist</a></td>
+         <td>Abusech_Zeus</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Bambenek</td>
+         <td>Master Feed of known, active and non-sinkholed C&amp;Cs IP addresses</td>
+         <td><a href="https://osint.bambenekconsulting.com/feeds/c2-ipmasterlist.txt">https://osint.bambenekconsulting.com/feeds/c2-ipmasterlist.txt</a></td>
+         <td>Bambenek_All</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>IBM X-Force</td>
+         <td>IBM X-Force Exchange Botnet Command and Control Servers</td>
+         <td><a href="https://iplists.firehol.org/files/xforce_bccs.ipset">https://iplists.firehol.org/files/xforce_bccs.ipset</a></td>
+         <td>IBM_XForce</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Malc0de</td>
+         <td>Malc0de.com malicious IPs of the last 30 days</td>
+         <td><a href="http://malc0de.com/bl/IP_Blacklist.txt">http://malc0de.com/bl/IP_Blacklist.txt</a></td>
+         <td>Malc0de</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>MalwareDomainList</td>
+         <td>malwaredomainlist.com list of malware active ip addresses</td>
+         <td><a href="http://www.malwaredomainlist.com/hostslist/ip.txt">http://www.malwaredomainlist.com/hostslist/ip.txt</a></td>
+         <td>MalwareDomainList</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>URLVir</td>
+         <td>URLVir.com Active Malicious IP Addresses Hosting Malware. URLVir is an online security service developed by NoVirusThanks Company Srl that automatically monitors changes of malicious URLs (executable files)</td>
+         <td><a href="http://www.urlvir.com/export-ip-addresses/">http://www.urlvir.com/export-ip-addresses/</a></td>
+         <td>URLVir</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>VxVault</td>
+         <td>VxVault The latest 100 additions of VxVault.</td>
+         <td><a href="http://vxvault.net/ViriList.php?s=0&amp;m=100">http://vxvault.net/ViriList.php?s=0&amp;m=100</a></td>
+         <td>VxVault</td>
+      </tr>
+      <tr>
+         <td>Reputation</td>
+         <td>AlienVault</td>
+         <td>AlienVault.com IP reputation database</td>
+         <td><a href="https://reputation.alienvault.com/reputation.generic">https://reputation.alienvault.com/reputation.generic</a></td>
+         <td>AlienVault</td>
+      </tr>
+      <tr>
+         <td>Reputation</td>
+         <td>Binary Defense</td>
+         <td>Binary Defense Systems Artillery Threat Intelligence Feed and Banlist Feed</td>
+         <td><a href="https://www.binarydefense.com/banlist.txt">https://www.binarydefense.com/banlist.txt</a></td>
+         <td>BinaryDefense</td>
+      </tr>
+      <tr>
+         <td>Reputation</td>
+         <td>CINS Army</td>
+         <td>CIArmy.com IPs with poor Rogue Packet score that have not yet been identified as malicious by the community</td>
+         <td><a href="http://cinsscore.com/list/ci-badguys.txt">http://cinsscore.com/list/ci-badguys.txt</a></td>
+         <td>CINS_Army</td>
+      </tr>
+      <tr>
+         <td>Attacks</td>
+         <td>ISCBlock</td>
+         <td>&nbsp;</td>
+         <td><a href="https://isc.sans.edu/feeds/block.txt">https://isc.sans.edu/feeds/block.txt</a></td>
+         <td>&nbsp;</td>
+      </tr>
+      <tr>
+         <td>Anonymizers</td>
+         <td>ProxyLists_1d</td>
+         <td>&nbsp;</td>
+         <td><a href="https://iplists.firehol.org/files/proxylists_1d.ipset">https://iplists.firehol.org/files/proxylists_1d.ipset</a></td>
+         <td>&nbsp;</td>
+      </tr>
+      <tr>
+         <td>Malware</td>
+         <td>Abuse_DYRE</td>
+         <td>&nbsp;</td>
+         <td><a href="https://sslbl.abuse.ch/blacklist/dyre_sslipblacklist.csv">https://sslbl.abuse.ch/blacklist/dyre_sslipblacklist.csv</a></td>
+         <td>&nbsp;</td>
+      </tr>
+   </tbody>
+</table>
 
 </details>
