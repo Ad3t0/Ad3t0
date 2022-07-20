@@ -260,6 +260,12 @@ Proxmox Helper Scripts VE 7 Post Install [https://tteck.github.io/Proxmox/](http
 bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-install-v3.sh)"
 ```
 
+Proxmox Dark Theme [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/Weilbyte/PVEDiscordDark/master/PVEDiscordDark.sh ) install
+```
+
 Zabbix Setup
 
 ```bash
