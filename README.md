@@ -260,6 +260,13 @@ Proxmox Helper Scripts VE 7 Post Install [https://tteck.github.io/Proxmox/](http
 bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-install-v3.sh)"
 ```
 
+Change IP in
+
+```bash
+nano /etc/network/interfaces
+nano /etc/hosts
+```
+
 Proxmox Dark Theme [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
 
 ```bash
