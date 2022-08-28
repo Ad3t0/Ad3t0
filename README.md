@@ -177,6 +177,18 @@ sudo crontab -e
 sudo service cron reload
 ```
 
+Sysbench Benchmark
+
+```bash
+#Install if needed
+apt install sysbench
+#Run Benchmarks
+sysbench cpu run
+sysbench memory run
+sysbench fileio --file-test-mode=seqwr run
+sysbench fileio cleanup
+```
+
 Zabbix Setup
 
 ```bash
@@ -271,6 +283,15 @@ Proxmox Dark Theme [https://tteck.github.io/Proxmox/](https://tteck.github.io/Pr
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/Weilbyte/PVEDiscordDark/master/PVEDiscordDark.sh ) install
+```
+
+Remove Node From Cluster
+
+```bash
+#Set to new number of nodes
+pvecm expected 1
+#Remove node2
+pvecm delnode node2
 ```
 
 Zabbix Setup
