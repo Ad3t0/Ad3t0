@@ -269,7 +269,7 @@ sudo dscl . create /Users/admin IsHidden 1
 Proxmox Helper Scripts VE 7 Post Install [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
 
 ```bash
-bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-install-v3.sh)"
+bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-install.sh)"
 ```
 
 Change IP in
