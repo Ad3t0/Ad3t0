@@ -193,7 +193,7 @@ Zabbix Setup
 
 ```bash
 apt install zabbix-agent
-sed -i 's/Server=127.0.0.1/Server=192.168.250.10/' /etc/zabbix/zabbix_agentd.conf
+sed -i 's/Server=127.0.0.1/Server=192.168.1.1/' /etc/zabbix/zabbix_agentd.conf
 systemctl restart zabbix-agent
 systemctl enable zabbix-agent
 ```
