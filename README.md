@@ -215,8 +215,8 @@ tcptrack -i eno1
 Install QEMU Guest Agent
 
 ```bash
-apt-get install qemu-guest-agent
-systemctl start qemu-guest-agent
+sudo apt install qemu-guest-agent
+sudo systemctl start qemu-guest-agent
 ```
 
 Set Network Config
@@ -320,8 +320,8 @@ zfs set volsize=10G /dev/zvol/rpool/data/vm-<vmid>-disk-0
 Install QEMU Guest Agent
 
 ```bash
-apt-get install qemu-guest-agent
-systemctl start qemu-guest-agent
+sudo apt install qemu-guest-agent
+sudo systemctl start qemu-guest-agent
 ```
 
 Fix Windows 11/22 crashing on old hardware
