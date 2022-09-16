@@ -189,6 +189,14 @@ sysbench fileio --file-test-mode=seqwr run
 sysbench fileio cleanup
 ```
 
+Expand Disk Size
+
+```bash
+df -h
+sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+```
+
 Zabbix Setup
 
 ```bash
