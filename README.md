@@ -314,7 +314,7 @@ systemctl enable zabbix-agent
 ZFS Set Volsize
 
 ```bash
-zfs set volsize=10G /dev/zvol/rpool/data/vm-<vmid>-disk-0
+zfs set volsize=120G rpool/data/vm-<VM ID>-disk-<DISK ID>
 ```
 
 Install QEMU Guest Agent
