@@ -24,7 +24,6 @@ Write-Host "2 - Remove all Windows temp files, run drive cleanup and remove old 
 Write-Host "3 - Install all Windows updates and reboot automatically untill all are complete"
 Write-Host "4 - Auto reboot without warning (CAUTION)"
 Write-Host "5 - Windows Debloat Edits"
-Write-Host "6 - Custom WinX Menu"
 Write-Host "7 - Windows Update Reset (Must be used alone)"
 ""
 while ($functionsToRun -notlike "*1*" -and $functionsToRun -notlike "*2*" -and $functionsToRun -notlike "*3*" -and $functionsToRun -notlike "*4*" -and $functionsToRun -notlike "*5*" -and $functionsToRun -notlike "*6*" -and $functionsToRun -notlike "*7*") {
@@ -470,9 +469,6 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
     }
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type DWord -Value 1
-    Write-Host "Stopping and disabling Windows Search indexing service..."
-    Stop-Service "WSearch" -WarningAction SilentlyContinue
-    Set-Service "WSearch" -StartupType Disabled
     Write-Host "Hiding Taskbar Search icon / box..."
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 0
     Write-Host "Search tweaks completed"
@@ -490,11 +486,7 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Force | Out-Null
     }
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type DWord -Value 0
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
-        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
-    }
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Type DWord -Value 0
-    Stop-Process -Name "SearchApp" -Force -PassThru -ErrorAction SilentlyContinue
     Write-Host "Disabled Cortana"
     Write-Host "Disabling Background application access..."
     Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" |  ForEach-Object {
@@ -595,23 +587,6 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         }
     }
     Write-Host "Bloatware is removed."
-}
-if ($functionsToRun -like "*6*" -and $functionsToRun -notlike "*7*") {
-    $scriptRun = (Get-Item HKLM:\SOFTWARE\WinXMenu -ErrorAction SilentlyContinue).GetValue('Version')
-    if ($scriptRun -ne 2) {
-        Copy-Item -Path "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Destination "C:\Windows\System32\WindowsPowerShell\v1.0\powershellWinX.exe"
-        $userCheck = Get-ChildItem -LiteralPath "C:\Users" -Force -Directory
-        $domainName = Get-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters -Name "Domain"
-        foreach ($item in $userCheck.Name) {
-            if ($item -ne "Public" -and $item -ne "Default User" -and $item -ne "All Users") {
-                Remove-Item -Path "C:\Users\$($item)\AppData\Local\Microsoft\Windows\WinX\Group3" -Recurse -Force
-                Copy-Item -Path "\\$($domainName.Domain)\NETLOGON\WinXMenu\Group3" -Destination "C:\Users\$($item)\AppData\Local\Microsoft\Windows\WinX\" -Recurse -Force
-            }
-        }
-        New-Item -Path HKLM:\SOFTWARE\WinXMenu
-        New-ItemProperty -Path HKLM:\SOFTWARE\WinXMenu -Name Version
-        Set-ItemProperty -Path HKLM:\SOFTWARE\WinXMenu -Name Version -Value 2
-    }
 }
 if ($functionsToRun -like "*7*") {
     $arch = Get-WMIObject -Class Win32_Processor -ComputerName LocalHost | Select-Object AddressWidth
