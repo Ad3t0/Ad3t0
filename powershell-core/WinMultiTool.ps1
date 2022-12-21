@@ -486,8 +486,15 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type DWord -Value 0
     Write-Host "Disabling Background application access..."
     Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" |  ForEach-Object {
-        Set-ItemProperty -Path $_.PsPath -Name "Disabled" -Type DWord -Value 1
-        Set-ItemProperty -Path $_.PsPath -Name "DisabledByUser" -Type DWord -Value 1
+        if ($_.PsPath -notlike "*Search*") {
+            Set-ItemProperty -Path $_.PsPath -Name "Disabled" -Type DWord -Value 1
+            Set-ItemProperty -Path $_.PsPath -Name "DisabledByUser" -Type DWord -Value 1
+        }
+        else {
+            Write-Host "Not disabling background access for $($_.PsPath)"
+            Set-ItemProperty -Path $_.PsPath -Name "Disabled" -Type DWord -Value 0
+            Set-ItemProperty -Path $_.PsPath -Name "DisabledByUser" -Type DWord -Value 0
+        }
     }
     if (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications")) {
         New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Force | Out-Null
