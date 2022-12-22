@@ -499,8 +499,8 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
     if (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications")) {
         New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Force | Out-Null
     }
-    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Name "GlobalUserDisabled" -Type DWord -Value 1
-    Write-Host "Enabling BackgroundAppGlobalToggle (breaks start menu search if disabled)"
+    Write-Host "Enabling background app global toggle (breaks start menu search if disabled)"
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Name "GlobalUserDisabled" -Type DWord -Value 0
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "BackgroundAppGlobalToggle" -Type DWord -Value 1
     Write-Host "Disabled bloatware background application access"
     New-Item -Path "HKCU:\SOFTWARE\Classes\CLSID" -Force | Out-Null
