@@ -484,7 +484,7 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Force | Out-Null
     }
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type DWord -Value 0
-    Write-Host "Disabling Background application access..."
+    Write-Host "Disabling background application access..."
     Get-ChildItem -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" |  ForEach-Object {
         if ($_.PsPath -notlike "*Search*") {
             Set-ItemProperty -Path $_.PsPath -Name "Disabled" -Type DWord -Value 1
@@ -500,7 +500,9 @@ if ($functionsToRun -like "*5*" -and $functionsToRun -notlike "*7*") {
         New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Force | Out-Null
     }
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" -Name "GlobalUserDisabled" -Type DWord -Value 1
-    Write-Host "Disabled Background application access"
+    Write-Host "Enabling BackgroundAppGlobalToggle (breaks start menu search if disabled)"
+    Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "BackgroundAppGlobalToggle" -Type DWord -Value 1
+    Write-Host "Disabled bloatware background application access"
     New-Item -Path "HKCU:\SOFTWARE\Classes\CLSID" -Force | Out-Null
     New-Item -Path "HKCU:\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" -Force | Out-Null
     New-Item -Path "HKCU:\SOFTWARE\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" -Force -Value "" | Out-Null
