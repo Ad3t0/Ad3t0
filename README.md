@@ -82,6 +82,12 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 <details>
 <summary markdown="span"> Bash Scripts</summary>
 
+Script for Setting up Netplan
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/netplanSetup.sh | bash
+```
+
 </details>
 
 <details>
