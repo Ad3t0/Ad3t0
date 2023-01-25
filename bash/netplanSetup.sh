@@ -5,22 +5,29 @@ DEFAULT_ADAPTER=$(ip route | grep default | awk '{print $5}')
 
 # Ask for the IP address
 IPADDR=$(whiptail --title "IP Address" --inputbox "Enter the IP address:" 10 60 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit
 
 # Ask for the netmask
 NETMASK=$(whiptail --title "Netmask" --inputbox "Enter the netmask:" 10 60 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit
 
 # Ask for the gateway
 GATEWAY=$(whiptail --title "Default Gateway" --inputbox "Enter the default gateway:" 10 60 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit
 
 # Ask for the DNS servers
 DNS1=$(whiptail --title "DNS Server 1" --inputbox "Enter the primary DNS server:" 10 60 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit
 DNS2=$(whiptail --title "DNS Server 2" --inputbox "Enter the secondary DNS server:" 10 60 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit
 
 # Ask for the Search domain
 SEARCH_DOMAIN=$(whiptail --title "Search Domain" --inputbox "Enter the search domain:" 10 60 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit
 
 #Ask for the hostname
 HOSTNAME=$(whiptail --title "Hostname" --inputbox "Enter the hostname:" 10 60 3>&1 1>&2 2>&3)
+[ $? -ne 0 ] && exit
 
 # Create the netplan config file
 sudo bash -c "echo 'network:
