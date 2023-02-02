@@ -26,58 +26,68 @@ Function Hide-PowerShellWindow() {
 	Catch {
 	}
 }
-if (!(Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
-    $url = "https://www.7-zip.org/a/7z2107-x64.exe"
-    $output = "$($env:TEMP)\7z2107-x64.exe"
-    Invoke-WebRequest -Uri $url -OutFile $output
-    ."$($env:TEMP)\7z2107-x64" /S
-    Wait-Process -Name 7z2107-x64
-}
-$url = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_15726-20202.exe"
-$output = "$($env:TEMP)\officedeploymenttool_15726-20202.exe"
-Invoke-WebRequest -Uri $url -OutFile $output
-."C:\Program Files\7-Zip\7z.exe" x "$($env:TEMP)\officedeploymenttool_15726-20202.exe" -o"$($env:TEMP)\officeInstall" -aoa
+Install-Script -Name Install-Office365Suite -Confirm:$False -Force
 $configurationO365BusinessRetail = @'
-  <Configuration>
-	<Add OfficeClientEdition="64" Channel="Current">
-	  <Product ID="O365BusinessRetail">
-		<Language ID="en-us" />
-	  </Product>
-	</Add>
-  </Configuration>
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="Current">
+    <Product ID="O365BusinessRetail">
+      <Language ID="MatchOS" />
+    </Product>
+  </Add>
+  <Property Name="PinIconsToTaskbar" Value="FALSE" />
+  <Property Name="SharedComputerLicensing" Value="0" />
+  <Display Level="Full" AcceptEULA="TRUE" />
+  <Updates Enabled="TRUE" />
+  <RemoveMSI />
+</Configuration>
 '@
 New-Item "$($env:TEMP)\officeInstall\configuration-O365BusinessRetail-x64.xml" -Force -ErrorAction SilentlyContinue
 Set-Content "$($env:TEMP)\officeInstall\configuration-O365BusinessRetail-x64.xml" $configurationO365BusinessRetail -ErrorAction SilentlyContinue
 $configurationO365ProPlusRetail = @'
-  <Configuration>
-	<Add OfficeClientEdition="64" Channel="Current">
-	  <Product ID="O365ProPlusRetail">
-		<Language ID="en-us" />
-	  </Product>
-	</Add>
-  </Configuration>
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="Current">
+    <Product ID="O365ProPlusRetail">
+      <Language ID="MatchOS" />
+    </Product>
+  </Add>
+  <Property Name="PinIconsToTaskbar" Value="FALSE" />
+  <Property Name="SharedComputerLicensing" Value="0" />
+  <Display Level="Full" AcceptEULA="TRUE" />
+  <Updates Enabled="TRUE" />
+  <RemoveMSI />
+</Configuration>
 '@
 New-Item "$($env:TEMP)\officeInstall\configuration-O365ProPlusRetail-x64.xml" -Force -ErrorAction SilentlyContinue
 Set-Content "$($env:TEMP)\officeInstall\configuration-O365ProPlusRetail-x64.xml" $configurationO365ProPlusRetail -ErrorAction SilentlyContinue
 $configurationProjectProRetail = @'
-  <Configuration>
-	<Add OfficeClientEdition="64" Channel="Current">
-	  <Product ID="ProjectProRetail">
-		<Language ID="en-us" />
-	  </Product>
-	</Add>
-  </Configuration>
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="Current">
+    <Product ID="ProjectProRetail">
+      <Language ID="MatchOS" />
+    </Product>
+  </Add>
+  <Property Name="PinIconsToTaskbar" Value="FALSE" />
+  <Property Name="SharedComputerLicensing" Value="0" />
+  <Display Level="Full" AcceptEULA="TRUE" />
+  <Updates Enabled="TRUE" />
+  <RemoveMSI />
+</Configuration>
 '@
 New-Item "$($env:TEMP)\officeInstall\configuration-ProjectProRetail-x64.xml" -Force -ErrorAction SilentlyContinue
 Set-Content "$($env:TEMP)\officeInstall\configuration-ProjectProRetail-x64.xml" $configurationProjectProRetail -ErrorAction SilentlyContinue
 $configurationVisioProRetail = @'
-  <Configuration>
-	<Add OfficeClientEdition="64" Channel="Current">
-	  <Product ID="VisioProRetail">
-		<Language ID="en-us" />
-	  </Product>
-	</Add>
-  </Configuration>
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="Current">
+    <Product ID="VisioProRetail">
+      <Language ID="MatchOS" />
+    </Product>
+  </Add>
+  <Property Name="PinIconsToTaskbar" Value="FALSE" />
+  <Property Name="SharedComputerLicensing" Value="0" />
+  <Display Level="Full" AcceptEULA="TRUE" />
+  <Updates Enabled="TRUE" />
+  <RemoveMSI />
+</Configuration>
 '@
 New-Item "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" -Force -ErrorAction SilentlyContinue
 Set-Content "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" $configurationVisioProRetail -ErrorAction SilentlyContinue
@@ -93,14 +103,14 @@ while ($confirmVersion -ne "1" -and $confirmVersion -ne "2" -and $confirmVersion
 }
 [Void]$(Hide-PowerShellWindow)
 if ($confirmVersion -eq "1") {
-	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-O365BusinessRetail-x64.xml"
+	."$env:ProgramFiles\WindowsPowerShell\Scripts\Install-Office365Suite.ps1" -ConfigurationXMLFile "$($env:TEMP)\officeInstall\configuration-O365BusinessRetail-x64.xml" -CleanUpInstallFiles
 }
 if ($confirmVersion -eq "2") {
-	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-O365ProPlusRetail-x64.xml"
+	."$env:ProgramFiles\WindowsPowerShell\Scripts\Install-Office365Suite.ps1" -ConfigurationXMLFile "$($env:TEMP)\officeInstall\configuration-O365ProPlusRetail-x64.xml" -CleanUpInstallFiles
 }
 if ($confirmVersion -eq "3") {
-	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-ProjectProRetail-x64.xml"
+	."$env:ProgramFiles\WindowsPowerShell\Scripts\Install-Office365Suite.ps1" -ConfigurationXMLFile "$($env:TEMP)\officeInstall\configuration-ProjectProRetail-x64.xml" -CleanUpInstallFiles
 }
 if ($confirmVersion -eq "4") {
-	."$($env:TEMP)\officeInstall\setup.exe" /configure "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml"
+	."$env:ProgramFiles\WindowsPowerShell\Scripts\Install-Office365Suite.ps1" -ConfigurationXMLFile "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" -CleanUpInstallFiles
 }
