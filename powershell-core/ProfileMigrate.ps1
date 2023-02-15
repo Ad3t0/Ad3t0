@@ -118,11 +118,11 @@ $refName = ((Get-WMIObject -ClassName Win32_ComputerSystem).Username).Split('\')
 $destinationPath = "$($migratePath)\$($refName)\Documents"
 Copy-ItemWithProgress -Path $documentsPath -Destination $destinationPath
 $destinationPath = "$($migratePath)\$($refName)\Desktop"
-#Copy-WithProgress -SourcePath $desktopPath -DestinationPath $destinationPath -ActivityName "Copying Desktop"
+Copy-ItemWithProgress -Path $desktopPath -Destination $destinationPath
 $destinationPath = "$($migratePath)\$($refName)\Pictures"
-#Copy-WithProgress -SourcePath $picturesPath -DestinationPath $destinationPath -ActivityName "Copying Pictures"
+Copy-ItemWithProgress -Path $picturesPath -Destination $destinationPath
 $destinationPath = "$($migratePath)\$($refName)\Downloads"
-#Copy-WithProgress -SourcePath $downloadsPath -DestinationPath $destinationPath -ActivityName "Copying Downloads"
+Copy-ItemWithProgress -Path $downloadsPath -Destination $destinationPath
 if (Test-Path -Path "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks") {
 	$ChromeBookmarksPath = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks"
 	$ExportFile = "$($migratePath)\$($refName)\chrome_bookmarks.html"
