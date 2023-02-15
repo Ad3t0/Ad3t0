@@ -88,6 +88,12 @@ Script for Setting up Netplan
 curl -sSL https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/netplanSetup.sh | bash
 ```
 
+Script for Setting up SSH PubKeyAuth and Root Login
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/copysshid.sh | bash
+```
+
 </details>
 
 <details>
