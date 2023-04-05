@@ -58,7 +58,7 @@ if ($functionsToRun -like "*1*" -and $functionsToRun -notlike "*7*") {
         choco install revo-uninstaller googlechrome vcredist-all dotnetfx directx notepadplusplus 7zip autoruns
     }
     else {
-        choco install revo-uninstaller googlechrome vcredist-all dotnetfx directx dotnet3.5 javaruntime 7zip adobereader notepadplusplus
+        choco install revo-uninstaller googlechrome vcredist-all dotnetfx directx dotnet3.5 7zip adobereader notepadplusplus
     }
 }
 #################################################
