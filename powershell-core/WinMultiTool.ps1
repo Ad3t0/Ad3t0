@@ -92,6 +92,7 @@ if ($functionsToRun -like "*3*" -and $functionsToRun -notlike "*7*") {
 $timeScriptRun = Get-Date -UFormat '+%Y-%m-%dT%H-%M-%S'
 $LogFileName = "C:\ProgramData\WinUpdate\$($timeScriptRun)-transcript.log"
 Start-Transcript -Path $LogFileName
+$numIntExplorer = 0
 while ($numIntExplorer -eq 0) {
     $numIntExplorer = (Get-Process -ea SilentlyContinue "explorer").Count
     Start-Sleep 1

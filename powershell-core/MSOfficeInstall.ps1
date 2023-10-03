@@ -91,15 +91,28 @@ $configurationVisioProRetail = @'
 '@
 New-Item "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" -Force -ErrorAction SilentlyContinue
 Set-Content "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" $configurationVisioProRetail -ErrorAction SilentlyContinue
+$configurationUninstall = @'
+<Configuration>
+    <Remove All="TRUE">
+        <Product ID="O365BusinessRetail">
+            <Language ID="en-us" />
+        </Product>
+    </Remove>
+    <Display Level="None" AcceptEULA="TRUE" />
+</Configuration>
+'@
+New-Item "$($env:TEMP)\officeInstall\configuration-Uninstall.xml" -Force -ErrorAction SilentlyContinue
+Set-Content "$($env:TEMP)\officeInstall\configuration-Uninstall.xml" $configurationUninstall -ErrorAction SilentlyContinue
 Clear-Host
 ""
 Write-Host "1 - O365 Business Retail"
 Write-Host "2 - O365 ProPlus Retail"
 Write-Host "3 - Project Pro Retail"
 Write-Host "4 - Visio Pro Retail"
+Write-Host "5 - Uninstall"
 ""
-while ($confirmVersion -ne "1" -and $confirmVersion -ne "2" -and $confirmVersion -ne "3" -and $confirmVersion -ne "4") {
-	$confirmVersion = Read-Host "Select Office edition to install. [1/2/3/4]"
+while ($confirmVersion -ne "1" -and $confirmVersion -ne "2" -and $confirmVersion -ne "3" -and $confirmVersion -ne "4" -and $confirmVersion -ne "5") {
+	$confirmVersion = Read-Host "Select Office edition to install. [1/2/3/4/5]"
 }
 [Void]$(Hide-PowerShellWindow)
 if ($confirmVersion -eq "1") {
@@ -113,4 +126,7 @@ if ($confirmVersion -eq "3") {
 }
 if ($confirmVersion -eq "4") {
 	."$env:ProgramFiles\WindowsPowerShell\Scripts\Install-Office365Suite.ps1" -ConfigurationXMLFile "$($env:TEMP)\officeInstall\configuration-VisioProRetail-x64.xml" -CleanUpInstallFiles
+}
+if ($confirmVersion -eq "5") {
+	."$env:ProgramFiles\WindowsPowerShell\Scripts\Install-Office365Suite.ps1" -ConfigurationXMLFile "$($env:TEMP)\officeInstall\configuration-Uninstall.xml" -CleanUpInstallFiles
 }
