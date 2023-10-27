@@ -292,6 +292,12 @@ Proxmox Helper Scripts VE 7 Post Install [https://tteck.github.io/Proxmox/](http
 bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-pve-install.sh)"
 ```
 
+Proxmox Script VE 8 Upgrade [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
+
+```bash
+bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/pve8-upgrade.sh)"
+```
+
 Change IP in
 
 ```bash
