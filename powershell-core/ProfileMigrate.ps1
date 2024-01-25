@@ -1,7 +1,17 @@
-$documentsPath = [Environment]::GetFolderPath("MyDocuments")
-$desktopPath = [Environment]::GetFolderPath("Desktop")
-$picturesPath = [Environment]::GetFolderPath("MyPictures")
-$downloadsPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
+# Capture the output of the 'query user' command and filter to find the current active session
+$currentUser = query user | Select-String -Pattern "^>" -CaseSensitive
+
+# Use a regular expression to remove the '>' character, leading spaces, and trailing session information
+$username = $currentUser -replace '^>\s*', '' -replace '\s+.*$', ''
+
+# Output the currently logged-in user
+Write-Output "Currently logged-in user: $username"
+
+$documentsPath = "C:\Users\$($username)\Documents"
+$desktopPath = "C:\Users\$($username)\Desktop"
+$picturesPath = "C:\Users\$($username)\Pictures"
+
+# $downloadsPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 function Get-Folder($initialDirectory = "") {
 	[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
 	$folderName = New-Object System.Windows.Forms.FolderBrowserDialog
@@ -99,7 +109,7 @@ Function Copy-ItemWithProgress {
 		}
 		finally {
 			$RoboRun.WaitForExit()
-			write-progress -Activity "$CurrentFile" -ParentID $ProgressID -Id $($ProgressID + 100) -Completed
+			Write-progress -Activity "$CurrentFile" -ParentID $ProgressID -Id $($ProgressID + 100) -Completed
 			Write-Progress -Activity "ROBOCOPY $Source to Destination" -Id $ProgressID -ParentId $ParentProgressID -Completed
 			# Parse full RoboCopy pass results, and cleanup
             (get-content $RoboLog)[-11..-2] | out-string | Write-Verbose
@@ -113,18 +123,23 @@ Function Copy-ItemWithProgress {
 		remove-item $ScanLog
 	}
 }
-$migratePath = Get-Folder
-$refName = ((Get-WMIObject -ClassName Win32_ComputerSystem).Username).Split('\')[1]
-$destinationPath = "$($migratePath)\$($refName)\Documents"
+while ($null -eq $migratePath) {
+	$migratePath = Get-Folder
+	if ($null -eq $migratePath) {
+		Write-Host "No path was selected. Please select a path."
+		Start-Sleep 5
+	}
+}
+$destinationPath = "$($migratePath)\$($username)\Documents"
 Copy-ItemWithProgress -Path $documentsPath -Destination $destinationPath
-$destinationPath = "$($migratePath)\$($refName)\Desktop"
+$destinationPath = "$($migratePath)\$($username)\Desktop"
 Copy-ItemWithProgress -Path $desktopPath -Destination $destinationPath
-$destinationPath = "$($migratePath)\$($refName)\Pictures"
+$destinationPath = "$($migratePath)\$($username)\Pictures"
 Copy-ItemWithProgress -Path $picturesPath -Destination $destinationPath
-$destinationPath = "$($migratePath)\$($refName)\Downloads"
-Copy-ItemWithProgress -Path $downloadsPath -Destination $destinationPath
-if (Test-Path -Path "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks") {
-	$ChromeBookmarksPath = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Bookmarks"
-	$ExportFile = "$($migratePath)\$($refName)\chrome_bookmarks.html"
+# $destinationPath = "$($migratePath)\$($username)\Downloads"
+# Copy-ItemWithProgress -Path $downloadsPath -Destination $destinationPath
+if (Test-Path -Path "C:\Users\$($username)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks") {
+	$ChromeBookmarksPath = "C:\Users\$($username)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks"
+	$ExportFile = "$($migratePath)\$($username)\chrome_bookmarks.html"
 	Export-Clixml -InputObject (Get-Content $ChromeBookmarksPath | ConvertFrom-Json) -Path $ExportFile
 }
