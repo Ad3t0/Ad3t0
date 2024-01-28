@@ -5,14 +5,6 @@
 <details open="false">
 <summary markdown="span"> PowerShell Scripts</summary>
 
-## WinMultiTool
-
-Windows multi tool for updates, temp file cleanup, package installs, Windows 10/11 debloat, Windows update reset
-
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/WinMultiTool.ps1'))
-```
-
 ## MSOfficeInstall
 
 Installs MS Office
@@ -53,28 +45,12 @@ Google search with system model for drivers in default browser
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DriverSearch.ps1'))
 ```
 
-## ProductKeyFix
-
-Removes product key and then installs hardware product key
-
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ProductKeyFix.ps1'))
-```
-
 ## AutoLogin
 
 Setup Windows auto login and display current
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoLogin.ps1'))
-```
-
-## OpenVPN_Setup
-
-Private OpenVPN with config
-
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/OpenVPN_Setup.ps1'))
 ```
 
 </details>
@@ -209,13 +185,32 @@ sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
 sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
 ```
 
-Zabbix Setup
+Ubuntu 22.04 Zabbix Agent Install
 
 ```bash
-apt install zabbix-agent
-sed -i 's/Server=127.0.0.1/Server=192.168.1.1/' /etc/zabbix/zabbix_agentd.conf
-systemctl restart zabbix-agent
-systemctl enable zabbix-agent
+sudo apt update
+sudo apt upgrade -y
+wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu22.04_all.deb
+sudo dpkg -i zabbix-release_6.0-4+ubuntu22.04_all.deb
+sudo apt update
+sudo apt install zabbix-agent2 -y
+sudo sed -i 's/Server=127.0.0.1/Server=0.0.0.0\/0/' /etc/zabbix/zabbix_agent2.conf
+sudo systemctl enable zabbix-agent2
+sudo systemctl restart zabbix-agent2
+```
+
+Ubuntu 20.04 Zabbix Agent Install
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu20.04_all.deb
+sudo dpkg -i zabbix-release_6.0-4+ubuntu20.04_all.deb
+sudo apt update
+sudo apt install zabbix-agent2 -y
+sudo sed -i 's/Server=127.0.0.1/Server=0.0.0.0\/0/' /etc/zabbix/zabbix_agent2.conf
+sudo systemctl enable zabbix-agent2
+sudo systemctl restart zabbix-agent2
 ```
 
 Montor network interface bandwidth
@@ -343,13 +338,6 @@ Install QEMU Guest Agent
 ```bash
 sudo apt install qemu-guest-agent
 sudo systemctl start qemu-guest-agent
-```
-
-Fix Windows 11/22 crashing on old hardware
-
-```bash
-sed -i 's/boot=zfs/boot=zfs kvm.tdp_mmu=N/' /etc/kernel/cmdline
-proxmox-boot-tool refresh
 ```
 
 Set dedicated network interface for replication
