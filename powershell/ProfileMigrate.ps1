@@ -57,9 +57,26 @@ Write-Host "Using the destination path '$destinationPath'." -ForegroundColor Gre
 $username = $selectedProfile.LocalPath -split "\\"
 $username = $username[2]
 
-$documentsPath = "$($selectedProfile.LocalPath)\Documents"
-$desktopPath = "$($selectedProfile.LocalPath)\Desktop"
-$picturesPath = "$($selectedProfile.LocalPath)\Pictures"
+if (Test-Path -Path "$($selectedProfile.LocalPath)\OneDrive*\Documents") {
+	$documentsPath = "$($selectedProfile.LocalPath)\OneDrive*\Documents"
+}
+else {
+	$documentsPath = "$($selectedProfile.LocalPath)\Documents"
+}
+
+if (Test-Path -Path "$($selectedProfile.LocalPath)\OneDrive*\Desktop") {
+	$desktopPath = "$($selectedProfile.LocalPath)\OneDrive*\Desktop"
+}
+else {
+	$desktopPath = "$($selectedProfile.LocalPath)\Desktop"
+}
+
+if (Test-Path -Path "$($selectedProfile.LocalPath)\OneDrive*\Pictures") {
+	$picturesPath = "$($selectedProfile.LocalPath)\OneDrive*\Pictures"
+}
+else {
+	$picturesPath = "$($selectedProfile.LocalPath)\Pictures"
+}
 
 New-Item -ItemType Directory -Path "$($destinationPath)$($username)\Documents" -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path "$($destinationPath)$($username)\Desktop" -ErrorAction SilentlyContinue
