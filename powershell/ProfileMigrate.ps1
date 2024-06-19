@@ -78,16 +78,16 @@ else {
 	$picturesPath = "$($selectedProfile.LocalPath)\Pictures"
 }
 
-New-Item -ItemType Directory -Path "$($destinationPath)$($username)\Documents" -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Path "$($destinationPath)$($username)\Desktop" -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Path "$($destinationPath)$($username)\Pictures" -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Documents" -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Desktop" -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Pictures" -ErrorAction SilentlyContinue
 
-robocopy $documentsPath "$($destinationPath)$($username)\Documents" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
-robocopy $desktopPath "$($destinationPath)$($username)\Desktop" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
-robocopy $picturesPath "$($destinationPath)$($username)\Pictures" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
+robocopy $documentsPath "$($destinationPath)\$($username)\Documents" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
+robocopy $desktopPath "$($destinationPath)\$($username)\Desktop" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
+robocopy $picturesPath "$($destinationPath)\$($username)\Pictures" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
 
 if (Test-Path -Path "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks") {
 	$ChromeBookmarksPath = "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks"
-	$ExportFile = "$($destinationPath)$($username)\chrome_bookmarks.html"
+	$ExportFile = "$($destinationPath)\$($username)\chrome_bookmarks.html"
 	Export-Clixml -InputObject (Get-Content $ChromeBookmarksPath | ConvertFrom-Json) -Path $ExportFile
 }
