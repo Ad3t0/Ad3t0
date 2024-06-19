@@ -9,60 +9,60 @@
 
 Installs MS Office
 
-[MSOfficeInstall.ps1](https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/MSOfficeInstall.ps1)
+[MSOfficeInstall.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/MSOfficeInstall.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/MSOfficeInstall.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/MSOfficeInstall.ps1'))
 ```
 
 ## ProfileMigrate
 
 Copies data from C:\Users\CurrentUser\Documents, Desktop, Pictures to selected path
 
-[ProfileMigrate.ps1](https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ProfileMigrate.ps1)
+[ProfileMigrate.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ProfileMigrate.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ProfileMigrate.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ProfileMigrate.ps1'))
 ```
 
 ## ChocoInstall
 
 Installs [https://chocolatey.org/](https://chocolatey.org/)
 
-[ChocoInstall.ps1](https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ChocoInstall.ps1)
+[ChocoInstall.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ChocoInstall.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/ChocoInstall.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ChocoInstall.ps1'))
 ```
 
 ## LogonStartUpTask
 
 PowerShell logon or startup task creator
 
-[LogonStartUpTask.ps1](https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/LogonStartUpTask.ps1)
+[LogonStartUpTask.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/LogonStartUpTask.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/LogonStartUpTask.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/LogonStartUpTask.ps1'))
 ```
 
 ## DriverSearch
 
 Google search with system model for drivers in default browser
 
-[DriverSearch.ps1](https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DriverSearch.ps1)
+[DriverSearch.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/DriverSearch.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/DriverSearch.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/DriverSearch.ps1'))
 ```
 
 ## AutoLogin
 
 Setup Windows auto login and display current
 
-[AutoLogin.ps1](https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoLogin.ps1)
+[AutoLogin.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/AutoLogin.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/windows/master/powershell-core/AutoLogin.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/AutoLogin.ps1'))
 ```
 
 </details>
