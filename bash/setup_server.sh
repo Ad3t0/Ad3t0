@@ -21,9 +21,6 @@ sed -i "s/127.0.1.1.*/127.0.1.1 $NEW_HOSTNAME/" /etc/hosts
 # Update the IP address in Netplan config
 sed -i '/addresses:/!b;n;s/[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+/'"$NEW_IP"'/' /etc/netplan/00-installer-config.yaml
 
-# Apply Netplan configuration
-netplan apply
-
 # Update and upgrade packages
 apt update && apt upgrade -y
 
