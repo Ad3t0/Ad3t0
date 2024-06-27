@@ -59,18 +59,19 @@ $username = $username[2]
 
 # Get all items in the base path that start with 'OneDrive' but are not exactly named 'OneDrive'
 $targetDirectory = Get-ChildItem -Path $($selectedProfile.LocalPath) -Directory | Where-Object {
-    $_.Name -like "OneDrive*" -and $_.Name -ne "OneDrive"
+	$_.Name -like "OneDrive*" -and $_.Name -ne "OneDrive"
 }
 
 # Check if a directory was found and store the full path
 if ($targetDirectory) {
-    $exactPath = $targetDirectory.FullName
-    Write-Output "OneDrive profile syncing detected using path: $exactPath"
+	$exactPath = $targetDirectory.FullName
+	Write-Output "OneDrive profile syncing detected using path: $exactPath"
 	$documentsPath = "$($exactPath)\Documents"
 	$desktopPath = "$($exactPath)\Desktop"
 	$picturesPath = "$($exactPath)\Pictures"
 
-}else {
+}
+else {
 	$documentsPath = "$($selectedProfile.LocalPath)\Documents"
 	$desktopPath = "$($selectedProfile.LocalPath)\Desktop"
 	$picturesPath = "$($selectedProfile.LocalPath)\Pictures"

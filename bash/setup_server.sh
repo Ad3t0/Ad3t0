@@ -19,7 +19,7 @@ hostnamectl set-hostname $NEW_HOSTNAME
 sed -i "s/127.0.1.1.*/127.0.1.1 $NEW_HOSTNAME/" /etc/hosts
 
 # Update the IP address in Netplan config
-sed -i "s/192.168.102.40/$NEW_IP/" /etc/netplan/00-installer-config.yaml
+sed -i 's/\(addresses:\n *- \)[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+/\1'"$NEW_IP"'/' /etc/netplan/00-installer-config.yaml
 
 # Apply Netplan configuration
 netplan apply
