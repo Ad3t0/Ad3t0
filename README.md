@@ -164,6 +164,12 @@ Export-PfxCertificate -cert $path -FilePath c:\cert.pfx -Password $pwd
 <details>
 <summary markdown="span"> Ubuntu/Debian Notes</summary>
 
+Template Setup Script
+
+```bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/setup_server.sh)"
+```
+
 Set Timezone
 
 ```bash
