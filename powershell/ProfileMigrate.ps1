@@ -88,5 +88,5 @@ robocopy $picturesPath "$($destinationPath)\$($username)\Pictures" /S /DCOPY:DA 
 if (Test-Path -Path "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks") {
 	$ChromeBookmarksPath = "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks"
 	$ExportFile = "$($destinationPath)\$($username)\chrome_bookmarks.html"
-	Export-Clixml -InputObject (Get-Content $ChromeBookmarksPath | ConvertFrom-Json) -Path $ExportFile
+	Copy-Item -Path $ChromeBookmarksPath -Destination $ExportFile
 }
