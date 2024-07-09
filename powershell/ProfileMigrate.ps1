@@ -66,16 +66,16 @@ $targetDirectory = Get-ChildItem -Path $($selectedProfile.LocalPath) -Directory 
 if ($targetDirectory) {
 	$exactPath = $targetDirectory.FullName
 	Write-Output "OneDrive profile syncing detected using path: $exactPath"
-	$documentsPath = "$($exactPath)\Documents"
-	$desktopPath = "$($exactPath)\Desktop"
-	$picturesPath = "$($exactPath)\Pictures"
+
+	New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\OneDrive" -ErrorAction SilentlyContinue
+
+	robocopy $exactPath "$($destinationPath)\$($username)\OneDrive" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
 
 }
-else {
-	$documentsPath = "$($selectedProfile.LocalPath)\Documents"
-	$desktopPath = "$($selectedProfile.LocalPath)\Desktop"
-	$picturesPath = "$($selectedProfile.LocalPath)\Pictures"
-}
+
+$documentsPath = "$($selectedProfile.LocalPath)\Documents"
+$desktopPath = "$($selectedProfile.LocalPath)\Desktop"
+$picturesPath = "$($selectedProfile.LocalPath)\Pictures"
 
 New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Documents" -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Desktop" -ErrorAction SilentlyContinue
