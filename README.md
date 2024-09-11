@@ -170,6 +170,12 @@ Template Setup Script
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/setup_server.sh)"
 ```
 
+Zabbix Agent 2 Install Script
+
+```bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/zabbixAgent2_install.sh)"
+```
+
 Set Timezone
 
 ```bash
