@@ -16,7 +16,13 @@ sudo apt update
 sudo apt install zabbix-agent2 -y
 
 # Modify Zabbix Agent 2 configuration
-sudo sed -i 's/Server=127.0.0.1/Server=0.0.0.0\/0/' /etc/zabbix/zabbix_agent2.conf
+# This will replace any line starting with 'Server=' with 'Server=0.0.0.0/0'
+sudo sed -i '/^Server=/c\Server=0.0.0.0/0' /etc/zabbix/zabbix_agent2.conf
+
+# If the Server line doesn't exist, add it
+if ! grep -q "^Server=" /etc/zabbix/zabbix_agent2.conf; then
+    echo "Server=0.0.0.0/0" | sudo tee -a /etc/zabbix/zabbix_agent2.conf
+fi
 
 # Enable Zabbix Agent 2 service
 sudo systemctl enable zabbix-agent2
