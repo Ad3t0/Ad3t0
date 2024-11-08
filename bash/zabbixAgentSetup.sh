@@ -21,8 +21,15 @@ fi
 print_color "\n=== Configuration Setup ===" "info"
 
 # Prompt for Zabbix Host
-read -p "Enter Zabbix Host IP [default: 192.168.3.246]: " input_host
-ZABBIX_HOST=${input_host:-"192.168.3.246"}
+while true; do
+    read -p "Enter Zabbix Host IP: " input_host
+    if [[ -n "$input_host" ]]; then
+        ZABBIX_HOST=$input_host
+        break
+    else
+        print_color "IP address cannot be empty. Please enter a valid IP address." "error"
+    fi
+done
 
 # Prompt for Zabbix Port
 default_port="10051"
