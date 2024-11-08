@@ -65,21 +65,37 @@ Setup Windows auto login and display current
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/AutoLogin.ps1'))
 ```
 
+## ZabbixAgentSetup
+
+Setup Windows Zabbix agent with PSK auth
+
+[ZabbixAgentSetup.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ZabbixAgentSetup.ps1)
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ZabbixAgentSetup.ps1'))
+```
+
 </details>
 
 <details>
 <summary markdown="span"> Bash Scripts</summary>
 
-Script for Setting up Netplan
+Ubuntu template setup script
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/netplanSetup.sh | bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/setup_server.sh)"
 ```
 
-Script for Setting up SSH PubKeyAuth and Root Login
+Zabbix Agent 2 passive and active with PSK auth setup script
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/copysshid.sh | bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/zabbixAgentSetup.sh)"
+```
+
+Automatically expands disk and LVM partitions to utilize all available space on Ubuntu systems
+
+```bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/autoExpandLVM.sh)"
 ```
 
 </details>
@@ -163,18 +179,6 @@ Export-PfxCertificate -cert $path -FilePath c:\cert.pfx -Password $pwd
 
 <details>
 <summary markdown="span"> Ubuntu/Debian Notes</summary>
-
-Template Setup Script
-
-```bash
-sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/setup_server.sh)"
-```
-
-Zabbix Agent 2 Install Script
-
-```bash
-sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/zabbixAgent2_install.sh)"
-```
 
 Set Timezone
 
