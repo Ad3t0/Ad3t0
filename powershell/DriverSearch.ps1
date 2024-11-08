@@ -1,7 +1,8 @@
-$systemmodel = wmic computersystem get model /VALUE
-$systemmodel = $systemmodel -replace ('Model=', '')
-$systemmodel = $systemmodel + "drivers"
-$systemmodel = [uri]::EscapeDataString($systemmodel)
-$systemmodel = $systemmodel -replace ('%20%20%20%20%20%20%20', '')
-$URL = "https://www.google.com/search?q=$($systemmodel)"
-Start-Process $URL
+# Get system model and format for URL
+$systemModel = (Get-WmiObject -Class Win32_ComputerSystem).Model
+$searchQuery = "$($systemModel) drivers"
+$encodedQuery = [uri]::EscapeDataString($searchQuery.Trim())
+
+# Construct and open Google search URL
+$googleUrl = "https://www.google.com/search?q=$($encodedQuery)"
+Start-Process $googleUrl
