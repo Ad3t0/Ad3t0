@@ -1,6 +1,7 @@
 # Scripts and Notes
 
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<script src="assets/js/copy-button.js"></script>
 
 <details open="false">
 <summary markdown="span"> PowerShell Scripts</summary>
