@@ -77,7 +77,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 </details>
 
-<details>
+<details open="false">
 <summary markdown="span"> Bash Scripts</summary>
 
 Ubuntu template setup script
