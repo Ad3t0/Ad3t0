@@ -89,6 +89,7 @@ $acl.AddAccessRule($rule)
 Set-Acl "$PSK_DIR\zabbix.psk" $acl
 
 # Restart Zabbix Agent 2 service
+Start-Sleep -Seconds 15
 Restart-Service "Zabbix Agent 2" -Force
 Start-Sleep -Seconds 2
 
