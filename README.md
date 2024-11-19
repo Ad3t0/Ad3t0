@@ -99,6 +99,12 @@ Automatically expands disk and LVM partitions to utilize all available space on 
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/autoExpandLVM.sh)"
 ```
 
+Docker install script
+
+```bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/installDocker.sh)"
+```
+
 </details>
 
 <details>

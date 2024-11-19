@@ -15,6 +15,22 @@ if ($confirm -notmatch '^[Yy]$') {
     exit
 }
 
+# Check for and remove old Zabbix Agent
+$oldAgent = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*Zabbix Agent*" -and $_.Name -notlike "*Zabbix Agent 2*" }
+if ($oldAgent) {
+    Write-Host "`nFound old Zabbix Agent installation. Removing..." -ForegroundColor Yellow
+
+    # Stop the old agent service if it exists
+    if (Get-Service "Zabbix Agent" -ErrorAction SilentlyContinue) {
+        Stop-Service "Zabbix Agent" -Force
+    }
+
+    # Uninstall the old agent
+    $oldAgent.Uninstall()
+
+    Write-Host "Old Zabbix Agent removed successfully." -ForegroundColor Green
+}
+
 # Configuration variables
 $ZABBIX_VERSION = "6.4.9"
 $INSTALL_DIR = "C:\Program Files\Zabbix Agent 2"
@@ -44,7 +60,7 @@ $installer = "$env:TEMP\zabbix_agent2.msi"
 $webClient = New-Object System.Net.WebClient
 $webClient.DownloadFile($url, $installer)
 
-# Stop existing service if running
+# Stop existing Zabbix Agent 2 service if running
 if (Get-Service "Zabbix Agent 2" -ErrorAction SilentlyContinue) {
     Stop-Service "Zabbix Agent 2" -Force
 }
