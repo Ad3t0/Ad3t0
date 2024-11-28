@@ -1,60 +1,77 @@
-# Initial profile listing and filtering
+# Get all user profiles excluding system profiles
 $AllProfiles = Get-CimInstance -Class Win32_UserProfile | Where-Object {
     -not $_.Special -and
-    $_.LocalPath -notlike '*\ServiceProfiles\*' -and
-    $_.LocalPath -notlike '*\systemprofile'
+    $_.LocalPath -match '^C:\\Users\\[^\\]+$'
 }
 
-# Get current user with proper case sensitivity
-$CurrentUserIdentity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-$CurrentDomain = $CurrentUserIdentity.Name.Split('\')[0]
-$CurrentUser = $CurrentUserIdentity.Name.Split('\')[1]
+# Get current user info
+$CurrentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name.Split('\')[1]
 
 # Function to get folder size using robocopy
 function Get-FolderSize {
     param($Path)
 
-    $tempFile = [System.IO.Path]::GetTempFileName()
-    robocopy $Path NULL /L /XJ /R:0 /W:0 /NP /E /BYTES /NFL /NDL /NJH /MT:64 | Out-File $tempFile
-    $size = (Get-Content $tempFile | Select-String "Bytes :").ToString().Split(":")[1].Trim().Split(" ")[0]
-    Remove-Item $tempFile -Force
-    return [long]$size
+    try {
+        $tempFile = [System.IO.Path]::GetTempFileName()
+        robocopy $Path NULL /L /XJ /R:0 /W:0 /NP /E /BYTES /NFL /NDL /NJH /MT:64 | Out-File $tempFile
+        $size = (Get-Content $tempFile | Select-String "Bytes :").ToString().Split(":")[1].Trim().Split(" ")[0]
+        Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
+        return [long]$size
+    }
+    catch {
+        return 0
+    }
+}
+
+# Function to format size
+function Format-Size {
+    param([long]$Size)
+    return "$([math]::Round($Size / 1GB, 2)) GB"
 }
 
 Write-Host "`nEnumerating profile sizes, please wait...`n" -ForegroundColor Yellow
-
 Write-Host "User Profiles on this system:`n" -ForegroundColor Cyan
-foreach ($Profile in $AllProfiles) {
+
+# Display all profiles
+$ProfileList = foreach ($Profile in $AllProfiles) {
     $Username = $Profile.LocalPath.Split('\')[-1]
-    $LastUse = if ($Profile.LastUseTime) { [DateTime]$Profile.LastUseTime } else { "Never" }
-    $DaysSinceUse = if ($LastUse -is [DateTime]) {
-        [math]::Round(((Get-Date) - $LastUse).TotalDays, 0)
-    } else {
-        "N/A"
-    }
+    $LastUse = if ($Profile.LastUseTime) { [DateTime]$Profile.LastUseTime } else { Get-Date }
+    $DaysSinceUse = [math]::Round(((Get-Date) - $LastUse).TotalDays, 0)
+    $Size = Get-FolderSize -Path $Profile.LocalPath
     $Status = if ($Profile.Loaded) { "IN USE" } else { "Not Active" }
 
-    # Get profile size using robocopy
-    $Size = Get-FolderSize -Path $Profile.LocalPath
-    $SizeGB = [math]::Round($Size / 1GB, 2)
-    $SizeString = "$($SizeGB) GB"
+    # Create custom object for each profile
+    $ProfileInfo = [PSCustomObject]@{
+        Username = $Username
+        ProfilePath = $Profile.LocalPath
+        Size = $Size
+        SizeString = Format-Size -Size $Size
+        LastUse = $LastUse
+        DaysInactive = $DaysSinceUse
+        Status = $Status
+        Profile = $Profile
+        IsCurrentUser = ($Username -eq $CurrentUser)
+        IsLoaded = $Profile.Loaded
+    }
 
+    # Display profile information
     Write-Host "Username        : $($Username)"
     Write-Host "Profile Path    : $($Profile.LocalPath)"
-    Write-Host "Profile Size    : $($SizeString)"
+    Write-Host "Profile Size    : $($ProfileInfo.SizeString)"
     Write-Host "Last Used       : $($LastUse)"
     Write-Host "Days Inactive   : $($DaysSinceUse)"
     Write-Host "Status          : $($Status)"
 
-    # Check if this is current user's profile
-    if ($CurrentUser -eq $Username) {
+    if ($ProfileInfo.IsCurrentUser) {
         Write-Host "NOTE            : This is your current profile" -ForegroundColor Yellow
     }
     Write-Host "------------------------"
+
+    $ProfileInfo
 }
 
-# Check if there are any profiles available for deletion
-$DeletableProfiles = $AllProfiles | Where-Object { -not $_.Loaded }
+# Check for available profiles to delete
+$DeletableProfiles = $ProfileList | Where-Object { -not $_.IsLoaded }
 
 if ($DeletableProfiles.Count -eq 0) {
     Write-Host "`nNo profiles are available for deletion. All profiles are currently in use." -ForegroundColor Yellow
@@ -70,12 +87,10 @@ Write-Host "4. Exit"
 
 $Choice = Read-Host "`nEnter your choice (1-4)"
 
-switch ($Choice) {
+$ProfilesToDelete = switch ($Choice) {
     "1" {
         $WildCard = Read-Host "Enter username wildcard pattern"
-        $ProfilesToDelete = $DeletableProfiles | Where-Object {
-            $_.LocalPath.Split('\')[-1] -like $WildCard
-        }
+        @($DeletableProfiles | Where-Object { $_.Username -like $WildCard })
     }
     "2" {
         $DaysInactive = Read-Host "Enter number of days of inactivity"
@@ -83,15 +98,11 @@ switch ($Choice) {
             Write-Host "Invalid number entered. Exiting..." -ForegroundColor Red
             exit
         }
-        $ProfilesToDelete = $DeletableProfiles | Where-Object {
-            $_.LastUseTime -and ((Get-Date) - [DateTime]$_.LastUseTime).Days -ge $DaysInactive
-        }
+        @($DeletableProfiles | Where-Object { $_.DaysInactive -ge $DaysInactive })
     }
     "3" {
         $SpecificUser = Read-Host "Enter exact username to delete"
-        $ProfilesToDelete = $DeletableProfiles | Where-Object {
-            $_.LocalPath.Split('\')[-1] -eq $SpecificUser
-        }
+        @($DeletableProfiles | Where-Object { $_.Username -eq $SpecificUser })
     }
     "4" {
         Write-Host "Exiting script..." -ForegroundColor Yellow
@@ -103,43 +114,26 @@ switch ($Choice) {
     }
 }
 
-# Display profiles to be removed
-if ($ProfilesToDelete -and $ProfilesToDelete.Count -gt 0) {
+if (($ProfilesToDelete | Measure-Object).Count -gt 0) {
     Write-Host "`nProfiles that will be removed:`n" -ForegroundColor Yellow
     $TotalSize = 0
+
     foreach ($Profile in $ProfilesToDelete) {
-        $Username = $Profile.LocalPath.Split('\')[-1]
-        $LastUse = if ($Profile.LastUseTime) { [DateTime]$Profile.LastUseTime } else { "Never" }
-        $DaysSinceUse = if ($Profile.LastUseTime) {
-            ((Get-Date) - [DateTime]$Profile.LastUseTime).Days
-        } else {
-            "Unknown"
-        }
-
-        # Get profile size using robocopy
-        $Size = Get-FolderSize -Path $Profile.LocalPath
-        $TotalSize += $Size
-        $SizeGB = [math]::Round($Size / 1GB, 2)
-        $SizeString = "$($SizeGB) GB"
-
-        Write-Host "Username        : $($Username)" -ForegroundColor Cyan
-        Write-Host "Profile Path    : $($Profile.LocalPath)"
-        Write-Host "Profile Size    : $($SizeString)"
-        Write-Host "Last Used       : $($LastUse)"
-        Write-Host "Days Inactive   : $($DaysSinceUse)"
+        $TotalSize += $Profile.Size
+        Write-Host "Username        : $($Profile.Username)" -ForegroundColor Cyan
+        Write-Host "Profile Path    : $($Profile.ProfilePath)"
+        Write-Host "Profile Size    : $($Profile.SizeString)"
+        Write-Host "Last Used       : $($Profile.LastUse)"
+        Write-Host "Days Inactive   : $($Profile.DaysInactive)"
         Write-Host "------------------------"
     }
 
     Write-Host "`nTotal profiles to remove: $($ProfilesToDelete.Count)" -ForegroundColor Yellow
-    if ($TotalSize -gt 0) {
-        $TotalSizeGB = [math]::Round($TotalSize / 1GB, 2)
-        Write-Host "Total space to be freed: $($TotalSizeGB) GB" -ForegroundColor Yellow
-    }
+    Write-Host "Total space to be freed: $(Format-Size -Size $TotalSize)" -ForegroundColor Yellow
 
-    # Check for Administrator profile
-    if ($ProfilesToDelete | Where-Object { $_.LocalPath.Split('\')[-1] -eq 'Administrator' }) {
+    # Administrator profile warning
+    if ($ProfilesToDelete | Where-Object { $_.Username -eq 'Administrator' }) {
         Write-Host "`nWARNING: You are attempting to delete the local Administrator profile!" -ForegroundColor Red
-        Write-Host "This is generally not recommended unless the profile is corrupted." -ForegroundColor Red
         $AdminConfirm = Read-Host "Are you absolutely sure you want to continue? Type 'YES' to confirm"
         if ($AdminConfirm -ne 'YES') {
             Write-Host "`nOperation cancelled." -ForegroundColor Yellow
@@ -147,21 +141,23 @@ if ($ProfilesToDelete -and $ProfilesToDelete.Count -gt 0) {
         }
     }
 
-    # Regular confirmation
     $Confirm = Read-Host "`nDo you want to proceed with deletion? (Y/N)"
 
     if ($Confirm -eq 'Y') {
         foreach ($Profile in $ProfilesToDelete) {
             try {
-                Remove-CimInstance -InputObject $Profile
-                Write-Host "Deleted: $($Profile.LocalPath)" -ForegroundColor Green
-            } catch {
-                Write-Host "Error deleting $($Profile.LocalPath): $($_.Exception.Message)" -ForegroundColor Red
+                Remove-CimInstance -InputObject $Profile.Profile
+                Write-Host "Deleted: $($Profile.ProfilePath)" -ForegroundColor Green
+            }
+            catch {
+                Write-Host "Error deleting $($Profile.ProfilePath): $($_.Exception.Message)" -ForegroundColor Red
             }
         }
-    } else {
+    }
+    else {
         Write-Host "`nOperation cancelled by user." -ForegroundColor Yellow
     }
-} else {
-    Write-Host "No profiles found matching the selected criteria." -ForegroundColor Yellow
+}
+else {
+    Write-Host "`nNo profiles found matching the selected criteria." -ForegroundColor Yellow
 }
