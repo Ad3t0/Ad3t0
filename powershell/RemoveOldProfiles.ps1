@@ -74,45 +74,54 @@ $ProfileList = foreach ($Profile in $AllProfiles) {
 $DeletableProfiles = $ProfileList | Where-Object { -not $_.IsLoaded }
 
 if ($DeletableProfiles.Count -eq 0) {
-    Write-Host "`nNo profiles are available for deletion. All profiles are currently in use." -ForegroundColor Yellow
+    Write-Host "`nNo profiles are available for deletion. All profiles are currently in use. Exiting in 10 seconds..." -ForegroundColor Yellow
+    Start-Sleep 10
     exit
 }
 
 # Menu for deletion options
-Write-Host "`nProfile Deletion Options:" -ForegroundColor Yellow
-Write-Host "1. Delete by username wildcard (e.g., 'old*' or '*admin')"
-Write-Host "2. Delete by inactivity period (X days)"
-Write-Host "3. Delete specific profile"
-Write-Host "4. Exit"
+do {
+    Write-Host "`nProfile Deletion Options:" -ForegroundColor Yellow
+    Write-Host "1. Delete by username wildcard (e.g., 'old*' or '*admin')"
+    Write-Host "2. Delete by inactivity period (X days)"
+    Write-Host "3. Delete specific profile"
+    Write-Host "4. Exit"
 
-$Choice = Read-Host "`nEnter your choice (1-4)"
+    $Choice = Read-Host "`nEnter your choice (1-4)"
 
-$ProfilesToDelete = switch ($Choice) {
-    "1" {
-        $WildCard = Read-Host "Enter username wildcard pattern"
-        @($DeletableProfiles | Where-Object { $_.Username -like $WildCard })
-    }
-    "2" {
-        $DaysInactive = Read-Host "Enter number of days of inactivity"
-        if (-not [int]::TryParse($DaysInactive, [ref]$null)) {
-            Write-Host "Invalid number entered. Exiting..." -ForegroundColor Red
+    $ProfilesToDelete = switch ($Choice) {
+        "1" {
+            $WildCard = Read-Host "Enter username wildcard pattern"
+            @($DeletableProfiles | Where-Object { $_.Username -like $WildCard })
+            break
+        }
+        "2" {
+            $DaysInactive = Read-Host "Enter number of days of inactivity"
+            if (-not [int]::TryParse($DaysInactive, [ref]$null)) {
+                Write-Host "Invalid number entered. Please try again." -ForegroundColor Red
+                continue
+            }
+            @($DeletableProfiles | Where-Object { $_.DaysInactive -ge $DaysInactive })
+            break
+        }
+        "3" {
+            $SpecificUser = Read-Host "Enter exact username to delete"
+            @($DeletableProfiles | Where-Object { $_.Username -eq $SpecificUser })
+            break
+        }
+        "4" {
+            Write-Host "Exiting script in 10 seconds..." -ForegroundColor Yellow
+            Start-Sleep 10
             exit
         }
-        @($DeletableProfiles | Where-Object { $_.DaysInactive -ge $DaysInactive })
+        default {
+            Write-Host "Invalid choice. Please select a valid option (1-4)." -ForegroundColor Red
+            continue
+        }
     }
-    "3" {
-        $SpecificUser = Read-Host "Enter exact username to delete"
-        @($DeletableProfiles | Where-Object { $_.Username -eq $SpecificUser })
-    }
-    "4" {
-        Write-Host "Exiting script..." -ForegroundColor Yellow
-        exit
-    }
-    default {
-        Write-Host "Invalid choice. Exiting..." -ForegroundColor Red
-        exit
-    }
-}
+
+    if ($Choice -in '1','2','3') { break }
+} while ($true)
 
 if (($ProfilesToDelete | Measure-Object).Count -gt 0) {
     Write-Host "`nProfiles that will be removed:`n" -ForegroundColor Yellow
@@ -136,7 +145,8 @@ if (($ProfilesToDelete | Measure-Object).Count -gt 0) {
         Write-Host "`nWARNING: You are attempting to delete the local Administrator profile!" -ForegroundColor Red
         $AdminConfirm = Read-Host "Are you absolutely sure you want to continue? Type 'YES' to confirm"
         if ($AdminConfirm -ne 'YES') {
-            Write-Host "`nOperation cancelled." -ForegroundColor Yellow
+            Write-Host "`nOperation cancelled. Exiting in 10 seconds..." -ForegroundColor Yellow
+            Start-Sleep 10
             exit
         }
     }
