@@ -115,6 +115,12 @@ Docker install script
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/installDocker.sh)"
 ```
 
+Automates SSH key generation, sets permissions, updates authorized_keys, and configures SSH daemon securely
+
+```bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/SshAuthConfigurator.sh)"
+```
+
 </details>
 
 <details>
