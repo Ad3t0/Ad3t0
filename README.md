@@ -298,6 +298,3 @@ zfs destroy
 ```
 
 </details>
-
-<details>
-<summary markdown="span"> Microsoft Download Links</summary>
