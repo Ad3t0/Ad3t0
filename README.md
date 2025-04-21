@@ -127,6 +127,12 @@ Automates SSH key generation, sets permissions, updates authorized_keys, and con
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/SshAuthConfigurator.sh)"
 ```
 
+Fixes Zabbix SMART monitoring on Proxmox
+
+```bash
+sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/proxmoxSMARTMonitoringFix.sh)"
+```
+
 </details>
 
 <details>
