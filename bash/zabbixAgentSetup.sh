@@ -117,22 +117,22 @@ print_color "Checking for existing Zabbix agent installations..." "info"
 # Check for zabbix-agent (old version)
 if dpkg -l | grep -q "zabbix-agent "; then
     print_color "Found old Zabbix Agent (zabbix-agent) installation. Removing..." "warning"
-    
+
     # Stop the service if running
     if systemctl is-active --quiet zabbix-agent; then
         systemctl stop zabbix-agent
     fi
-    
+
     # Disable the service
     systemctl disable zabbix-agent 2>/dev/null || true
-    
+
     # Remove the package
     apt remove --purge -y zabbix-agent
     apt autoremove -y
-    
+
     # Ensure removal of any leftover files
     rm -rf /etc/zabbix/zabbix_agentd.conf* 2>/dev/null
-    
+
     print_color "Old Zabbix Agent removed successfully." "success"
 fi
 
@@ -161,19 +161,19 @@ fi
 # Check for existing zabbix-agent2
 if dpkg -l | grep -q "zabbix-agent2"; then
     print_color "Found existing Zabbix Agent 2 installation." "info"
-    
+
     # Check for existing configuration and create backup
     if [ -f /etc/zabbix/zabbix_agent2.conf ]; then
         print_color "Creating backup of existing configuration..." "info"
         cp /etc/zabbix/zabbix_agent2.conf /etc/zabbix/zabbix_agent2.conf.bak.$(date +%Y%m%d_%H%M%S)
         print_color "Backup created" "success"
     fi
-    
+
     # Stop the service if running
     if systemctl is-active --quiet zabbix-agent2; then
         systemctl stop zabbix-agent2
     fi
-    
+
     # Ask if user wants to remove the existing installation
     read -p "Do you want to remove the existing Zabbix Agent 2 installation? (y/n): " remove_existing
     case $remove_existing in
@@ -201,29 +201,78 @@ apt install -y curl wget gnupg2 apt-transport-https ca-certificates
 # Add Zabbix repository based on version
 print_color "Adding Zabbix repository for version $ZABBIX_MAJOR_VERSION..." "info"
 
-# Determine Ubuntu version
-UBUNTU_VERSION=$(lsb_release -rs)
-if [[ "$UBUNTU_VERSION" == "22.04" ]]; then
-    UBUNTU_CODENAME="jammy"
-elif [[ "$UBUNTU_VERSION" == "20.04" ]]; then
-    UBUNTU_CODENAME="focal"
-elif [[ "$UBUNTU_VERSION" == "18.04" ]]; then
-    UBUNTU_CODENAME="bionic"
+# Determine OS distribution and version
+print_color "Detecting operating system..." "info"
+OS_TYPE=""
+OS_VERSION=""
+
+# Check for /etc/os-release
+if [ -f "/etc/os-release" ]; then
+    . /etc/os-release
+    OS_TYPE="$ID"
+    OS_VERSION="$VERSION_ID"
+fi
+
+# If still not set, try other methods
+if [ -z "$OS_TYPE" ]; then
+    if [ -f "/etc/debian_version" ]; then
+        OS_TYPE="debian"
+        OS_VERSION=$(cat /etc/debian_version)
+    elif [ -f "/etc/lsb-release" ]; then
+        . /etc/lsb-release
+        OS_TYPE="$DISTRIB_ID"
+        OS_VERSION="$DISTRIB_RELEASE"
+    fi
+fi
+
+# Convert OS_TYPE to lowercase
+OS_TYPE=$(echo "$OS_TYPE" | tr '[:upper:]' '[:lower:]')
+
+# Define repository path based on OS
+REPO_URL="https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}"
+DEB_FILE_BASE="zabbix-release_${ZABBIX_MAJOR_VERSION}"
+
+if [[ "$OS_TYPE" == "ubuntu" ]]; then
+    print_color "Detected Ubuntu $OS_VERSION" "info"
+    REPO_PATH="${REPO_URL}/ubuntu/pool/main/z/zabbix-release"
+    DEB_FILE="${DEB_FILE_BASE}-1+ubuntu${OS_VERSION}_all.deb"
+    ALT_DEB_FILE="${DEB_FILE_BASE}-4+ubuntu${OS_VERSION}_all.deb"
+elif [[ "$OS_TYPE" == "debian" ]] || [[ "$OS_TYPE" == "proxmox" ]]; then
+    print_color "Detected Debian-based system (${OS_TYPE} ${OS_VERSION})" "info"
+    REPO_PATH="${REPO_URL}/debian/pool/main/z/zabbix-release"
+    DEB_FILE="${DEB_FILE_BASE}-1+debian${OS_VERSION}_all.deb"
+    ALT_DEB_FILE="${DEB_FILE_BASE}-4+debian${OS_VERSION}_all.deb"
+    # For Debian 11 (Bullseye)
+    if [[ "$OS_VERSION" == "11" ]] || [[ "$OS_VERSION" == "bullseye"* ]]; then
+        DEB_FILE="${DEB_FILE_BASE}-1+debian11_all.deb"
+        ALT_DEB_FILE="${DEB_FILE_BASE}-4+debian11_all.deb"
+    # For Debian 12 (Bookworm)
+    elif [[ "$OS_VERSION" == "12" ]] || [[ "$OS_VERSION" == "bookworm"* ]]; then
+        DEB_FILE="${DEB_FILE_BASE}-1+debian12_all.deb"
+        ALT_DEB_FILE="${DEB_FILE_BASE}-4+debian12_all.deb"
+    fi
 else
-    UBUNTU_CODENAME="jammy" # Default to 22.04
-    print_color "Warning: Unsupported Ubuntu version. Defaulting to Ubuntu 22.04 repository." "warning"
+    print_color "Unknown distribution: $OS_TYPE. Will attempt to use Debian repository." "warning"
+    REPO_PATH="${REPO_URL}/debian/pool/main/z/zabbix-release"
+    DEB_FILE="${DEB_FILE_BASE}-1+debian11_all.deb"  # Default to Debian 11
+    ALT_DEB_FILE="${DEB_FILE_BASE}-4+debian11_all.deb"
 fi
 
 # Clean up any previous downloads
 rm -f zabbix-release_*.deb 2>/dev/null
 
 # Add the appropriate repository
-print_color "Downloading Zabbix repository package..." "info"
-if ! wget -q "https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu/pool/main/z/zabbix-release/zabbix-release_${ZABBIX_MAJOR_VERSION}-1+ubuntu${UBUNTU_VERSION}_all.deb"; then
+print_color "Downloading Zabbix repository package from $REPO_PATH..." "info"
+if ! wget -q "${REPO_PATH}/${DEB_FILE}"; then
     print_color "Failed to download repository package. Trying alternative URL format..." "warning"
-    if ! wget -q "https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu/pool/main/z/zabbix-release/zabbix-release_${ZABBIX_MAJOR_VERSION}-4+ubuntu${UBUNTU_VERSION}_all.deb"; then
-        print_color "Failed to download repository package. Please check your internet connection and Zabbix version." "error"
-        exit 1
+    if ! wget -q "${REPO_PATH}/${ALT_DEB_FILE}"; then
+        # Try with Debian 11 as fallback
+        print_color "Failed with standard URLs. Trying Debian 11 repository as fallback..." "warning"
+        FALLBACK_DEB="${DEB_FILE_BASE}-1+debian11_all.deb"
+        if ! wget -q "https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian/pool/main/z/zabbix-release/${FALLBACK_DEB}"; then
+            print_color "Failed to download repository package. Please check your internet connection and Zabbix version." "error"
+            exit 1
+        fi
     fi
 fi
 
@@ -255,7 +304,24 @@ apt update
 
 # Install Zabbix agent 2
 print_color "Installing Zabbix agent 2..." "info"
-apt install -y zabbix-agent2
+# Some versions of apt may need the update run again after adding the repository
+apt update
+
+# Try installing directly first
+if apt install -y zabbix-agent2; then
+    print_color "Zabbix Agent 2 installed successfully." "success"
+else
+    # If direct install fails, try apt-get as a fallback
+    print_color "Standard apt install failed. Trying alternative installation method..." "warning"
+    apt-get update && apt-get install -y zabbix-agent2
+
+    if [ $? -ne 0 ]; then
+        print_color "Failed to install zabbix-agent2. Please check repository configuration." "error"
+        exit 1
+    else
+        print_color "Zabbix Agent 2 installed successfully with alternative method." "success"
+    fi
+fi
 
 # Create PSK directory and generate PSK
 print_color "Setting up PSK encryption..." "info"
