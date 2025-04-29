@@ -111,11 +111,81 @@ while true; do
     esac
 done
 
-# Check for existing configuration and create backup
-if [ -f /etc/zabbix/zabbix_agent2.conf ]; then
-    print_color "Existing Zabbix agent configuration found. Creating backup..." "info"
-    cp /etc/zabbix/zabbix_agent2.conf /etc/zabbix/zabbix_agent2.conf.bak.$(date +%Y%m%d_%H%M%S)
-    print_color "Backup created" "success"
+# Check for existing Zabbix agent installations
+print_color "Checking for existing Zabbix agent installations..." "info"
+
+# Check for zabbix-agent (old version)
+if dpkg -l | grep -q "zabbix-agent "; then
+    print_color "Found old Zabbix Agent (zabbix-agent) installation. Removing..." "warning"
+    
+    # Stop the service if running
+    if systemctl is-active --quiet zabbix-agent; then
+        systemctl stop zabbix-agent
+    fi
+    
+    # Disable the service
+    systemctl disable zabbix-agent 2>/dev/null || true
+    
+    # Remove the package
+    apt remove --purge -y zabbix-agent
+    apt autoremove -y
+    
+    # Ensure removal of any leftover files
+    rm -rf /etc/zabbix/zabbix_agentd.conf* 2>/dev/null
+    
+    print_color "Old Zabbix Agent removed successfully." "success"
+fi
+
+# Check for zabbix-proxy (remove if found)
+if dpkg -l | grep -q "zabbix-proxy"; then
+    print_color "Found Zabbix Proxy installation. This might conflict with the agent installation." "warning"
+    read -p "Do you want to remove Zabbix Proxy? (y/n): " remove_proxy
+    case $remove_proxy in
+        [Yy]* )
+            # Stop the service if running
+            if systemctl is-active --quiet zabbix-proxy; then
+                systemctl stop zabbix-proxy
+            fi
+            # Disable the service
+            systemctl disable zabbix-proxy 2>/dev/null || true
+            # Remove the package
+            apt remove --purge -y zabbix-proxy\*
+            print_color "Zabbix Proxy removed successfully." "success"
+            ;;
+        * )
+            print_color "Keeping Zabbix Proxy installation. This might cause conflicts." "warning"
+            ;;
+    esac
+fi
+
+# Check for existing zabbix-agent2
+if dpkg -l | grep -q "zabbix-agent2"; then
+    print_color "Found existing Zabbix Agent 2 installation." "info"
+    
+    # Check for existing configuration and create backup
+    if [ -f /etc/zabbix/zabbix_agent2.conf ]; then
+        print_color "Creating backup of existing configuration..." "info"
+        cp /etc/zabbix/zabbix_agent2.conf /etc/zabbix/zabbix_agent2.conf.bak.$(date +%Y%m%d_%H%M%S)
+        print_color "Backup created" "success"
+    fi
+    
+    # Stop the service if running
+    if systemctl is-active --quiet zabbix-agent2; then
+        systemctl stop zabbix-agent2
+    fi
+    
+    # Ask if user wants to remove the existing installation
+    read -p "Do you want to remove the existing Zabbix Agent 2 installation? (y/n): " remove_existing
+    case $remove_existing in
+        [Yy]* )
+            print_color "Removing existing Zabbix Agent 2..." "info"
+            apt remove --purge -y zabbix-agent2
+            print_color "Existing Zabbix Agent 2 removed successfully." "success"
+            ;;
+        * )
+            print_color "Keeping existing Zabbix Agent 2 installation. Will update configuration only." "info"
+            ;;
+    esac
 fi
 
 print_color "Starting Zabbix Agent 2 installation..." "info"
@@ -144,9 +214,43 @@ else
     print_color "Warning: Unsupported Ubuntu version. Defaulting to Ubuntu 22.04 repository." "warning"
 fi
 
+# Clean up any previous downloads
+rm -f zabbix-release_*.deb 2>/dev/null
+
 # Add the appropriate repository
-wget "https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu/pool/main/z/zabbix-release/zabbix-release_${ZABBIX_MAJOR_VERSION}-1+ubuntu${UBUNTU_VERSION}_all.deb"
-dpkg -i "zabbix-release_${ZABBIX_MAJOR_VERSION}-1+ubuntu${UBUNTU_VERSION}_all.deb"
+print_color "Downloading Zabbix repository package..." "info"
+if ! wget -q "https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu/pool/main/z/zabbix-release/zabbix-release_${ZABBIX_MAJOR_VERSION}-1+ubuntu${UBUNTU_VERSION}_all.deb"; then
+    print_color "Failed to download repository package. Trying alternative URL format..." "warning"
+    if ! wget -q "https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu/pool/main/z/zabbix-release/zabbix-release_${ZABBIX_MAJOR_VERSION}-4+ubuntu${UBUNTU_VERSION}_all.deb"; then
+        print_color "Failed to download repository package. Please check your internet connection and Zabbix version." "error"
+        exit 1
+    fi
+fi
+
+# Install the repository package
+print_color "Installing Zabbix repository..." "info"
+if ! dpkg -i zabbix-release_*.deb; then
+    print_color "Failed to install Zabbix repository. Please check the package." "error"
+    exit 1
+fi
+
+# Update package lists
+apt update
+
+# Remove any other zabbix packages that might cause conflicts
+print_color "Checking for any other Zabbix packages..." "info"
+ZABBIX_PACKAGES=$(dpkg -l | grep zabbix | grep -v "zabbix-agent2\|zabbix-release" | awk '{print $2}')
+if [ -n "$ZABBIX_PACKAGES" ]; then
+    print_color "Found other Zabbix packages that might conflict. Removing..." "warning"
+    for pkg in $ZABBIX_PACKAGES; do
+        print_color "Removing package: $pkg" "info"
+        apt remove --purge -y "$pkg"
+    done
+    print_color "Conflicting packages removed." "success"
+fi
+
+# Clean up any remaining Zabbix repositories
+rm -f /etc/apt/sources.list.d/zabbix*.list 2>/dev/null
 apt update
 
 # Install Zabbix agent 2
@@ -274,6 +378,15 @@ print_color "   zabbix_get -s $(hostname -I | awk '{print $1}') -p 10050 -k agen
 print_color "   Active check (from agent):" "info"
 print_color "   zabbix_agent2 -t agent.ping" "info"
 
+# Clean up installation files
+print_color "Cleaning up installation files..." "info"
+rm -f zabbix-release_*.deb 2>/dev/null
+
+# Final cleanup of any temporary files
+apt clean
+apt autoremove -y
+
+# Show backup info if relevant
 if [ -f /etc/zabbix/zabbix_agent2.conf.bak.* ]; then
     print_color "\nNote: Your previous configuration was backed up with timestamp" "warning"
 fi
@@ -281,3 +394,5 @@ fi
 if [ "$DOCKER_INSTALLED" = true ]; then
     print_color "\nDocker monitoring has been configured!" "success"
 fi
+
+print_color "\nZabbix Agent 2 version ${ZABBIX_VERSION} has been successfully installed!" "success"

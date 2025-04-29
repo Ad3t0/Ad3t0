@@ -130,7 +130,7 @@ sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master
 Fixes Zabbix SMART monitoring on Proxmox
 
 ```bash
-sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/proxmoxSMARTMonitoringFix.sh)"
+bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/proxmoxSMARTMonitoringFix.sh)"
 ```
 
 </details>
