@@ -1,11 +1,44 @@
 # Prompt for configuration
 $ZABBIX_PROXY_HOST = Read-Host "Enter Zabbix proxy/server IP address"
-$HOST_PREFIX = Read-Host "Enter host prefix"
+$HOST_PREFIX = Read-Host "Enter host prefix (leave empty to use hostname only)"
+$ZABBIX_VERSION_INPUT = Read-Host "Enter Zabbix version (6, 7, or specific like 7.0.12, default is 7)"
+
+# Determine full version based on input
+if ([string]::IsNullOrWhiteSpace($ZABBIX_VERSION_INPUT)) {
+    # Default to latest major version if nothing provided
+    $ZABBIX_VERSION = "7.2.6"  # Latest 7.x version
+} elseif ($ZABBIX_VERSION_INPUT -eq "6") {
+    $ZABBIX_VERSION = "6.4.21"  # Latest 6.x version
+} elseif ($ZABBIX_VERSION_INPUT -eq "7") {
+    $ZABBIX_VERSION = "7.2.6"  # Latest 7.x version
+} elseif ($ZABBIX_VERSION_INPUT -match '^\d+\.\d+$') {
+    # Major.Minor version provided (e.g. "6.4" or "7.0")
+    $latestPatchVersions = @{
+        "6.4" = "6.4.21"
+        "7.0" = "7.0.12"
+        "7.2" = "7.2.6"
+    }
+
+    if ($latestPatchVersions.ContainsKey($ZABBIX_VERSION_INPUT)) {
+        $ZABBIX_VERSION = $latestPatchVersions[$ZABBIX_VERSION_INPUT]
+    } else {
+        Write-Host "Unsupported version format. Using latest version 7.2.6." -ForegroundColor Yellow
+        $ZABBIX_VERSION = "7.2.6"
+    }
+} elseif ($ZABBIX_VERSION_INPUT -match '^\d+\.\d+\.\d+$') {
+    # Full version provided
+    $ZABBIX_VERSION = $ZABBIX_VERSION_INPUT
+} else {
+    # Invalid format, use default
+    Write-Host "Invalid version format. Using latest version 7.2.6." -ForegroundColor Yellow
+    $ZABBIX_VERSION = "7.2.6"
+}
 
 # Display installation summary
 Write-Host "`n=== Installation Summary ===" -ForegroundColor Cyan
 Write-Host "Zabbix Server/Proxy: $ZABBIX_PROXY_HOST" -ForegroundColor Yellow
-Write-Host "Host Prefix: $HOST_PREFIX" -ForegroundColor Yellow
+Write-Host "Host Prefix: $(if([string]::IsNullOrWhiteSpace($HOST_PREFIX)){"None"}else{$HOST_PREFIX})" -ForegroundColor Yellow
+Write-Host "Zabbix Version: $ZABBIX_VERSION" -ForegroundColor Yellow
 Write-Host "Target System: $env:COMPUTERNAME" -ForegroundColor Yellow
 
 # Confirm installation
@@ -32,14 +65,17 @@ if ($oldAgent) {
 }
 
 # Configuration variables
-$ZABBIX_VERSION = "6.4.9"
 $INSTALL_DIR = "C:\Program Files\Zabbix Agent 2"
 $PSK_DIR = "$INSTALL_DIR\psk"
 $CONFIG_DIR = "$INSTALL_DIR\conf"
 
-# Get system hostname and create prefixed version
+# Get system hostname and create prefixed version if prefix is provided
 $SYSTEM_HOSTNAME = $env:COMPUTERNAME.ToLower()
-$PREFIXED_HOSTNAME = "$($HOST_PREFIX)-$($SYSTEM_HOSTNAME)"
+if ([string]::IsNullOrWhiteSpace($HOST_PREFIX)) {
+    $PREFIXED_HOSTNAME = $SYSTEM_HOSTNAME
+} else {
+    $PREFIXED_HOSTNAME = "$($HOST_PREFIX)-$($SYSTEM_HOSTNAME)"
+}
 $PSK_IDENTITY = "WINDOWS-$($PREFIXED_HOSTNAME)"
 
 # Create directory structure
@@ -116,6 +152,9 @@ New-NetFirewallRule -DisplayName "Zabbix Agent 2" -Direction Inbound -Action All
 Write-Host "`n=== Configuration Information ===" -ForegroundColor Cyan
 Write-Host "System Hostname: $SYSTEM_HOSTNAME" -ForegroundColor Green
 Write-Host "Zabbix Hostname: $PREFIXED_HOSTNAME" -ForegroundColor Green
+if (![string]::IsNullOrWhiteSpace($HOST_PREFIX)) {
+    Write-Host "Host Prefix: $HOST_PREFIX" -ForegroundColor Green
+}
 Write-Host "System IP: $((Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.InterfaceAlias -notmatch 'Loopback'}).IPAddress)" -ForegroundColor Green
 Write-Host "PSK Identity: $PSK_IDENTITY" -ForegroundColor Green
 Write-Host "PSK Key: $PSK" -ForegroundColor Green

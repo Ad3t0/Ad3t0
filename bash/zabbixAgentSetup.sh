@@ -31,42 +31,68 @@ while true; do
     fi
 done
 
-# Prompt for Zabbix Port
-default_port="10051"
-while true; do
-    read -p "Do you want to change the default port ($default_port)? (y/n): " change_port
-    case $change_port in
-        [Yy]* )
-            read -p "Enter Zabbix Port: " input_port
-            if [[ $input_port =~ ^[0-9]+$ ]] && [ $input_port -ge 1 ] && [ $input_port -le 65535 ]; then
-                ZABBIX_PORT=$input_port
-                break
-            else
-                print_color "Invalid port number. Please enter a number between 1 and 65535." "error"
-            fi
+# Prompt for Host Prefix (now allows empty prefix)
+read -p "Enter Host Prefix (leave empty to use hostname only): " HOST_PREFIX
+
+# Prompt for Zabbix version
+read -p "Enter Zabbix version (6, 7, or specific like 7.0.12, default is 7): " ZABBIX_VERSION_INPUT
+
+# Determine Zabbix version based on input
+if [ -z "$ZABBIX_VERSION_INPUT" ]; then
+    # Default to latest major version if nothing provided
+    ZABBIX_VERSION="7.2.6"  # Latest 7.x version
+    ZABBIX_MAJOR_VERSION="7.2"
+elif [ "$ZABBIX_VERSION_INPUT" = "6" ]; then
+    ZABBIX_VERSION="6.4.21"  # Latest 6.x version
+    ZABBIX_MAJOR_VERSION="6.4"
+elif [ "$ZABBIX_VERSION_INPUT" = "7" ]; then
+    ZABBIX_VERSION="7.2.6"  # Latest 7.x version
+    ZABBIX_MAJOR_VERSION="7.2"
+elif [[ "$ZABBIX_VERSION_INPUT" =~ ^[0-9]+\.[0-9]+$ ]]; then
+    # Major.Minor version provided (e.g. "6.4" or "7.0")
+    case "$ZABBIX_VERSION_INPUT" in
+        "6.4")
+            ZABBIX_VERSION="6.4.21"
             ;;
-        [Nn]* )
-            ZABBIX_PORT=$default_port
-            break
+        "7.0")
+            ZABBIX_VERSION="7.0.12"
             ;;
-        * )
-            print_color "Please answer yes (y) or no (n)" "warning"
+        "7.2")
+            ZABBIX_VERSION="7.2.6"
+            ;;
+        *)
+            print_color "Unsupported version format. Using latest version 7.2.6." "warning"
+            ZABBIX_VERSION="7.2.6"
+            ZABBIX_MAJOR_VERSION="7.2"
             ;;
     esac
-done
-
-# Prompt for Host Prefix
-read -p "Enter Host Prefix: " HOST_PREFIX
-if [ -z "$HOST_PREFIX" ]; then
-    echo "Error: Host prefix cannot be empty"
-    exit 1
+    ZABBIX_MAJOR_VERSION="$ZABBIX_VERSION_INPUT"
+elif [[ "$ZABBIX_VERSION_INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    # Full version provided
+    ZABBIX_VERSION="$ZABBIX_VERSION_INPUT"
+    ZABBIX_MAJOR_VERSION=$(echo "$ZABBIX_VERSION" | cut -d'.' -f1,2)
+else
+    # Invalid format, use default
+    print_color "Invalid version format. Using latest version 7.2.6." "warning"
+    ZABBIX_VERSION="7.2.6"
+    ZABBIX_MAJOR_VERSION="7.2"
 fi
+
+print_color "Selected Zabbix version: $ZABBIX_VERSION" "success"
+
+# Set fixed Zabbix port
+ZABBIX_PORT="10051"
 
 # Display configured values
 print_color "\nConfiguration Summary:" "info"
 print_color "Zabbix Host: $ZABBIX_HOST" "success"
 print_color "Zabbix Port: $ZABBIX_PORT" "success"
-print_color "Host Prefix: $HOST_PREFIX" "success"
+if [ -n "$HOST_PREFIX" ]; then
+    print_color "Host Prefix: $HOST_PREFIX" "success"
+else
+    print_color "Host Prefix: None (using hostname only)" "success"
+fi
+print_color "Zabbix Version: $ZABBIX_VERSION" "success"
 
 # Confirm to proceed
 while true; do
@@ -102,10 +128,25 @@ apt update
 print_color "Installing prerequisites..." "info"
 apt install -y curl wget gnupg2 apt-transport-https ca-certificates
 
-# Add Zabbix repository
-print_color "Adding Zabbix repository..." "info"
-wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu22.04_all.deb
-dpkg -i zabbix-release_6.0-4+ubuntu22.04_all.deb
+# Add Zabbix repository based on version
+print_color "Adding Zabbix repository for version $ZABBIX_MAJOR_VERSION..." "info"
+
+# Determine Ubuntu version
+UBUNTU_VERSION=$(lsb_release -rs)
+if [[ "$UBUNTU_VERSION" == "22.04" ]]; then
+    UBUNTU_CODENAME="jammy"
+elif [[ "$UBUNTU_VERSION" == "20.04" ]]; then
+    UBUNTU_CODENAME="focal"
+elif [[ "$UBUNTU_VERSION" == "18.04" ]]; then
+    UBUNTU_CODENAME="bionic"
+else
+    UBUNTU_CODENAME="jammy" # Default to 22.04
+    print_color "Warning: Unsupported Ubuntu version. Defaulting to Ubuntu 22.04 repository." "warning"
+fi
+
+# Add the appropriate repository
+wget "https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu/pool/main/z/zabbix-release/zabbix-release_${ZABBIX_MAJOR_VERSION}-1+ubuntu${UBUNTU_VERSION}_all.deb"
+dpkg -i "zabbix-release_${ZABBIX_MAJOR_VERSION}-1+ubuntu${UBUNTU_VERSION}_all.deb"
 apt update
 
 # Install Zabbix agent 2
@@ -125,7 +166,11 @@ chown -R zabbix:zabbix /etc/zabbix/psk
 
 # Get system hostname and create prefixed versions
 SYSTEM_HOSTNAME=$(hostname)
-PREFIXED_HOSTNAME="${HOST_PREFIX}-${SYSTEM_HOSTNAME}"
+if [ -n "$HOST_PREFIX" ]; then
+    PREFIXED_HOSTNAME="${HOST_PREFIX}-${SYSTEM_HOSTNAME}"
+else
+    PREFIXED_HOSTNAME="${SYSTEM_HOSTNAME}"
+fi
 PSK_IDENTITY="LINUX-${PREFIXED_HOSTNAME}"
 
 # Check for Docker
@@ -199,6 +244,7 @@ fi
 print_color "\n=== Configuration Information ===" "info"
 print_color "System Hostname: ${SYSTEM_HOSTNAME}" "success"
 print_color "Zabbix Hostname: ${PREFIXED_HOSTNAME}" "success"
+print_color "Zabbix Version: ${ZABBIX_VERSION}" "success"
 print_color "PSK Identity: ${PSK_IDENTITY}" "success"
 print_color "PSK Key: $(cat /etc/zabbix/psk/zabbix.psk)" "success"
 print_color "\nMonitoring Mode: Hybrid (Both Active and Passive supported)" "success"
