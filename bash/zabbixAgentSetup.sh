@@ -17,6 +17,30 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Configuration for Proxmox SMART and ZFS monitoring
+SUDOERS_FILENAME="zabbix"
+SUDOERS_FILEPATH="/etc/sudoers.d/${SUDOERS_FILENAME}"
+SMARTCTL_PATH="/usr/sbin/smartctl"
+SUDO_RULE="zabbix ALL=(ALL) NOPASSWD: ${SMARTCTL_PATH}"
+REQUIRED_PERMISSIONS="0440"
+ZFS_USERPARAMS_URL="https://raw.githubusercontent.com/bartmichu/zfs-zabbix-userparams/refs/heads/main/zfs-userparams.conf"
+ZFS_USERPARAMS_DEST="/etc/zabbix/zabbix_agent2.d/zfs-userparams.conf"
+
+# Detect if system is running Proxmox
+IS_PROXMOX=false
+if [ -f "/usr/bin/pveversion" ] || grep -q "proxmox" /proc/version 2>/dev/null; then
+    IS_PROXMOX=true
+    print_color "Proxmox VE detected. Will enable additional monitoring capabilities." "info"
+fi
+
+# Detect if ZFS is in use
+HAS_ZFS=false
+INSTALL_ZFS=false
+if command -v zfs &> /dev/null && zfs list &> /dev/null; then
+    HAS_ZFS=true
+    print_color "ZFS filesystem detected. ZFS monitoring will be available." "info"
+fi
+
 # Prompt for configuration variables
 print_color "\n=== Configuration Setup ===" "info"
 
@@ -35,19 +59,19 @@ done
 read -p "Enter Host Prefix (leave empty to use hostname only): " HOST_PREFIX
 
 # Prompt for Zabbix version
-read -p "Enter Zabbix version (6, 7, or specific like 7.0.12, default is 7): " ZABBIX_VERSION_INPUT
+read -p "Enter Zabbix version (6, 7, or specific like 7.0.12, default is 7.0 LTS): " ZABBIX_VERSION_INPUT
 
 # Determine Zabbix version based on input
 if [ -z "$ZABBIX_VERSION_INPUT" ]; then
-    # Default to latest major version if nothing provided
-    ZABBIX_VERSION="7.2.6"  # Latest 7.x version
-    ZABBIX_MAJOR_VERSION="7.2"
+    # Default to LTS version if nothing provided
+    ZABBIX_VERSION="7.0.12"  # Latest 7.0.x LTS version
+    ZABBIX_MAJOR_VERSION="7.0"
 elif [ "$ZABBIX_VERSION_INPUT" = "6" ]; then
     ZABBIX_VERSION="6.4.21"  # Latest 6.x version
     ZABBIX_MAJOR_VERSION="6.4"
 elif [ "$ZABBIX_VERSION_INPUT" = "7" ]; then
-    ZABBIX_VERSION="7.2.6"  # Latest 7.x version
-    ZABBIX_MAJOR_VERSION="7.2"
+    ZABBIX_VERSION="7.0.12"  # Latest 7.0.x LTS version
+    ZABBIX_MAJOR_VERSION="7.0"
 elif [[ "$ZABBIX_VERSION_INPUT" =~ ^[0-9]+\.[0-9]+$ ]]; then
     # Major.Minor version provided (e.g. "6.4" or "7.0")
     case "$ZABBIX_VERSION_INPUT" in
@@ -61,9 +85,9 @@ elif [[ "$ZABBIX_VERSION_INPUT" =~ ^[0-9]+\.[0-9]+$ ]]; then
             ZABBIX_VERSION="7.2.6"
             ;;
         *)
-            print_color "Unsupported version format. Using latest version 7.2.6." "warning"
-            ZABBIX_VERSION="7.2.6"
-            ZABBIX_MAJOR_VERSION="7.2"
+            print_color "Unsupported version format. Using LTS version 7.0.12." "warning"
+            ZABBIX_VERSION="7.0.12"
+            ZABBIX_MAJOR_VERSION="7.0"
             ;;
     esac
     ZABBIX_MAJOR_VERSION="$ZABBIX_VERSION_INPUT"
@@ -73,9 +97,9 @@ elif [[ "$ZABBIX_VERSION_INPUT" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     ZABBIX_MAJOR_VERSION=$(echo "$ZABBIX_VERSION" | cut -d'.' -f1,2)
 else
     # Invalid format, use default
-    print_color "Invalid version format. Using latest version 7.2.6." "warning"
-    ZABBIX_VERSION="7.2.6"
-    ZABBIX_MAJOR_VERSION="7.2"
+    print_color "Invalid version format. Using LTS version 7.0.12." "warning"
+    ZABBIX_VERSION="7.0.12"
+    ZABBIX_MAJOR_VERSION="7.0"
 fi
 
 print_color "Selected Zabbix version: $ZABBIX_VERSION" "success"
@@ -116,24 +140,35 @@ print_color "Checking for existing Zabbix agent installations..." "info"
 
 # Check for zabbix-agent (old version)
 if dpkg -l | grep -q "zabbix-agent "; then
-    print_color "Found old Zabbix Agent (zabbix-agent) installation. Removing..." "warning"
+    print_color "Found old Zabbix Agent (zabbix-agent) installation." "warning"
+    
+    read -p "Do you want to remove the old Zabbix Agent installation? (y/n): " remove_old_agent
+    case $remove_old_agent in
+        [Yy]* )
+            print_color "Removing old Zabbix Agent (zabbix-agent)..." "info"
+            
+            # Stop the service if running
+            if systemctl is-active --quiet zabbix-agent; then
+                systemctl stop zabbix-agent
+            fi
 
-    # Stop the service if running
-    if systemctl is-active --quiet zabbix-agent; then
-        systemctl stop zabbix-agent
-    fi
+            # Disable the service
+            systemctl disable zabbix-agent 2>/dev/null || true
 
-    # Disable the service
-    systemctl disable zabbix-agent 2>/dev/null || true
+            # Remove the package
+            apt remove --purge -y zabbix-agent
+            apt autoremove -y
 
-    # Remove the package
-    apt remove --purge -y zabbix-agent
-    apt autoremove -y
+            # Ensure removal of any leftover files
+            rm -rf /etc/zabbix/zabbix_agentd.conf* 2>/dev/null
 
-    # Ensure removal of any leftover files
-    rm -rf /etc/zabbix/zabbix_agentd.conf* 2>/dev/null
-
-    print_color "Old Zabbix Agent removed successfully." "success"
+            print_color "Old Zabbix Agent removed successfully." "success"
+            ;;
+        * )
+            print_color "Keeping old Zabbix Agent installation. This might cause conflicts." "warning"
+            print_color "You may need to manually ensure both agents can run simultaneously." "warning"
+            ;;
+    esac
 fi
 
 # Check for zabbix-proxy (remove if found)
@@ -161,29 +196,43 @@ fi
 # Check for existing zabbix-agent2
 if dpkg -l | grep -q "zabbix-agent2"; then
     print_color "Found existing Zabbix Agent 2 installation." "info"
+    
+    # Get the version information
+    CURRENT_VERSION=$(dpkg -l | grep zabbix-agent2 | awk '{print $3}')
+    print_color "Installed version: $CURRENT_VERSION" "info"
+    print_color "Target version: $ZABBIX_VERSION" "info"
 
     # Check for existing configuration and create backup
     if [ -f /etc/zabbix/zabbix_agent2.conf ]; then
         print_color "Creating backup of existing configuration..." "info"
         cp /etc/zabbix/zabbix_agent2.conf /etc/zabbix/zabbix_agent2.conf.bak.$(date +%Y%m%d_%H%M%S)
-        print_color "Backup created" "success"
+        print_color "Backup created at /etc/zabbix/zabbix_agent2.conf.bak.$(date +%Y%m%d_%H%M%S)" "success"
     fi
 
-    # Stop the service if running
-    if systemctl is-active --quiet zabbix-agent2; then
-        systemctl stop zabbix-agent2
-    fi
-
+    # Explain to the user their options
+    print_color "\nYou have the following options:" "info"
+    print_color "1. Remove the existing Zabbix Agent 2 completely and install fresh" "info"
+    print_color "2. Keep the existing installation and update its configuration only" "info"
+    print_color "   (This is useful if you want to maintain the existing version)" "info"
+    
     # Ask if user wants to remove the existing installation
     read -p "Do you want to remove the existing Zabbix Agent 2 installation? (y/n): " remove_existing
     case $remove_existing in
         [Yy]* )
+            # Stop the service if running
+            if systemctl is-active --quiet zabbix-agent2; then
+                print_color "Stopping Zabbix Agent 2 service..." "info"
+                systemctl stop zabbix-agent2
+            fi
+            
             print_color "Removing existing Zabbix Agent 2..." "info"
             apt remove --purge -y zabbix-agent2
             print_color "Existing Zabbix Agent 2 removed successfully." "success"
             ;;
         * )
-            print_color "Keeping existing Zabbix Agent 2 installation. Will update configuration only." "info"
+            print_color "Keeping existing Zabbix Agent 2 installation." "info"
+            print_color "Will update configuration only." "info"
+            print_color "Note: This will not upgrade/downgrade the agent version." "warning"
             ;;
     esac
 fi
@@ -290,12 +339,25 @@ apt update
 print_color "Checking for any other Zabbix packages..." "info"
 ZABBIX_PACKAGES=$(dpkg -l | grep zabbix | grep -v "zabbix-agent2\|zabbix-release" | awk '{print $2}')
 if [ -n "$ZABBIX_PACKAGES" ]; then
-    print_color "Found other Zabbix packages that might conflict. Removing..." "warning"
+    print_color "Found other Zabbix packages that might conflict:" "warning"
     for pkg in $ZABBIX_PACKAGES; do
-        print_color "Removing package: $pkg" "info"
-        apt remove --purge -y "$pkg"
+        print_color " - $pkg" "info"
     done
-    print_color "Conflicting packages removed." "success"
+    
+    read -p "Do you want to remove these potentially conflicting Zabbix packages? (y/n): " remove_conflicting
+    case $remove_conflicting in
+        [Yy]* )
+            for pkg in $ZABBIX_PACKAGES; do
+                print_color "Removing package: $pkg" "info"
+                apt remove --purge -y "$pkg"
+            done
+            print_color "Conflicting packages removed." "success"
+            ;;
+        * )
+            print_color "Keeping existing Zabbix packages. This might cause conflicts." "warning"
+            print_color "Installation will proceed, but you might encounter issues." "warning"
+            ;;
+    esac
 fi
 
 # Verify repository was properly added and fix if needed
@@ -602,4 +664,101 @@ if [ "$DOCKER_INSTALLED" = true ]; then
     print_color "\nDocker monitoring has been configured!" "success"
 fi
 
+# Setup Proxmox-specific monitoring if detected
+if [ "$IS_PROXMOX" = true ]; then
+    print_color "\n=== Setting up Proxmox-specific monitoring ===" "info"
+    
+    # SMART monitoring setup
+    print_color "Setting up SMART monitoring for Zabbix on Proxmox..." "info"
+    
+    # Ensure sudo package is installed
+    if ! command -v sudo &> /dev/null; then
+        print_color "Installing sudo package..." "info"
+        apt-get update > /dev/null || print_color "Warning: apt-get update failed, proceeding anyway..." "warning"
+        apt-get install -y sudo
+    fi
+    
+    # Create sudoers file for SMART monitoring
+    print_color "Creating sudoers file '${SUDOERS_FILEPATH}' with SMART monitoring rule..." "info"
+    echo "${SUDO_RULE}" > "${SUDOERS_FILEPATH}"
+    
+    # Set permissions
+    print_color "Setting permissions (${REQUIRED_PERMISSIONS}) for '${SUDOERS_FILEPATH}'..." "info"
+    chmod "${REQUIRED_PERMISSIONS}" "${SUDOERS_FILEPATH}"
+    
+    # Validate sudoers configuration
+    print_color "Validating sudoers configuration..." "info"
+    if ! visudo -c; then
+        print_color "Visudo check failed! The sudo configuration might be broken. Please fix manually." "error"
+        print_color "The problematic file might be '${SUDOERS_FILEPATH}'." "error"
+    else
+        print_color "SMART monitoring sudo configuration check successful." "success"
+        print_color "User 'zabbix' should now be able to run '${SMARTCTL_PATH}' via sudo without a password." "success"
+    fi
+fi
+
+# ZFS monitoring setup if ZFS is detected or if we're on Proxmox
+if [ "$HAS_ZFS" = true ] || [ "$IS_PROXMOX" = true ]; then
+    print_color "\n=== ZFS Monitoring Setup ===" "info"
+    
+    # If ZFS is actually detected, auto-install. If on Proxmox but ZFS not detected, prompt user
+    if [ "$HAS_ZFS" = true ]; then
+        # Auto-approve if ZFS is detected
+        print_color "ZFS detected. Setting up ZFS monitoring automatically." "info"
+        INSTALL_ZFS=true
+    elif [ "$IS_PROXMOX" = true ]; then
+        # Prompt if on Proxmox but ZFS not automatically detected
+        read -p "Would you like to install ZFS monitoring for Zabbix? (y/n): " install_zfs_choice
+        if [[ "${install_zfs_choice}" =~ ^[Yy]$ ]]; then
+            INSTALL_ZFS=true
+        fi
+    fi
+    
+    if [ "$INSTALL_ZFS" = true ]; then
+        print_color "Setting up ZFS monitoring for Zabbix..." "info"
+        
+        # Ensure zabbix_agent2.d directory exists
+        zabbix_conf_dir=$(dirname "${ZFS_USERPARAMS_DEST}")
+        if [[ ! -d "${zabbix_conf_dir}" ]]; then
+            print_color "Creating Zabbix agent2 configuration directory: ${zabbix_conf_dir}" "info"
+            mkdir -p "${zabbix_conf_dir}"
+        fi
+        
+        # Install curl if not present
+        if ! command -v curl &> /dev/null; then
+            print_color "Installing curl..." "info"
+            apt-get update && apt-get install -y curl
+        fi
+        
+        # Download the ZFS monitoring configuration
+        print_color "Downloading ZFS monitoring configuration from ${ZFS_USERPARAMS_URL}" "info"
+        if ! curl -s -o "${ZFS_USERPARAMS_DEST}" "${ZFS_USERPARAMS_URL}"; then
+            print_color "Failed to download ZFS monitoring configuration. Please check your internet connection." "error"
+        else
+            print_color "ZFS monitoring configuration downloaded to ${ZFS_USERPARAMS_DEST}" "success"
+            
+            # Restart Zabbix agent2
+            print_color "Restarting Zabbix agent2 service to apply ZFS monitoring configuration..." "info"
+            if systemctl is-active --quiet zabbix-agent2; then
+                if systemctl restart zabbix-agent2; then
+                    print_color "Zabbix agent2 service restarted successfully." "success"
+                else
+                    print_color "Failed to restart Zabbix agent2 service." "error"
+                fi
+            else
+                print_color "Warning: Zabbix agent2 service is not active. Please start it manually after configuration." "warning"
+            fi
+            
+            print_color "ZFS monitoring setup complete!" "success"
+        fi
+    fi
+fi
+
+# Final success message
 print_color "\nZabbix Agent 2 version ${ZABBIX_VERSION} has been successfully installed!" "success"
+if [ "$IS_PROXMOX" = true ]; then
+    print_color "Proxmox-specific monitoring has been configured." "success"
+fi
+if [ "$HAS_ZFS" = true ] && [ "$INSTALL_ZFS" = true ]; then
+    print_color "ZFS monitoring has been configured." "success"
+fi

@@ -97,7 +97,7 @@ Ubuntu template setup script
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/serverTemplateSetup.sh)"
 ```
 
-Zabbix Agent 2 passive and active with PSK auth setup script
+Zabbix Agent 2 setup script (supports PSK auth, Proxmox SMART monitoring, and ZFS monitoring)
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/zabbixAgentSetup.sh)"
@@ -125,12 +125,6 @@ Automates SSH key generation, sets permissions, updates authorized_keys, and con
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/SshAuthConfigurator.sh)"
-```
-
-Fixes Zabbix SMART monitoring on Proxmox
-
-```bash
-bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/proxmoxSMARTMonitoringFix.sh)"
 ```
 
 </details>
