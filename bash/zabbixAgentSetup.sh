@@ -298,28 +298,169 @@ if [ -n "$ZABBIX_PACKAGES" ]; then
     print_color "Conflicting packages removed." "success"
 fi
 
-# Clean up any remaining Zabbix repositories
-rm -f /etc/apt/sources.list.d/zabbix*.list 2>/dev/null
+# Verify repository was properly added and fix if needed
+if [ ! -f /etc/apt/sources.list.d/zabbix.list ]; then
+    print_color "Zabbix repository not properly added. Creating manually..." "warning"
+    
+    # Create repository file based on OS and version
+    if [[ "$OS_TYPE" == "debian" ]] || [[ "$OS_TYPE" == "proxmox" ]]; then
+        # For Debian-based systems
+        if [[ "$OS_VERSION" == "11" ]] || [[ "$OS_VERSION" == "bullseye"* ]]; then
+            # Debian 11 (Bullseye)
+            cat > /etc/apt/sources.list.d/zabbix.list << EOF
+deb https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian bullseye main
+deb-src https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian bullseye main
+EOF
+        elif [[ "$OS_VERSION" == "12" ]] || [[ "$OS_VERSION" == "bookworm"* ]]; then
+            # Debian 12 (Bookworm)
+            cat > /etc/apt/sources.list.d/zabbix.list << EOF
+deb https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian bookworm main
+deb-src https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian bookworm main
+EOF
+        else
+            # Generic Debian fallback
+            cat > /etc/apt/sources.list.d/zabbix.list << EOF
+deb https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian bullseye main
+deb-src https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian bullseye main
+EOF
+        fi
+    else
+        # For Ubuntu
+        cat > /etc/apt/sources.list.d/zabbix.list << EOF
+deb https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu $(lsb_release -cs) main
+deb-src https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/ubuntu $(lsb_release -cs) main
+EOF
+    fi
+    
+    # Import the GPG key
+    print_color "Importing Zabbix GPG key..." "info"
+    wget -q -O - https://repo.zabbix.com/zabbix-official-repo.key | apt-key add -
+fi
+
+# Update apt lists
+print_color "Updating package lists with new repository..." "info"
 apt update
 
 # Install Zabbix agent 2
 print_color "Installing Zabbix agent 2..." "info"
-# Some versions of apt may need the update run again after adding the repository
-apt update
 
-# Try installing directly first
-if apt install -y zabbix-agent2; then
-    print_color "Zabbix Agent 2 installed successfully." "success"
-else
-    # If direct install fails, try apt-get as a fallback
-    print_color "Standard apt install failed. Trying alternative installation method..." "warning"
-    apt-get update && apt-get install -y zabbix-agent2
+# Check available packages to debug
+print_color "Checking available Zabbix packages..." "info"
+apt-cache search zabbix | grep agent
 
-    if [ $? -ne 0 ]; then
-        print_color "Failed to install zabbix-agent2. Please check repository configuration." "error"
-        exit 1
+# Special handling for Debian/Proxmox systems
+if [[ "$OS_TYPE" == "debian" ]] || [[ "$OS_TYPE" == "proxmox" ]]; then
+    print_color "Using Debian-specific installation method..." "info"
+    
+    # Install required dependencies first
+    apt install -y libpcre3 zlib1g
+
+    # Try to install with apt
+    if apt install -y zabbix-agent2; then
+        print_color "Zabbix Agent 2 installed successfully." "success"
     else
-        print_color "Zabbix Agent 2 installed successfully with alternative method." "success"
+        # If standard install fails, try forcing the architecture
+        print_color "Standard apt install failed. Trying specific installation method for Debian..." "warning"
+        
+        # Temporary directory for downloads
+        TEMP_DIR=$(mktemp -d)
+        cd $TEMP_DIR
+
+        # Determine architecture
+        ARCH=$(dpkg --print-architecture)
+        print_color "System architecture: $ARCH" "info"
+        
+        # Try to download the package directly - first attempt
+        DEB_URL="https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian/pool/main/z/zabbix/zabbix-agent2_${ZABBIX_VERSION}-1+debian11_${ARCH}.deb"
+        print_color "Downloading package from: $DEB_URL" "info"
+        
+        if wget -q "$DEB_URL"; then
+            print_color "Package downloaded. Installing..." "info"
+            if dpkg -i zabbix-agent2_*.deb; then
+                apt --fix-broken install -y
+                print_color "Zabbix Agent 2 installed successfully via direct download." "success"
+            else
+                print_color "Failed to install downloaded package. Trying alternative method..." "warning"
+                apt-get update && apt-get install -y --no-install-recommends zabbix-agent2
+                if [ $? -ne 0 ]; then
+                    print_color "First installation method failed. Trying additional methods..." "warning"
+                    # Continue to next method
+                fi
+            fi
+        else
+            print_color "Failed to download package. Trying alternative URL format..." "warning"
+            
+            # Second attempt - try with different version format
+            ALT_DEB_URL="https://repo.zabbix.com/zabbix/${ZABBIX_MAJOR_VERSION}/debian/pool/main/z/zabbix/zabbix-agent2_${ZABBIX_MAJOR_VERSION}.0-1+debian11_${ARCH}.deb"
+            print_color "Downloading package from: $ALT_DEB_URL" "info"
+            
+            if wget -q "$ALT_DEB_URL"; then
+                print_color "Package downloaded. Installing..." "info"
+                if dpkg -i zabbix-agent2_*.deb; then
+                    apt --fix-broken install -y
+                    print_color "Zabbix Agent 2 installed successfully via direct download (alternative URL)." "success"
+                else
+                    print_color "Failed to install downloaded package. Continuing to next method..." "warning"
+                    # Continue to next method
+                fi
+            else
+                print_color "Failed to download from alternative URL. Continuing to next method..." "warning"
+                # Continue to next method
+            fi
+        fi
+        
+        # Try with older version as fallback (may remove this part if unnecessary)
+        if ! dpkg -l | grep -q "zabbix-agent2"; then
+            FALLBACK_VERSION="6.0.19"
+            FALLBACK_URL="https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix/zabbix-agent2_${FALLBACK_VERSION}-1+debian11_${ARCH}.deb"
+            print_color "Trying fallback version ${FALLBACK_VERSION}..." "warning"
+            
+            if wget -q "$FALLBACK_URL"; then
+                print_color "Fallback package downloaded. Installing..." "info"
+                if dpkg -i zabbix-agent2_*.deb; then
+                    apt --fix-broken install -y
+                    print_color "Fallback Zabbix Agent 2 ${FALLBACK_VERSION} installed successfully." "success"
+                else
+                    print_color "Failed to install fallback package. Continuing to next method..." "warning"
+                fi
+            else
+                print_color "Failed to download fallback package. Continuing to next method..." "warning"
+            fi
+        fi
+        
+        # Final attempt - try apt-get
+        if ! dpkg -l | grep -q "zabbix-agent2"; then
+            print_color "Trying standard repository installation as final attempt..." "info"
+            apt-get update && apt-get install -y --no-install-recommends zabbix-agent2
+            if [ $? -ne 0 ]; then
+                print_color "All installation methods failed. Please check repository configuration." "error"
+                print_color "You may need to manually download and install zabbix-agent2." "error"
+                cd - > /dev/null
+                rm -rf $TEMP_DIR
+                exit 1
+            fi
+        fi
+        
+        # Clean up
+        cd - > /dev/null
+        rm -rf $TEMP_DIR
+    fi
+else
+    # For Ubuntu systems, use the standard method
+    # Try installing directly first
+    if apt install -y zabbix-agent2; then
+        print_color "Zabbix Agent 2 installed successfully." "success"
+    else
+        # If direct install fails, try apt-get as a fallback
+        print_color "Standard apt install failed. Trying alternative installation method..." "warning"
+        apt-get update && apt-get install -y zabbix-agent2
+        
+        if [ $? -ne 0 ]; then
+            print_color "Failed to install zabbix-agent2. Please check repository configuration." "error"
+            exit 1
+        else
+            print_color "Zabbix Agent 2 installed successfully with alternative method." "success"
+        fi
     fi
 fi
 
