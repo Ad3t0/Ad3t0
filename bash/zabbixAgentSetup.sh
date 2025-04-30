@@ -37,8 +37,10 @@ fi
 HAS_ZFS=false
 INSTALL_ZFS=false
 ZFS_POOLS=""
+ZFS_AVAILABLE=false
 
 if command -v zpool &> /dev/null; then
+    ZFS_AVAILABLE=true
     # Use zpool list to check for available pools
     ZPOOL_OUTPUT=$(zpool list 2>/dev/null)
     if [[ "$ZPOOL_OUTPUT" != *"no pools available"* ]] && [[ -n "$ZPOOL_OUTPUT" ]]; then
@@ -53,7 +55,7 @@ if command -v zpool &> /dev/null; then
             print_color " - $pool" "success"
         done
     else
-        print_color "ZFS commands are available but no pools found." "warning"
+        print_color "ZFS is available but no pools are currently configured." "warning"
     fi
 else
     print_color "ZFS commands not found on this system." "warning"
@@ -78,6 +80,22 @@ read -p "Enter Host Prefix (leave empty to use hostname only): " HOST_PREFIX
 
 # Prompt for Zabbix version
 read -p "Enter Zabbix version (6, 7, or specific like 7.0.12, default is 7.0 LTS): " ZABBIX_VERSION_INPUT
+
+# ZFS monitoring prompt based on detection
+if [ "$HAS_ZFS" = true ]; then
+    # Auto-enable if pools exist
+    print_color "\n=== ZFS Monitoring Setup ===" "info"
+    print_color "ZFS pools detected. ZFS monitoring will be enabled automatically." "info"
+    INSTALL_ZFS=true
+elif [ "$ZFS_AVAILABLE" = true ] && [ "$IS_PROXMOX" = true ]; then
+    # Prompt if ZFS is available but no pools (only on Proxmox)
+    print_color "\n=== ZFS Monitoring Setup ===" "info"
+    print_color "No ZFS pools currently detected, but this is a Proxmox system." "warning"
+    read -p "Would you like to install ZFS monitoring for Zabbix anyway? (y/n): " install_zfs_choice
+    if [[ "${install_zfs_choice}" =~ ^[Yy]$ ]]; then
+        INSTALL_ZFS=true
+    fi
+fi
 
 # Determine Zabbix version based on input
 if [ -z "$ZABBIX_VERSION_INPUT" ]; then
@@ -684,23 +702,7 @@ if [ "$IS_PROXMOX" = true ]; then
     fi
 fi
 
-# ZFS monitoring setup if ZFS pools are detected or if we're on Proxmox with possible ZFS
-if [ "$HAS_ZFS" = true ]; then
-    print_color "\n=== ZFS Monitoring Setup ===" "info"
-    print_color "ZFS pools detected. Setting up ZFS monitoring automatically." "info"
-    INSTALL_ZFS=true
-elif [ "$IS_PROXMOX" = true ]; then
-    # Only prompt on Proxmox if ZFS command exists but no pools were found
-    # This covers cases where ZFS might be used later
-    if command -v zpool &> /dev/null; then
-        print_color "\n=== ZFS Monitoring Setup ===" "info"
-        print_color "No ZFS pools currently detected, but this is a Proxmox system." "warning"
-        read -p "Would you like to install ZFS monitoring for Zabbix anyway? (y/n): " install_zfs_choice
-        if [[ "${install_zfs_choice}" =~ ^[Yy]$ ]]; then
-            INSTALL_ZFS=true
-        fi
-    fi
-fi
+# ZFS monitoring is now handled at the beginning of the script during the configuration setup phase
 
 # Install ZFS monitoring if determined necessary
 if [ "$INSTALL_ZFS" = true ]; then
@@ -796,13 +798,18 @@ if [ "$INSTALL_ZFS" = true ]; then
             print_color "   - $pool" "success"
         done
     else
-        print_color "   Only system ZFS pools are available for monitoring" "warning"
+        print_color "   No ZFS pools currently available for monitoring" "warning"
+        print_color "   Monitoring will work when pools are created" "info"
     fi
 else
-    if [ "$HAS_ZFS" = true ]; then
-        print_color "[DISABLED] ZFS monitoring is not enabled (available but not installed)" "warning"
+    if [ "$ZFS_AVAILABLE" = true ]; then
+        if [ "$HAS_ZFS" = true ]; then
+            print_color "[DISABLED] ZFS monitoring is not enabled (pools exist but monitoring not installed)" "warning"
+        else
+            print_color "[DISABLED] ZFS monitoring is not enabled (ZFS available but no pools)" "warning"
+        fi
     else
-        print_color "[DISABLED] ZFS monitoring is not enabled (ZFS not detected)" "warning"
+        print_color "[DISABLED] ZFS monitoring is not enabled (ZFS not available on this system)" "warning"
     fi
 fi
 
