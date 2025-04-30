@@ -684,60 +684,61 @@ if [ "$IS_PROXMOX" = true ]; then
     fi
 fi
 
-# ZFS monitoring setup if ZFS is detected or if we're on Proxmox
-if [ "$HAS_ZFS" = true ] || [ "$IS_PROXMOX" = true ]; then
+# ZFS monitoring setup if ZFS pools are detected or if we're on Proxmox with possible ZFS
+if [ "$HAS_ZFS" = true ]; then
     print_color "\n=== ZFS Monitoring Setup ===" "info"
-    
-    # If ZFS is actually detected, auto-install. If on Proxmox but ZFS not detected, prompt user
-    if [ "$HAS_ZFS" = true ]; then
-        # Auto-approve if ZFS is detected
-        print_color "ZFS detected. Setting up ZFS monitoring automatically." "info"
-        INSTALL_ZFS=true
-    elif [ "$IS_PROXMOX" = true ]; then
-        # Prompt if on Proxmox but ZFS not automatically detected
-        read -p "Would you like to install ZFS monitoring for Zabbix? (y/n): " install_zfs_choice
+    print_color "ZFS pools detected. Setting up ZFS monitoring automatically." "info"
+    INSTALL_ZFS=true
+elif [ "$IS_PROXMOX" = true ]; then
+    # Only prompt on Proxmox if ZFS command exists but no pools were found
+    # This covers cases where ZFS might be used later
+    if command -v zpool &> /dev/null; then
+        print_color "\n=== ZFS Monitoring Setup ===" "info"
+        print_color "No ZFS pools currently detected, but this is a Proxmox system." "warning"
+        read -p "Would you like to install ZFS monitoring for Zabbix anyway? (y/n): " install_zfs_choice
         if [[ "${install_zfs_choice}" =~ ^[Yy]$ ]]; then
             INSTALL_ZFS=true
         fi
     fi
+fi
+
+# Install ZFS monitoring if determined necessary
+if [ "$INSTALL_ZFS" = true ]; then
+    print_color "Setting up ZFS monitoring for Zabbix..." "info"
     
-    if [ "$INSTALL_ZFS" = true ]; then
-        print_color "Setting up ZFS monitoring for Zabbix..." "info"
+    # Ensure zabbix_agent2.d directory exists
+    zabbix_conf_dir=$(dirname "${ZFS_USERPARAMS_DEST}")
+    if [[ ! -d "${zabbix_conf_dir}" ]]; then
+        print_color "Creating Zabbix agent2 configuration directory: ${zabbix_conf_dir}" "info"
+        mkdir -p "${zabbix_conf_dir}"
+    fi
+    
+    # Install curl if not present
+    if ! command -v curl &> /dev/null; then
+        print_color "Installing curl..." "info"
+        apt-get update && apt-get install -y curl
+    fi
+    
+    # Download the ZFS monitoring configuration
+    print_color "Downloading ZFS monitoring configuration from ${ZFS_USERPARAMS_URL}" "info"
+    if ! curl -s -o "${ZFS_USERPARAMS_DEST}" "${ZFS_USERPARAMS_URL}"; then
+        print_color "Failed to download ZFS monitoring configuration. Please check your internet connection." "error"
+    else
+        print_color "ZFS monitoring configuration downloaded to ${ZFS_USERPARAMS_DEST}" "success"
         
-        # Ensure zabbix_agent2.d directory exists
-        zabbix_conf_dir=$(dirname "${ZFS_USERPARAMS_DEST}")
-        if [[ ! -d "${zabbix_conf_dir}" ]]; then
-            print_color "Creating Zabbix agent2 configuration directory: ${zabbix_conf_dir}" "info"
-            mkdir -p "${zabbix_conf_dir}"
-        fi
-        
-        # Install curl if not present
-        if ! command -v curl &> /dev/null; then
-            print_color "Installing curl..." "info"
-            apt-get update && apt-get install -y curl
-        fi
-        
-        # Download the ZFS monitoring configuration
-        print_color "Downloading ZFS monitoring configuration from ${ZFS_USERPARAMS_URL}" "info"
-        if ! curl -s -o "${ZFS_USERPARAMS_DEST}" "${ZFS_USERPARAMS_URL}"; then
-            print_color "Failed to download ZFS monitoring configuration. Please check your internet connection." "error"
-        else
-            print_color "ZFS monitoring configuration downloaded to ${ZFS_USERPARAMS_DEST}" "success"
-            
-            # Restart Zabbix agent2
-            print_color "Restarting Zabbix agent2 service to apply ZFS monitoring configuration..." "info"
-            if systemctl is-active --quiet zabbix-agent2; then
-                if systemctl restart zabbix-agent2; then
-                    print_color "Zabbix agent2 service restarted successfully." "success"
-                else
-                    print_color "Failed to restart Zabbix agent2 service." "error"
-                fi
+        # Restart Zabbix agent2
+        print_color "Restarting Zabbix agent2 service to apply ZFS monitoring configuration..." "info"
+        if systemctl is-active --quiet zabbix-agent2; then
+            if systemctl restart zabbix-agent2; then
+                print_color "Zabbix agent2 service restarted successfully." "success"
             else
-                print_color "Warning: Zabbix agent2 service is not active. Please start it manually after configuration." "warning"
+                print_color "Failed to restart Zabbix agent2 service." "error"
             fi
-            
-            print_color "ZFS monitoring setup complete!" "success"
+        else
+            print_color "Warning: Zabbix agent2 service is not active. Please start it manually after configuration." "warning"
         fi
+        
+        print_color "ZFS monitoring setup complete!" "success"
     fi
 fi
 
