@@ -33,12 +33,27 @@ if [ -f "/usr/bin/pveversion" ] || grep -q "proxmox" /proc/version 2>/dev/null; 
     print_color "Proxmox VE detected. Will enable additional monitoring capabilities." "info"
 fi
 
-# Detect if ZFS is in use
+# Detect if ZFS is in use with actual data pools
 HAS_ZFS=false
 INSTALL_ZFS=false
-if command -v zfs &> /dev/null && zfs list &> /dev/null; then
-    HAS_ZFS=true
-    print_color "ZFS filesystem detected. ZFS monitoring will be available." "info"
+ZFS_POOLS=""
+
+if command -v zfs &> /dev/null; then
+    # Check if any ZFS pools exist
+    if ZFS_POOLS=$(zfs list -H -o name 2>/dev/null | grep -v "^rpool$" | grep -v "^$"); then
+        HAS_ZFS=true
+        print_color "ZFS filesystem with data pools detected. ZFS monitoring will be available." "info"
+        print_color "Detected ZFS pools:" "info"
+        echo "$ZFS_POOLS" | while read -r pool; do
+            print_color " - $pool" "success"
+        done
+    elif zfs list &> /dev/null; then
+        # ZFS is installed but only has system pools
+        print_color "ZFS is installed but only system pools were found. ZFS monitoring is available." "info"
+        HAS_ZFS=true
+    else
+        print_color "ZFS command is available but no pools found." "warning"
+    fi
 fi
 
 # Prompt for configuration variables
@@ -613,42 +628,15 @@ else
     print_color "Warning: Zabbix agent service is not running. Please check the logs." "warning"
 fi
 
-# Display configuration information
-print_color "\n=== Configuration Information ===" "info"
-print_color "System Hostname: ${SYSTEM_HOSTNAME}" "success"
-print_color "Zabbix Hostname: ${PREFIXED_HOSTNAME}" "success"
-print_color "Zabbix Version: ${ZABBIX_VERSION}" "success"
-print_color "PSK Identity: ${PSK_IDENTITY}" "success"
-print_color "PSK Key: $(cat /etc/zabbix/psk/zabbix.psk)" "success"
-print_color "\nMonitoring Mode: Hybrid (Both Active and Passive supported)" "success"
-print_color "Agent IP Address: $(hostname -I | awk '{print $1}')" "success"
+# Display a more concise service status
+print_color "\nChecking service status..." "info"
+systemctl status zabbix-agent2 --no-pager
 
-# Display service status and logs
-print_color "\n=== Service Status ===" "info"
-systemctl status zabbix-agent2
-
-print_color "\n=== Recent Logs ===" "info"
-tail -n 10 /var/log/zabbix/zabbix_agent2.log
-
-print_color "\nInstallation complete!" "success"
-print_color "Don't forget to:" "info"
-print_color "1. Add this host in Zabbix frontend with:" "info"
-print_color "   - Host name: ${PREFIXED_HOSTNAME}" "info"
-print_color "   - IP Address: $(hostname -I | awk '{print $1}')" "info"
-print_color "   - Port: 10050" "info"
-print_color "   - PSK identity and key shown above" "info"
-print_color "   - Can use both active and passive templates" "info"
-print_color "2. Configure your firewall to:" "info"
-print_color "   - Allow incoming connections from ${ZABBIX_HOST} on port 10050 (for passive checks)" "info"
-print_color "   - Allow outgoing connections to ${ZABBIX_HOST} on port ${ZABBIX_PORT} (for active checks)" "info"
-print_color "3. Test connections:" "info"
-print_color "   Passive check:" "info"
-print_color "   zabbix_get -s $(hostname -I | awk '{print $1}') -p 10050 -k agent.ping --tls-connect psk --tls-psk-identity \"${PSK_IDENTITY}\" --tls-psk-file /etc/zabbix/psk/zabbix.psk" "info"
-print_color "   Active check (from agent):" "info"
-print_color "   zabbix_agent2 -t agent.ping" "info"
+print_color "\nChecking recent logs..." "info"
+tail -n 5 /var/log/zabbix/zabbix_agent2.log
 
 # Clean up installation files
-print_color "Cleaning up installation files..." "info"
+print_color "\nCleaning up installation files..." "info"
 rm -f zabbix-release_*.deb 2>/dev/null
 
 # Final cleanup of any temporary files
@@ -658,10 +646,6 @@ apt autoremove -y
 # Show backup info if relevant
 if [ -f /etc/zabbix/zabbix_agent2.conf.bak.* ]; then
     print_color "\nNote: Your previous configuration was backed up with timestamp" "warning"
-fi
-
-if [ "$DOCKER_INSTALLED" = true ]; then
-    print_color "\nDocker monitoring has been configured!" "success"
 fi
 
 # Setup Proxmox-specific monitoring if detected
@@ -754,11 +738,107 @@ if [ "$HAS_ZFS" = true ] || [ "$IS_PROXMOX" = true ]; then
     fi
 fi
 
-# Final success message
+# Final summary and configuration information
+print_color "\n====================================================" "info"
+print_color "            INSTALLATION SUMMARY" "info"
+print_color "====================================================" "info"
+
 print_color "\nZabbix Agent 2 version ${ZABBIX_VERSION} has been successfully installed!" "success"
+
+# Connection information
+print_color "\n=== CONNECTION INFORMATION ===" "info"
+print_color "System Hostname: ${SYSTEM_HOSTNAME}" "success"
+print_color "Zabbix Hostname: ${PREFIXED_HOSTNAME}" "success"
+print_color "Agent IP Address: $(hostname -I | awk '{print $1}')" "success"
+print_color "Listening on: Port 10050" "success"
+
+# Authentication information
+print_color "\n=== AUTHENTICATION INFORMATION ===" "info"
+print_color "Authentication type: PSK (Pre-Shared Key)" "success"
+print_color "PSK Identity: ${PSK_IDENTITY}" "success"
+print_color "PSK Key: $(cat /etc/zabbix/psk/zabbix.psk)" "success"
+print_color "PSK File: /etc/zabbix/psk/zabbix.psk" "success"
+
+# Server configuration
+print_color "\n=== SERVER CONFIGURATION ===" "info"
+print_color "Zabbix Server: ${ZABBIX_HOST}" "success"
+print_color "Active Checks Server: ${ZABBIX_HOST}:${ZABBIX_PORT}" "success"
+print_color "Configuration Mode: Hybrid (Both Active and Passive supported)" "success"
+
+# Features enabled
+print_color "\n=== FEATURES ENABLED ===" "info"
+
+# Docker monitoring
+if [ "$DOCKER_INSTALLED" = true ]; then
+    print_color "[ENABLED] Docker monitoring is configured" "success"
+else
+    print_color "[DISABLED] Docker monitoring is not enabled (Docker not detected)" "warning"
+fi
+
+# Proxmox monitoring
 if [ "$IS_PROXMOX" = true ]; then
-    print_color "Proxmox-specific monitoring has been configured." "success"
+    print_color "[ENABLED] Proxmox-specific monitoring is configured" "success"
+    print_color "   [ENABLED] SMART monitoring configured via sudo" "success"
+else
+    print_color "[DISABLED] Proxmox-specific monitoring is not enabled (not a Proxmox system)" "warning"
 fi
-if [ "$HAS_ZFS" = true ] && [ "$INSTALL_ZFS" = true ]; then
-    print_color "ZFS monitoring has been configured." "success"
+
+# ZFS monitoring
+if [ "$INSTALL_ZFS" = true ]; then
+    print_color "[ENABLED] ZFS monitoring is configured" "success"
+    if [ -n "$ZFS_POOLS" ]; then
+        print_color "   ZFS data pools available for monitoring:" "success"
+        echo "$ZFS_POOLS" | while read -r pool; do
+            print_color "   - $pool" "success"
+        done
+    else
+        print_color "   Only system ZFS pools are available for monitoring" "warning"
+    fi
+else
+    if [ "$HAS_ZFS" = true ]; then
+        print_color "[DISABLED] ZFS monitoring is not enabled (available but not installed)" "warning"
+    else
+        print_color "[DISABLED] ZFS monitoring is not enabled (ZFS not detected)" "warning"
+    fi
 fi
+
+# Configuration files
+print_color "\n=== CONFIGURATION FILES ===" "info"
+print_color "Main configuration: /etc/zabbix/zabbix_agent2.conf" "success"
+print_color "PSK file: /etc/zabbix/psk/zabbix.psk" "success"
+if [ "$INSTALL_ZFS" = true ]; then
+    print_color "ZFS configuration: ${ZFS_USERPARAMS_DEST}" "success"
+fi
+if [ "$IS_PROXMOX" = true ]; then
+    print_color "SMART sudo rules: ${SUDOERS_FILEPATH}" "success"
+fi
+
+# Service status
+print_color "\n=== SERVICE STATUS ===" "info"
+if systemctl is-active --quiet zabbix-agent2; then
+    print_color "Zabbix agent service is: [RUNNING]" "success"
+else
+    print_color "Zabbix agent service is: [NOT RUNNING]" "error"
+    print_color "Please check logs for issues: journalctl -u zabbix-agent2" "warning"
+fi
+
+# Next steps
+print_color "\n=== NEXT STEPS ===" "info"
+print_color "1. Add this host in Zabbix frontend with:" "info"
+print_color "   - Host name: ${PREFIXED_HOSTNAME}" "info"
+print_color "   - IP Address: $(hostname -I | awk '{print $1}')" "info"
+print_color "   - Port: 10050" "info"
+print_color "   - PSK identity: ${PSK_IDENTITY}" "info"
+print_color "   - PSK key: $(cat /etc/zabbix/psk/zabbix.psk)" "info"
+print_color "2. Configure your firewall to:" "info"
+print_color "   - Allow incoming connections from ${ZABBIX_HOST} on port 10050 (for passive checks)" "info"
+print_color "   - Allow outgoing connections to ${ZABBIX_HOST} on port ${ZABBIX_PORT} (for active checks)" "info"
+print_color "3. Test agent connections with:" "info"
+print_color "   From Zabbix server (passive check):" "info"
+print_color "   zabbix_get -s $(hostname -I | awk '{print $1}') -p 10050 -k agent.ping --tls-connect psk --tls-psk-identity \"${PSK_IDENTITY}\" --tls-psk-file /path/to/psk/file" "info"
+print_color "   From this agent (active check):" "info"
+print_color "   zabbix_agent2 -t agent.ping" "info"
+
+print_color "\n====================================================" "info"
+print_color "           INSTALLATION COMPLETED!" "success"
+print_color "====================================================" "info"
