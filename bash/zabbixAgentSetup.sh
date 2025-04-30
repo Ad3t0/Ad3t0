@@ -33,27 +33,30 @@ if [ -f "/usr/bin/pveversion" ] || grep -q "proxmox" /proc/version 2>/dev/null; 
     print_color "Proxmox VE detected. Will enable additional monitoring capabilities." "info"
 fi
 
-# Detect if ZFS is in use with actual data pools
+# Detect if ZFS is in use with actual pools
 HAS_ZFS=false
 INSTALL_ZFS=false
 ZFS_POOLS=""
 
-if command -v zfs &> /dev/null; then
-    # Check if any ZFS pools exist
-    if ZFS_POOLS=$(zfs list -H -o name 2>/dev/null | grep -v "^rpool$" | grep -v "^$"); then
+if command -v zpool &> /dev/null; then
+    # Use zpool list to check for available pools
+    ZPOOL_OUTPUT=$(zpool list 2>/dev/null)
+    if [[ "$ZPOOL_OUTPUT" != *"no pools available"* ]] && [[ -n "$ZPOOL_OUTPUT" ]]; then
         HAS_ZFS=true
-        print_color "ZFS filesystem with data pools detected. ZFS monitoring will be available." "info"
+        # Get list of pool names
+        ZFS_POOL_NAMES=$(echo "$ZPOOL_OUTPUT" | tail -n +2 | awk '{print $1}')
+        ZFS_POOLS="$ZFS_POOL_NAMES"
+        
+        print_color "ZFS pools detected. ZFS monitoring will be available." "info"
         print_color "Detected ZFS pools:" "info"
-        echo "$ZFS_POOLS" | while read -r pool; do
+        echo "$ZFS_POOL_NAMES" | while read -r pool; do
             print_color " - $pool" "success"
         done
-    elif zfs list &> /dev/null; then
-        # ZFS is installed but only has system pools
-        print_color "ZFS is installed but only system pools were found. ZFS monitoring is available." "info"
-        HAS_ZFS=true
     else
-        print_color "ZFS command is available but no pools found." "warning"
+        print_color "ZFS commands are available but no pools found." "warning"
     fi
+else
+    print_color "ZFS commands not found on this system." "warning"
 fi
 
 # Prompt for configuration variables
@@ -754,10 +757,10 @@ print_color "Listening on: Port 10050" "success"
 
 # Authentication information
 print_color "\n=== AUTHENTICATION INFORMATION ===" "info"
-print_color "Authentication type: PSK (Pre-Shared Key)" "success"
+print_color "Authentication type: PSK (Pre-Shared Key)" "info"
 print_color "PSK Identity: ${PSK_IDENTITY}" "success"
 print_color "PSK Key: $(cat /etc/zabbix/psk/zabbix.psk)" "success"
-print_color "PSK File: /etc/zabbix/psk/zabbix.psk" "success"
+print_color "PSK File: /etc/zabbix/psk/zabbix.psk" "info"
 
 # Server configuration
 print_color "\n=== SERVER CONFIGURATION ===" "info"
@@ -778,7 +781,7 @@ fi
 # Proxmox monitoring
 if [ "$IS_PROXMOX" = true ]; then
     print_color "[ENABLED] Proxmox-specific monitoring is configured" "success"
-    print_color "   [ENABLED] SMART monitoring configured via sudo" "success"
+    print_color "[ENABLED] SMART monitoring configured via sudo" "success"
 else
     print_color "[DISABLED] Proxmox-specific monitoring is not enabled (not a Proxmox system)" "warning"
 fi
@@ -828,8 +831,8 @@ print_color "1. Add this host in Zabbix frontend with:" "info"
 print_color "   - Host name: ${PREFIXED_HOSTNAME}" "info"
 print_color "   - IP Address: $(hostname -I | awk '{print $1}')" "info"
 print_color "   - Port: 10050" "info"
-print_color "   - PSK identity: ${PSK_IDENTITY}" "info"
-print_color "   - PSK key: $(cat /etc/zabbix/psk/zabbix.psk)" "info"
+print_color "   - PSK identity: ${PSK_IDENTITY}" "success"
+print_color "   - PSK key: $(cat /etc/zabbix/psk/zabbix.psk)" "success"
 print_color "2. Configure your firewall to:" "info"
 print_color "   - Allow incoming connections from ${ZABBIX_HOST} on port 10050 (for passive checks)" "info"
 print_color "   - Allow outgoing connections to ${ZABBIX_HOST} on port ${ZABBIX_PORT} (for active checks)" "info"
