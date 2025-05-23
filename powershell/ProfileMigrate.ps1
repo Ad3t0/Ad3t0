@@ -54,6 +54,9 @@ do {
 
 Write-Host "Using the destination path '$destinationPath'." -ForegroundColor Green
 
+# Ask user if they want to compress the data
+$compressChoice = Read-Host "Do you want to compress the exported data with 7zip? (y/n)"
+
 $username = $selectedProfile.LocalPath -split "\\"
 $username = $username[2]
 
@@ -90,8 +93,6 @@ if (Test-Path -Path "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\U
 	$ExportFile = "$($destinationPath)\$($username)\chrome_bookmarks.html"
 	Copy-Item -Path $ChromeBookmarksPath -Destination $ExportFile
 }
-# Ask user if they want to compress the data
-$compressChoice = Read-Host "Do you want to compress the exported data with 7zip? (y/n)"
 if ($compressChoice -eq 'y') {
     Write-Host "Attempting to compress data..." -ForegroundColor Green
     $sourceDir = "$($destinationPath)\$($username)"
@@ -100,8 +101,8 @@ if ($compressChoice -eq 'y') {
     # Attempt to find 7z.exe
     $7zipExePath = $null
     $commonPaths = @(
-        Join-Path $env:ProgramFiles "7-Zip\7z.exe",
-        Join-Path $env:ProgramFiles(x86) "7-Zip\7z.exe"
+        "C:\Program Files\7-Zip\7z.exe",
+        "C:\Program Files (x86)\7-Zip\7z.exe"
     )
 
     foreach ($path in $commonPaths) {
