@@ -90,3 +90,67 @@ if (Test-Path -Path "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\U
 	$ExportFile = "$($destinationPath)\$($username)\chrome_bookmarks.html"
 	Copy-Item -Path $ChromeBookmarksPath -Destination $ExportFile
 }
+# Ask user if they want to compress the data
+$compressChoice = Read-Host "Do you want to compress the exported data with 7zip? (y/n)"
+if ($compressChoice -eq 'y') {
+    Write-Host "Attempting to compress data..." -ForegroundColor Green
+    $sourceDir = "$($destinationPath)\$($username)"
+    $archiveFile = "$($destinationPath)\$($username)_profile_backup.7z" # Output file in the root of destinationPath
+
+    # Attempt to find 7z.exe
+    $7zipExePath = $null
+    $commonPaths = @(
+        Join-Path $env:ProgramFiles "7-Zip\7z.exe",
+        Join-Path $env:ProgramFiles(x86) "7-Zip\7z.exe"
+    )
+
+    foreach ($path in $commonPaths) {
+        if (Test-Path $path -PathType Leaf) {
+            $7zipExePath = $path
+            break
+        }
+    }
+
+    if (-not $7zipExePath) {
+        # Check PATH if not found in common locations
+        if (Get-Command 7z.exe -ErrorAction SilentlyContinue) {
+            $7zipExePath = "7z.exe" # Found in PATH
+        } else {
+            Write-Host "7zip command (7z.exe) not found in common locations or PATH. Please install 7zip." -ForegroundColor Red
+            Write-Host "Skipping compression." -ForegroundColor Yellow
+        }
+    }
+
+    if ($7zipExePath) {
+        Write-Host "Using 7zip: $7zipExePath" -ForegroundColor Cyan
+        $arguments = @(
+            "a", # Add to archive
+            "-t7z", # Set archive type to 7z
+            "-y",   # Assume Yes on all queries from 7-Zip
+            $archiveFile, # Output archive file path
+            "$($sourceDir)\*" # Source files/folders to compress (contents of the user's profile backup)
+        )
+
+        try {
+            Write-Host "Starting compression of '$sourceDir' to '$archiveFile'..." -ForegroundColor Green
+            # Execute 7zip. Using Start-Process to ensure it runs correctly, especially if path has spaces.
+            # Using -Wait to ensure script waits for compression to finish.
+            # Using -PassThru to get process object, then checking ExitCode.
+            $process = Start-Process -FilePath $7zipExePath -ArgumentList $arguments -Wait -NoNewWindow -PassThru
+
+            if ($process.ExitCode -eq 0) {
+                Write-Host "Data compressed successfully to '$archiveFile'" -ForegroundColor Green
+            } else {
+                Write-Host "7zip process completed with exit code $($process.ExitCode). There might have been an issue during compression." -ForegroundColor Yellow
+                Write-Host "Please check 7zip logs or output if available. The archive might be incomplete or corrupted." -ForegroundColor Yellow
+            }
+        } catch {
+            Write-Host "Error executing 7zip compression: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "Full command attempted: $7zipExePath $($arguments -join ' ')" -ForegroundColor Red
+        }
+    }
+} else {
+    Write-Host "Skipping compression." -ForegroundColor Yellow
+}
+
+Write-Host "Profile migration process complete." -ForegroundColor Cyan
