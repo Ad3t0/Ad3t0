@@ -36,6 +36,16 @@ Installs [https://chocolatey.org/](https://chocolatey.org/)
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ChocoInstall.ps1'))
 ```
 
+## InstallAllUpdates
+
+Installs all Windows updates without confirmation
+
+[InstallAllUpdates.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/InstallAllUpdates.ps1)
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/InstallAllUpdates.ps1'))
+```
+
 ## RemoveOldProfiles
 
 Remove old user profiles with prompts and confirmations
