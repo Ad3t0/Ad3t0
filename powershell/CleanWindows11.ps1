@@ -15,7 +15,7 @@ $appsToRemove = @("Microsoft Edge", "Microsoft Store", "Mail", "Copilot", "Micro
 
 # Apply Taskbar and UI customizations
 Write-Host "Applying Taskbar and UI customizations..."
-New-ItemProperty -Path $advPath -Name TaskbarDa -Value 0 -PropertyType DWord -Force # Widgets
+New-ItemProperty -Path $advPath -Name TaskbarDa -Value 0 -PropertyType DWord -Force -ErrorAction SilentlyContinue # Widgets
 Write-Host "- Disabled Widgets icon."
 New-ItemProperty -Path $advPath -Name TaskbarMn -Value 0 -PropertyType DWord -Force # Teams Chat
 Write-Host "- Disabled Teams Chat icon."
@@ -23,6 +23,14 @@ New-ItemProperty -Path $advPath -Name ShowTaskViewButton -Value 0 -PropertyType 
 Write-Host "- Disabled Task View button."
 New-ItemProperty -Path $advPath -Name ShowCopilotButton -Value 0 -PropertyType DWord -Force # Copilot
 Write-Host "- Disabled Copilot button."
+Write-Host "Disabling Copilot via Group Policy..."
+Remove-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'Copilot' -ErrorAction SilentlyContinue
+Write-Host "- Removed Copilot from startup."
+New-Item -Path 'HKCU:\Software\Policies\Microsoft\Windows' -Name 'WindowsCopilot' -Force | Out-Null
+Set-ItemProperty -Path 'HKCU:\Software\Policies\Microsoft\Windows\WindowsCopilot' -Name 'TurnOffWindowsCopilot' -Type DWord -Value 1
+Write-Host "- Set Group Policy to turn off Windows Copilot."
+Get-Process WebViewHost -ErrorAction SilentlyContinue | Stop-Process -Force
+Write-Host "- Stopped the Copilot process (WebViewHost)."
 New-ItemProperty -Path $searchPath -Name SearchboxTaskbarMode -Value 0 -PropertyType DWord -Force # Search box
 Write-Host "- Set search box to icon only."
 New-ItemProperty -Path $advPath -Name FeedEnabled -Value 0 -PropertyType DWord -Force # News feed
