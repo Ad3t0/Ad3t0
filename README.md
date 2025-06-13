@@ -76,6 +76,16 @@ Google search with system model for drivers in default browser
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/DriverSearch.ps1'))
 ```
 
+## CleanWindows11
+
+Customizes Windows 11 personalization options such as taskbar, theme, startup apps, icons
+
+[CleanWindows11.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CleanWindows11.ps1)
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CleanWindows11.ps1'))
+```
+
 ## AutoLogin
 
 Setup Windows auto login and display current
