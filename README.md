@@ -66,14 +66,14 @@ PowerShell logon or startup task creator
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/LogonStartUpTask.ps1'))
 ```
 
-## DriverSearch
+## EnableRDP
 
-Google search with system model for drivers in default browser
+Enable RDP, sets firewall rules and system permissions
 
-[DriverSearch.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/DriverSearch.ps1)
+[EnableRDP.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/DriverSearch.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/DriverSearch.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/EnableRDP.ps1'))
 ```
 
 ## CleanWindows11
