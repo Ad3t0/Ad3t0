@@ -1,4 +1,4 @@
-Write-Host "This script will customize Windows 11 settings and unpin apps from the taskbar" -ForegroundColor Yellow
+Write-Host "This script will automatically download and install all available Windows updates." -ForegroundColor Yellow
 $confirmation = Read-Host "Continue? (Y/N)"
 if ($confirmation -notin @('Y', 'y')) {
     Write-Host "Operation cancelled." -ForegroundColor Red
