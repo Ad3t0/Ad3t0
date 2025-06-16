@@ -7,6 +7,8 @@
 # - Palo Alto Cortex XDR (Cyvera ransomware decoys)
 # - Huntress Ransomware Canaries (hidden folders in Documents)
 # - WatchGuard EPDR/Adaptive Defense (temp folders)
+#
+# Also excludes Windows junction points like "My Pictures" to prevent duplicate data
 
 # Define directories to ignore during profile migration
 # Based on EDR decoys, temp files, cache folders, and other problematic directories
@@ -44,6 +46,12 @@ $ignoreDirectories = @(
     "Recent",
     "Thumbs",
     "thumbnails",
+
+    # Windows folder redirection/junction points (prevent duplicates)
+    "My Pictures",
+    "My Music",
+    "My Videos",
+    "My Documents",
 
     # Recycle Bin (escaped dollar sign)
     '$Recycle.Bin',
