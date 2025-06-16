@@ -1,3 +1,87 @@
+# PowerShell Profile Migration Script with EDR/AV Decoy Exclusions
+#
+# This script migrates user profile data while excluding EDR/AV canary files and decoys
+# Supported EDR platforms for exclusions:
+# - SentinelOne (afterSentDocuments folders, hex-named decoy files)
+# - VMware Carbon Black Cloud (8-char hex canary files)
+# - Palo Alto Cortex XDR (Cyvera ransomware decoys)
+# - Huntress Ransomware Canaries (hidden folders in Documents)
+# - WatchGuard EPDR/Adaptive Defense (temp folders)
+
+# Define directories to ignore during profile migration
+# Based on EDR decoys, temp files, cache folders, and other problematic directories
+# Note: Robocopy-compatible patterns only (no complex paths with backslashes)
+$ignoreDirectories = @(
+    # SentinelOne EDR decoys and honeypots
+    "afterSentDocuments",
+
+    # VMware Carbon Black Cloud canary directories
+    "CarbonBlack",
+    "CB",
+
+    # Palo Alto Cortex XDR ransomware decoys
+    "Cyvera",
+    "Ransomware",
+
+    # WatchGuard EPDR / Adaptive Defense temp folders
+    "TEMP.*",
+
+    # General EDR/AV temp and cache directories
+    "Temp",
+    "Cache",
+    "tmp",
+    "cache2",
+
+    # Browser cache directories (simple names only)
+    "CachedData",
+    "GPUCache",
+    "ShaderCache",
+
+    # Sync service caches
+    "OneDriveTemp",
+
+    # Windows system directories
+    "Recent",
+    "Thumbs",
+    "thumbnails",
+
+    # Recycle Bin (escaped dollar sign)
+    '$Recycle.Bin',
+    "RECYCLER"
+)
+
+# Define file patterns to ignore during profile migration
+$ignoreFiles = @(
+    # Standard exclusions
+    "*.lnk",           # Shortcuts (already excluded)
+    "*.ini",           # Config files (already excluded)
+    "*.tmp",           # Temporary files
+    "*.temp",          # Temporary files
+    "*.log",           # Log files
+    "*.cache",         # Cache files
+    "Thumbs.db",       # Windows thumbnail cache
+    "desktop.ini",     # Windows folder settings
+    "*.bak",           # Backup files
+    "~*",              # Office temporary files
+
+    # EDR/AV canary file patterns
+    # SentinelOne hex-named files (32 chars starting with $)
+    '$????????????????????????????????.*',
+
+    # VMware Carbon Black canary files (8-char uppercase hex prefix)
+    '$????????.doc',
+    '$????????.jpg',
+    '$????????.xls',
+    '$????????.pptx',
+
+    # General EDR decoy patterns
+    "*.decoy",
+    "canary*.*",
+    "honeypot*.*"
+)
+
+Write-Host "Ignore list contains $($ignoreDirectories.Count) directory patterns and $($ignoreFiles.Count) file patterns" -ForegroundColor Yellow
+
 # Get a list of all user profiles on the system
 $userProfiles = Get-WmiObject -Class Win32_UserProfile | Where-Object { $_.Special -eq $false }
 
@@ -72,7 +156,7 @@ if ($targetDirectory) {
 
 	New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\OneDrive" -ErrorAction SilentlyContinue
 
-	robocopy $exactPath "$($destinationPath)\$($username)\OneDrive" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
+	robocopy $exactPath "$($destinationPath)\$($username)\OneDrive" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF $ignoreFiles /XD $ignoreDirectories
 
 }
 
@@ -84,9 +168,13 @@ New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Documents" 
 New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Desktop" -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path "$($destinationPath)\$($username)\Pictures" -ErrorAction SilentlyContinue
 
-robocopy $documentsPath "$($destinationPath)\$($username)\Documents" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
-robocopy $desktopPath "$($destinationPath)\$($username)\Desktop" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
-robocopy $picturesPath "$($destinationPath)\$($username)\Pictures" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF *.lnk *.ini
+Write-Host "Starting profile migration with exclusions..." -ForegroundColor Cyan
+Write-Host "Excluded directories: $($ignoreDirectories -join ', ')" -ForegroundColor Yellow
+Write-Host "Excluded file patterns: $($ignoreFiles -join ', ')" -ForegroundColor Yellow
+
+robocopy $documentsPath "$($destinationPath)\$($username)\Documents" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF $ignoreFiles /XD $ignoreDirectories
+robocopy $desktopPath "$($destinationPath)\$($username)\Desktop" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF $ignoreFiles /XD $ignoreDirectories
+robocopy $picturesPath "$($destinationPath)\$($username)\Pictures" /S /DCOPY:DA /COPY:DAT /R:1000000 /W:30 /XF $ignoreFiles /XD $ignoreDirectories
 
 if (Test-Path -Path "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks") {
 	$ChromeBookmarksPath = "$($selectedProfile.LocalPath)\AppData\Local\Google\Chrome\User Data\Default\Bookmarks"
@@ -141,9 +229,20 @@ if ($compressChoice -eq 'y') {
 
             if ($process.ExitCode -eq 0) {
                 Write-Host "Data compressed successfully to '$archiveFile'" -ForegroundColor Green
+
+                # Remove the uncompressed source directory to avoid duplicate data
+                try {
+                    Write-Host "Removing uncompressed source directory to avoid duplicate data..." -ForegroundColor Yellow
+                    Remove-Item -Path $sourceDir -Recurse -Force
+                    Write-Host "Uncompressed source directory removed successfully." -ForegroundColor Green
+                } catch {
+                    Write-Host "Warning: Could not remove uncompressed source directory: $($_.Exception.Message)" -ForegroundColor Yellow
+                    Write-Host "You may want to manually delete '$sourceDir' to avoid duplicate data." -ForegroundColor Yellow
+                }
             } else {
                 Write-Host "7zip process completed with exit code $($process.ExitCode). There might have been an issue during compression." -ForegroundColor Yellow
                 Write-Host "Please check 7zip logs or output if available. The archive might be incomplete or corrupted." -ForegroundColor Yellow
+                Write-Host "Keeping uncompressed data due to compression issues." -ForegroundColor Yellow
             }
         } catch {
             Write-Host "Error executing 7zip compression: $($_.Exception.Message)" -ForegroundColor Red

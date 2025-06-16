@@ -1,7 +1,9 @@
 # Ask for confirmation before running the script
-$confirmation = Read-Host "This script will customize Windows 11 settings and unpin apps from the taskbar. Are you sure you want to continue? (y/n)"
-if ($confirmation -ne 'y') {
-    Write-Host "Operation cancelled by the user."
+# === Confirmation ===
+Write-Host "This script will customize Windows 11 settings and unpin apps from the taskbar" -ForegroundColor Yellow
+$confirmation = Read-Host "Continue? (Y/N)"
+if ($confirmation -notin @('Y', 'y')) {
+    Write-Host "Operation cancelled." -ForegroundColor Red
     exit
 }
 
