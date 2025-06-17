@@ -1,5 +1,10 @@
+# --- Settings ---
+# Set to $true to run the script without any confirmation prompts (unattended mode).
+$unattended = $false
+
 # --- Setup ---
 # Define a standard log directory path in ProgramData
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Force -Confirm:$false
 $logDir = "C:\ProgramData\InstallAllUpdates"
 
 # Create the log directory if it doesn't exist
@@ -18,11 +23,13 @@ $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 # --- Main Logic ---
 try {
     Write-Host "This script will automatically download and install all available Windows updates." -ForegroundColor Yellow
-    $confirmation = Read-Host "Continue? (Y/N)"
-    if ($confirmation -notin @('Y', 'y')) {
-        Write-Host "Operation cancelled." -ForegroundColor Red
-        # The 'finally' block will still execute to stop the transcript
-        return
+    if (-not $unattended) {
+        $confirmation = Read-Host "Continue? (Y/N)"
+        if ($confirmation -notin @('Y', 'y')) {
+            Write-Host "Operation cancelled." -ForegroundColor Red
+            # The 'finally' block will still execute to stop the transcript
+            return
+        }
     }
 
     Write-Host "Installing required PowerShell modules..." -ForegroundColor Cyan
@@ -64,11 +71,16 @@ try {
         $rebootNeeded = $updates | Where-Object { $_.RebootRequired }
         if ($rebootNeeded) {
             Write-Host " - A reboot is required to complete the installation." -ForegroundColor Yellow
-            $rebootConfirmation = Read-Host "Reboot now? (Y/N)"
-            if ($rebootConfirmation -in @('Y', 'y')) {
-                Write-Host "Rebooting in 10 seconds. Press CTRL+C to cancel..."
-                Start-Sleep 10
-                Restart-Computer -Force
+            if ($unattended) {
+                Write-Host "Unattended mode: A reboot is required. Please reboot manually." -ForegroundColor Yellow
+            }
+            else {
+                $rebootConfirmation = Read-Host "Reboot now? (Y/N)"
+                if ($rebootConfirmation -in @('Y', 'y')) {
+                    Write-Host "Rebooting in 10 seconds. Press CTRL+C to cancel..."
+                    Start-Sleep 10
+                    Restart-Computer -Force
+                }
             }
         } else {
             Write-Host " - No reboot is required." -ForegroundColor Green
@@ -83,6 +95,5 @@ catch {
 }
 finally {
     # --- Cleanup ---
-    Write-Host "Script finished. Log file is available at: $logFile"
     Stop-Transcript
 }
