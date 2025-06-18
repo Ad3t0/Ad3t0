@@ -1,7 +1,29 @@
 # Ask for confirmation before running the script
 # === Confirmation ===
-Write-Host "This script will customize Windows 11 settings and unpin apps from the taskbar" -ForegroundColor Yellow
-$confirmation = Read-Host "Continue? (Y/N)"
+$confirmationMessage = @"
+This script will perform the following customizations to Windows 11:
+
+Taskbar & UI Customizations:
+- Disable Widgets, Teams Chat, Task View, and Copilot icons
+- Disable Copilot via Group Policy and remove from startup
+- Set the Search box to an icon
+- Disable the news and interests feed
+- Align the Taskbar to the left
+- Enable Dark Theme for both apps and the system
+
+Application Unpinning:
+- Unpin the following apps from the Taskbar:
+  - Microsoft Edge, Microsoft Store, Mail, Copilot, Microsoft 365 (Office),
+    Outlook (new), Outlook, Microsoft Teams (personal)
+
+System Changes:
+- Set the desktop wallpaper to the default dark theme image
+- Disable OneDrive from starting automatically and stop its process
+- Clean the Start Menu layout by downloading a predefined configuration
+
+"@
+Write-Host $confirmationMessage -ForegroundColor Yellow
+$confirmation = Read-Host "Do you want to continue with these changes? (Y/N)"
 if ($confirmation -notin @('Y', 'y')) {
     Write-Host "Operation cancelled." -ForegroundColor Red
     exit
@@ -101,6 +123,37 @@ foreach ($app in $appsToRemove) {
         }
     } else {
         Write-Host "  - Application '$app' not found."
+    }
+}
+
+# Clean Start Menu layout
+Write-Host "Cleaning Start Menu layout..."
+$startMenuPath = "$env:LOCALAPPDATA\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState"
+$startMenuFile = "start2.bin"
+$downloadUrl = "https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/bin/start2.bin"
+$tempFile = Join-Path $env:TEMP $startMenuFile
+
+# Ensure the destination directory exists
+if (-not (Test-Path $startMenuPath)) {
+    New-Item -Path $startMenuPath -ItemType Directory -Force | Out-Null
+}
+
+# Try downloading the file to a temporary location
+try {
+    Write-Host "- Attempting to download '$startMenuFile'..."
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile -UseBasicParsing
+
+    # If download is successful, copy to destination
+    Copy-Item -Path $tempFile -Destination (Join-Path $startMenuPath $startMenuFile) -Force
+    Write-Host "- Successfully downloaded and applied custom Start Menu layout."
+    Stop-Process -Name StartMenuExperienceHost -Force -ErrorAction SilentlyContinue
+    Write-Host "- Start Menu process restarted to apply changes."
+} catch {
+    Write-Host "- Download of '$startMenuFile' failed. Skipping Start Menu cleanup." -ForegroundColor Yellow
+} finally {
+    # Clean up the temporary file if it exists
+    if (Test-Path $tempFile) {
+        Remove-Item $tempFile -Force
     }
 }
 
