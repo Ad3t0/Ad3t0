@@ -8,7 +8,7 @@
 
 ## MSOfficeInstall
 
-Installs MS Office
+Installs Microsoft Office using the Office Deployment Tool with automatic architecture detection (x86/x64).
 
 [MSOfficeInstall.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/MSOfficeInstall.ps1)
 
@@ -18,7 +18,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## ProfileMigrate
 
-Copies data from C:\Users\CurrentUser\Documents, Desktop, Pictures to selected path
+Migrates user profile data (Documents, Desktop, Pictures) to a specified location for backup or migration.
 
 [ProfileMigrate.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ProfileMigrate.ps1)
 
@@ -29,6 +29,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 ## ChocoInstall
 
 Installs [https://chocolatey.org/](https://chocolatey.org/)
+ package manager for Windows.
 
 [ChocoInstall.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ChocoInstall.ps1)
 
@@ -38,7 +39,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## InstallAllUpdates
 
-Installs all Windows updates without confirmation
+Installs all available Windows updates. (Unattended option exists and can be set manually within the script at the top by setting $unattended to $true)
 
 [InstallAllUpdates.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/InstallAllUpdates.ps1)
 
@@ -48,7 +49,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## RemoveOldProfiles
 
-Remove old user profiles with prompts and confirmations
+Removes old user profiles with interactive confirmation.
 
 [RemoveOldProfiles.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/RemoveOldProfiles.ps1)
 
@@ -58,7 +59,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## LogonStartUpTask
 
-PowerShell logon or startup task creator
+Creates a scheduled task to run a script at logon or startup.
 
 [LogonStartUpTask.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/LogonStartUpTask.ps1)
 
@@ -68,7 +69,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## EnableRDP
 
-Enable RDP, sets firewall rules and system permissions
+Enables RDP by configuring system settings and firewall rules for remote access.
 
 [EnableRDP.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/EnableRDP.ps1)
 
@@ -78,7 +79,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## CleanWindows11
 
-Customizes Windows 11 personalization options such as taskbar, theme, startup apps, icons
+Customizes Windows 11 UI/UX: taskbar, theme, startup apps, and icons.
 
 [CleanWindows11.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CleanWindows11.ps1)
 
@@ -88,7 +89,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## AutoLogin
 
-Setup Windows auto login and display current
+Configures and displays Windows auto-login settings.
 
 [AutoLogin.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/AutoLogin.ps1)
 
@@ -98,7 +99,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## ZabbixAgentSetup
 
-Setup Windows Zabbix agent with PSK auth
+Installs and configures the Windows Zabbix agent with PSK authentication.
 
 [ZabbixAgentSetup.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ZabbixAgentSetup.ps1)
 
@@ -111,37 +112,37 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 <details open="false">
 <summary markdown="span"> Bash Scripts</summary>
 
-Ubuntu template setup script
+Initializes an Ubuntu server template with common packages, system configurations, and security hardening.
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/serverTemplateSetup.sh)"
 ```
 
-Zabbix Agent 2 setup script (supports PSK auth, Proxmox SMART monitoring, and ZFS monitoring)
+Installs Zabbix Agent 2 with PSK auth, Proxmox SMART, and ZFS monitoring support.
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/zabbixAgentSetup.sh)"
 ```
 
-Automatically expands disk and LVM partitions to utilize all available space on Ubuntu systems
+Expands LVM partitions to utilize all available disk space on Ubuntu.
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/autoExpandLVM.sh)"
 ```
 
-QEMU Guest Agent setup script
+Installs and enables the QEMU Guest Agent for improved Proxmox guest interaction.
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/qemuAgentSetup.sh)"
 ```
 
-Docker install script
+Installs Docker and Docker Compose.
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/installDocker.sh)"
 ```
 
-Automates SSH key generation, sets permissions, updates authorized_keys, and configures SSH daemon securely
+Automates secure SSH configuration: key generation, permissions, `authorized_keys`, and sshd_config hardening.
 
 ```bash
 sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/bash/SshAuthConfigurator.sh)"
