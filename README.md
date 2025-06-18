@@ -69,7 +69,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::Sec
 
 ## EnableRDP
 
-Enables RDP by configuring system settings and firewall rules for remote access.
+Enables RDP, configures firewall rules, and interactively prompts to add non-admin users to the Remote Desktop Users group.
 
 [EnableRDP.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/EnableRDP.ps1)
 
@@ -105,6 +105,16 @@ Installs and configures the Windows Zabbix agent with PSK authentication.
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ZabbixAgentSetup.ps1'))
+```
+
+## CreateLocalUser
+
+Creates a local user, with options to generate a password or set one manually. Prompts to add the user to the Administrators and/or Remote Desktop Users groups.
+
+[CreateLocalUser.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CreateLocalUser.ps1)
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CreateLocalUser.ps1'))
 ```
 
 </details>
