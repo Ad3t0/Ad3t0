@@ -35,7 +35,7 @@ Write-Host "Starting Windows 11 customization script..."
 $advPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
 $searchPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search'
 $personalPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
-$appsToRemove = @("Microsoft Edge", "Microsoft Store", "Mail", "Copilot", "Microsoft 365 (Office)", "Outlook (new)", "Outlook", "Microsoft Teams (personal)")
+$appsToRemove = @("Microsoft Edge", "Microsoft Store", "Mail", "Copilot", "Microsoft 365 (Office)", "Outlook (new)", "Outlook", "Microsoft Teams (personal)", "Microsoft Teams")
 
 # Apply Taskbar and UI customizations
 Write-Host "Applying Taskbar and UI customizations..."
