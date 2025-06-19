@@ -6,11 +6,11 @@ $ZABBIX_VERSION_INPUT = Read-Host "Enter Zabbix version (6, 7, or specific like 
 # Determine full version based on input
 if ([string]::IsNullOrWhiteSpace($ZABBIX_VERSION_INPUT)) {
     # Default to latest major version if nothing provided
-    $ZABBIX_VERSION = "7.2.6"  # Latest 7.x version
+    $ZABBIX_VERSION = "7.0.12"  # Latest 7.0.x version
 } elseif ($ZABBIX_VERSION_INPUT -eq "6") {
     $ZABBIX_VERSION = "6.4.21"  # Latest 6.x version
 } elseif ($ZABBIX_VERSION_INPUT -eq "7") {
-    $ZABBIX_VERSION = "7.2.6"  # Latest 7.x version
+    $ZABBIX_VERSION = "7.0.12"  # Latest 7.0.x version
 } elseif ($ZABBIX_VERSION_INPUT -match '^\d+\.\d+$') {
     # Major.Minor version provided (e.g. "6.4" or "7.0")
     $latestPatchVersions = @{
@@ -22,16 +22,16 @@ if ([string]::IsNullOrWhiteSpace($ZABBIX_VERSION_INPUT)) {
     if ($latestPatchVersions.ContainsKey($ZABBIX_VERSION_INPUT)) {
         $ZABBIX_VERSION = $latestPatchVersions[$ZABBIX_VERSION_INPUT]
     } else {
-        Write-Host "Unsupported version format. Using latest version 7.2.6." -ForegroundColor Yellow
-        $ZABBIX_VERSION = "7.2.6"
+        Write-Host "Unsupported version format. Using latest version 7.0.12." -ForegroundColor Yellow
+        $ZABBIX_VERSION = "7.0.12"
     }
 } elseif ($ZABBIX_VERSION_INPUT -match '^\d+\.\d+\.\d+$') {
     # Full version provided
     $ZABBIX_VERSION = $ZABBIX_VERSION_INPUT
 } else {
     # Invalid format, use default
-    Write-Host "Invalid version format. Using latest version 7.2.6." -ForegroundColor Yellow
-    $ZABBIX_VERSION = "7.2.6"
+    Write-Host "Invalid version format. Using latest version 7.0.12." -ForegroundColor Yellow
+    $ZABBIX_VERSION = "7.0.12"
 }
 
 # Display installation summary
