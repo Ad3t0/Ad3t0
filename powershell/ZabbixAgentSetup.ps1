@@ -34,12 +34,25 @@ if ([string]::IsNullOrWhiteSpace($ZABBIX_VERSION_INPUT)) {
     $ZABBIX_VERSION = "7.0.12"
 }
 
+# Check for VM and prompt for SMART monitoring
+$wantsSMARTMonitoring = $false
+$isVM = (Get-WmiObject -Class Win32_ComputerSystem).Model -match "Virtual"
+if ($isVM) {
+    Write-Host "`nMachine is a VM, SMART monitoring is not applicable." -ForegroundColor Yellow
+} else {
+    $enableSMARTChoice = Read-Host "Enable SMART disk monitoring? (Y/N)"
+    if ($enableSMARTChoice -match '^[Yy]$') {
+        $wantsSMARTMonitoring = $true
+    }
+}
+
 # Display installation summary
 Write-Host "`n=== Installation Summary ===" -ForegroundColor Cyan
 Write-Host "Zabbix Server/Proxy: $ZABBIX_PROXY_HOST" -ForegroundColor Yellow
 Write-Host "Host Prefix: $(if([string]::IsNullOrWhiteSpace($HOST_PREFIX)){"None"}else{$HOST_PREFIX})" -ForegroundColor Yellow
 Write-Host "Zabbix Version: $ZABBIX_VERSION" -ForegroundColor Yellow
 Write-Host "Target System: $env:COMPUTERNAME" -ForegroundColor Yellow
+Write-Host "SMART Monitoring: $(if($wantsSMARTMonitoring) {'Enabled'} else {'Disabled'})" -ForegroundColor Yellow
 
 # Confirm installation
 $confirm = Read-Host "`nDo you want to proceed with the installation? (Y/N)"
@@ -130,6 +143,18 @@ TLSAccept=psk
 TLSPSKIdentity=$PSK_IDENTITY
 TLSPSKFile=$PSK_DIR\zabbix.psk
 "@ | Out-File -FilePath "$INSTALL_DIR\zabbix_agent2.conf" -Encoding ASCII
+# Install smartmontools and update config if requested
+if ($wantsSMARTMonitoring) {
+    Write-Host "`nInstalling smartmontools via Chocolatey..." -ForegroundColor Cyan
+    if (Get-Command choco -ErrorAction SilentlyContinue) {
+        choco install smartmontools -y --force
+        $smartPluginLine = "`n# SMART Monitoring`nPlugins.Smart.Path=C:\Program Files\smartmontools\bin\smartctl.exe"
+        Add-Content -Path "$INSTALL_DIR\zabbix_agent2.conf" -Value $smartPluginLine
+        Write-Host "SMART monitoring enabled." -ForegroundColor Green
+    } else {
+        Write-Host "Chocolatey is not installed. Cannot install smartmontools. Skipping." -ForegroundColor Red
+    }
+}
 
 # Set file permissions
 $acl = Get-Acl "$PSK_DIR\zabbix.psk"
