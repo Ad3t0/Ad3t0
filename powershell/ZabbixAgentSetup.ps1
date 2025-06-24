@@ -60,6 +60,7 @@ if ($confirm -notmatch '^[Yy]$') {
     Write-Host "Installation cancelled." -ForegroundColor Red
     exit
 }
+Write-Host "`nStarting Zabbix Agent installation..." -ForegroundColor Cyan
 
 # Check for and remove old Zabbix Agent
 $oldAgent = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*Zabbix Agent*" -and $_.Name -notlike "*Zabbix Agent 2*" }
@@ -102,12 +103,15 @@ $PSK = $PSK.ToLower()
 $PSK | Out-File -FilePath "$PSK_DIR\zabbix.psk" -Encoding ASCII -NoNewline
 
 # Download Zabbix Agent 2
+Write-Host "`nDownloading Zabbix Agent 2..." -ForegroundColor Cyan
 $arch = if ([Environment]::Is64BitOperatingSystem) { "amd64" } else { "i386" }
 $url = "https://cdn.zabbix.com/zabbix/binaries/stable/$($ZABBIX_VERSION.Substring(0,3))/$ZABBIX_VERSION/zabbix_agent2-$ZABBIX_VERSION-windows-$arch-openssl.msi"
 $installer = "$env:TEMP\zabbix_agent2.msi"
 
+Write-Host "Downloading from: $url" -ForegroundColor DarkCyan
 $webClient = New-Object System.Net.WebClient
 $webClient.DownloadFile($url, $installer)
+Write-Host "Download complete." -ForegroundColor Green
 
 # Stop existing Zabbix Agent 2 service if running
 if (Get-Service "Zabbix Agent 2" -ErrorAction SilentlyContinue) {
@@ -115,8 +119,10 @@ if (Get-Service "Zabbix Agent 2" -ErrorAction SilentlyContinue) {
 }
 
 # Install Zabbix Agent 2
+Write-Host "`nInstalling Zabbix Agent 2... This may take a moment." -ForegroundColor Cyan
 $arguments = "/i `"$installer`" /qn LOGTYPE=file LOGFILE=`"$INSTALL_DIR\zabbix_agent2.log`" SERVER=$ZABBIX_PROXY_HOST HOSTNAME=$PREFIXED_HOSTNAME"
 Start-Process msiexec.exe -ArgumentList $arguments -Wait
+Write-Host "Zabbix Agent 2 installation finished." -ForegroundColor Green
 
 # Update existing config if it exists
 if (Test-Path "$INSTALL_DIR\zabbix_agent2.conf") {
@@ -180,7 +186,8 @@ Write-Host "Zabbix Hostname: $PREFIXED_HOSTNAME" -ForegroundColor Green
 if (![string]::IsNullOrWhiteSpace($HOST_PREFIX)) {
     Write-Host "Host Prefix: $HOST_PREFIX" -ForegroundColor Green
 }
-Write-Host "System IP: $((Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.InterfaceAlias -notmatch 'Loopback'}).IPAddress)" -ForegroundColor Green
+$ipAddresses = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {($_.InterfaceAlias -notmatch 'Loopback') -and ($_.IPAddress -notlike '169.254*')}).IPAddress
+Write-Host "System IP: $($ipAddresses -join ', ')" -ForegroundColor Green
 Write-Host "PSK Identity: $PSK_IDENTITY" -ForegroundColor Green
 Write-Host "PSK Key: $PSK" -ForegroundColor Green
 
