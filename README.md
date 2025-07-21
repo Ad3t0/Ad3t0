@@ -6,115 +6,124 @@
 <details open="false">
 <summary markdown="span"> PowerShell Scripts</summary>
 
-## MSOfficeInstall
+## Install-MSOffice
 
 Installs Microsoft Office using the Office Deployment Tool with automatic architecture detection (x86/x64).
 
-[MSOfficeInstall.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/MSOfficeInstall.ps1)
+[Install-MSOffice.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-MSOffice.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/MSOfficeInstall.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-MSOffice.ps1'))
 ```
 
-## ProfileMigrate
+## Move-UserProfile
 
 Migrates user profile data (Documents, Desktop, Pictures) to a specified location for backup or migration.
 
-[ProfileMigrate.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ProfileMigrate.ps1)
+[Move-UserProfile.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Move-UserProfile.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ProfileMigrate.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Move-UserProfile.ps1'))
 ```
 
-## ChocoInstall
+## Install-Chocolatey
 
-Installs [https://chocolatey.org/](https://chocolatey.org/)
- package manager for Windows.
+Installs the Chocolatey package manager for Windows, enabling easy installation and management of software packages via command line.
 
-[ChocoInstall.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ChocoInstall.ps1)
+[Install-Chocolatey.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-Chocolatey.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ChocoInstall.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-Chocolatey.ps1'))
 ```
 
-## InstallAllUpdates
+## Install-AllUpdates
 
-Installs all available Windows updates. (Unattended option exists and can be set manually within the script at the top by setting $unattended to $true)
+Installs all available Windows updates using the PSWindowsUpdate module. Supports both interactive and unattended modes (set $unattended to $true for silent installation).
 
-[InstallAllUpdates.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/InstallAllUpdates.ps1)
+[Install-AllUpdates.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-AllUpdates.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/InstallAllUpdates.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-AllUpdates.ps1'))
 ```
 
-## RemoveOldProfiles
+## Remove-OldProfiles
 
-Removes old user profiles with interactive confirmation.
+Scans and removes old/unused Windows user profiles from the system with interactive confirmation for each profile, helping to free up disk space.
 
-[RemoveOldProfiles.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/RemoveOldProfiles.ps1)
+[Remove-OldProfiles.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Remove-OldProfiles.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/RemoveOldProfiles.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Remove-OldProfiles.ps1'))
 ```
 
-## LogonStartUpTask
+## New-LogonStartupTask
 
-Creates a scheduled task to run a script at logon or startup.
+Creates a Windows scheduled task that runs a specified PowerShell script at user logon or system startup, with options for task name and trigger type.
 
-[LogonStartUpTask.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/LogonStartUpTask.ps1)
+[New-LogonStartupTask.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/New-LogonStartupTask.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/LogonStartUpTask.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/New-LogonStartupTask.ps1'))
 ```
 
-## EnableRDP
+## Enable-RDP
 
-Enables RDP, configures firewall rules, and interactively prompts to add non-admin users to the Remote Desktop Users group.
+Enables Remote Desktop Protocol (RDP) on Windows, configures necessary firewall rules, and provides interactive prompts to add non-administrator users to the Remote Desktop Users group.
 
-[EnableRDP.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/EnableRDP.ps1)
+[Enable-RDP.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Enable-RDP.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/EnableRDP.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Enable-RDP.ps1'))
 ```
 
-## CleanWindows11
+## Clear-Windows11Bloat
 
-Customizes Windows 11 UI/UX: taskbar, theme, startup apps, and icons.
+Removes Windows 11 bloatware and customizes the user interface by cleaning up the taskbar, removing unwanted startup apps, unpinning default icons, and applying a cleaner theme.
 
-[CleanWindows11.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CleanWindows11.ps1)
+[Clear-Windows11Bloat.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Clear-Windows11Bloat.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CleanWindows11.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Clear-Windows11Bloat.ps1'))
 ```
 
-## AutoLogin
+## Enable-AutoLogin
 
-Configures and displays Windows auto-login settings.
+Configures Windows automatic login for a specified user account and displays current auto-login settings stored in the registry.
 
-[AutoLogin.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/AutoLogin.ps1)
+[Enable-AutoLogin.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Enable-AutoLogin.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/AutoLogin.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Enable-AutoLogin.ps1'))
 ```
 
-## ZabbixAgentSetup
+## Install-ZabbixAgent
 
-Installs and configures the Windows Zabbix agent with PSK authentication.
+Downloads, installs, and configures the Zabbix monitoring agent for Windows with PSK (Pre-Shared Key) authentication, including firewall rules and service configuration.
 
-[ZabbixAgentSetup.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ZabbixAgentSetup.ps1)
+[Install-ZabbixAgent.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-ZabbixAgent.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/ZabbixAgentSetup.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Install-ZabbixAgent.ps1'))
 ```
 
-## CreateLocalUser
+## New-LocalUser
 
-Creates a local user, with options to generate a password or set one manually. Prompts to add the user to the Administrators and/or Remote Desktop Users groups.
+Creates a new local Windows user account with options to auto-generate a secure password or set one manually. Includes interactive prompts to add the user to Administrators and/or Remote Desktop Users groups.
 
-[CreateLocalUser.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CreateLocalUser.ps1)
+[New-LocalUser.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/New-LocalUser.ps1)
 
 ```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/CreateLocalUser.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/New-LocalUser.ps1'))
+```
+
+## Set-DailyRestartTask
+
+Creates a scheduled task to restart the computer daily at a specified time with a 30-second warning.
+
+[Set-DailyRestartTask.ps1](https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Set-DailyRestartTask.ps1)
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/Ad3t0/Ad3t0/master/powershell/Set-DailyRestartTask.ps1'))
 ```
 
 </details>
